@@ -8,7 +8,7 @@
 import os
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
-MEDIA_LOCS = ['../media', '/usr/share/kano-settings/media']
+MEDIA_LOCS = ['../media', '/usr/share/kano-extras/media']
 APP_ICON_SIZE = 68
 
 
