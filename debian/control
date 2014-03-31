@@ -8,7 +8,7 @@ Build-Depends: debhelper (>=9.0.0)
 Package: kano-extras
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-gi
-Replaces: kano-desktop (<< deb: 1.0-59)
-Breaks: kano-desktop (<< deb: 1.0-59)
+Replaces: kano-desktop (<< 1.0-59)
+Breaks: kano-desktop (<< 1.0-59)
 Description: A simple app to launch various program
  In Kano OS, it is used to manage the Extras folder.
