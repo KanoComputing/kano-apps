@@ -1,2 +1,2 @@
 bin/kano-extras usr/bin/
-kano_extras usr/lib/python/dist-packages/
+kano_extras usr/lib/python2.7/dist-packages/
