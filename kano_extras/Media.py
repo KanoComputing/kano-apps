@@ -26,7 +26,7 @@ def get_app_icon(loc):
         icon = Gtk.Image.new_from_pixbuf(pb)
     except:
         icon = Gtk.Image.new_from_icon_name(loc, -1)
-        icon.set_pixel_size(68)
+        icon.set_pixel_size(APP_ICON_SIZE)
 
     return icon
 
