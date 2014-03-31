@@ -107,6 +107,9 @@ class AppGridEntry(Gtk.EventBox):
         self.get_root_window().set_cursor(cursor)
 
     def _mouse_click(self, ebox, event):
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+
         os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
 
 class AppGrid(Gtk.ScrolledWindow):
