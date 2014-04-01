@@ -37,7 +37,7 @@ class TopBar(Gtk.EventBox):
         self._close_button.set_can_focus(False)
         self._close_button.get_style_context().add_class('top_bar_button')
 
-        self._close_button.connect('clicked', Gtk.main_quit)
+        self._close_button.connect('clicked', self._close_button_click)
         self._close_button.connect('enter-notify-event',
                                    self._close_button_mouse_enter)
         self._close_button.connect('leave-notify-event',
@@ -51,12 +51,18 @@ class TopBar(Gtk.EventBox):
         # Change the cursor to hour Glass
         cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
         self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
 
     def _close_button_mouse_leave(self, button, event):
         # Set the cursor to normal Arrow
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
+
+    def _close_button_click(self, button, event):
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+        Gdk.flush()
+
+        Gtk.main_quit()
 
 class AppGridEntry(Gtk.EventBox):
     def __init__(self, label, desc, icon_loc, cmd):
