@@ -51,6 +51,7 @@ class TopBar(Gtk.EventBox):
         # Change the cursor to hour Glass
         cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
         self.get_root_window().set_cursor(cursor)
+        Gdk.flush()
 
     def _close_button_mouse_leave(self, button, event):
         # Set the cursor to normal Arrow
@@ -109,6 +110,7 @@ class AppGridEntry(Gtk.EventBox):
     def _mouse_click(self, ebox, event):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
+        Gdk.flush()
 
         os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
 
