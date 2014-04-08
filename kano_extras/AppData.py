@@ -34,7 +34,10 @@ def get_applications():
         if os.path.exists(loc):
             for dentry in os.listdir(os.path.expanduser(loc)):
                 dentry_data = _parse_dentry(loc + '/' + dentry)
-                if 'TryExec' in dentry_data and try_exec(dentry_data['TryExec']):
+                if 'TryExec' in dentry_data
+                    if try_exec(dentry_data['TryExec']):
+                        dentries.append(dentry_data)
+                else:
                     dentries.append(dentry_data)
 
     # process installers
