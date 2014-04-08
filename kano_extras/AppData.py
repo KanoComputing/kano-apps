@@ -12,7 +12,19 @@ _DENTRY_LOCATIONS = ['/usr/share/kano-extras/extras', '~/.extras']
 _INSTALLERS_LOCATIONS = ['/usr/share/kano-extras/installers']
 
 def try_exec(app):
-    return True
+    path = None
+    if len(app) <= 0:
+        return false
+    elif app[0] == '/':
+        path = app
+    else:
+        for path in os.environ["PATH"].split(":"):
+            possible_path = path + "/" + app
+            if os.path.exists(possible_path):
+                path = possible_path
+                break
+
+    return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
 def get_applications():
     dentries = []
