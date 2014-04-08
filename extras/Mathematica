@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=Mathematica
-Icon=/usr/share/kano-desktop/icons/Mathematica.png
+Icon=/usr/share/kano-extras/icons/Mathematica.png
 TryExec=/opt/Wolfram/WolframEngine/10.0/Executables/mathematica
 Exec=/opt/Wolfram/WolframEngine/10.0/Executables/mathematica %F
 Comment[en_GB]=Technical Computing System
