@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Codecademy
+Name[en_GB]=Codecademy
+Icon=/usr/share/kano-extras/icons/codecademy.png
+TryExec=chromium
+Exec=chromium --app=http://www.codecademy.com/
+Comment[en_GB]=Codecamy shortcut
+StartupNotify=true
+Categories=Application;Education;

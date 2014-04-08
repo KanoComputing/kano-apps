@@ -1,3 +1,9 @@
+kano-extras (1.0-2) unstable; urgency=low
+
+  * Adding the extras directory from kano-desktop
+
+ -- Team Kano <dev@kano.me>  Tue, 8 Apr 2014 15:18:11 +0000
+
 kano-extras (1.0-1) unstable; urgency=low
 
   * Initial packaging

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Wolfram
+Icon=/usr/share/kano-extras/icons/wolfram.png
+TryExec=wolfram
+Exec=rxvt -title "Wolfram Language" -e wolfram
+Comment[en_GB]=Technical Programming Environment
+StartupNotify=true
+Categories=Application;Education;

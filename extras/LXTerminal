@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=LXTerminal
+Name[en_GB]=LXTerminal
+Icon=/usr/share/kano-extras/icons/terminal.png
+TryExec=lxterminal
+Exec=lxterminal
+Comment[en_GB]=Graphics Terminal frontend
+StartupNotify=true

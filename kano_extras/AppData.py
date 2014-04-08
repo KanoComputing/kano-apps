@@ -8,18 +8,47 @@
 import os
 import re
 
-_DENTRY_LOCATIONS = ['/usr/share/kano-desktop/extras'] #, '/usr/share/applications']
+_DENTRY_LOCATIONS = ['/usr/share/kano-extras/extras', '~/.extras']
+_INSTALLERS_LOCATIONS = ['/usr/share/kano-extras/installers']
+
+def try_exec(app):
+    path = None
+    if len(app) <= 0:
+        return false
+    elif app[0] == '/':
+        path = app
+    else:
+        for path in os.environ["PATH"].split(":"):
+            possible_path = path + "/" + app
+            if os.path.exists(possible_path):
+                path = possible_path
+                break
+
+    return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
 def get_applications():
     dentries = []
+
+    # process icons
     for loc in _DENTRY_LOCATIONS:
-        for dentry in os.listdir(loc):
-            dentries.append(_parse_dentry(loc + '/' + dentry))
+        if os.path.exists(loc):
+            for dentry in os.listdir(os.path.expanduser(loc)):
+                dentry_data = _parse_dentry(loc + '/' + dentry)
+                if 'TryExec' in dentry_data and try_exec(dentry_data['TryExec']):
+                    dentries.append(dentry_data)
+
+    # process installers
+    for loc in _INSTALLERS_LOCATIONS:
+        if os.path.exists(loc):
+            for dentry in os.listdir(os.path.expanduser(loc)):
+                dentry_data = _parse_dentry(loc + '/' + dentry)
+                if 'TryExec' in dentry_data and not try_exec(dentry_data['TryExec']):
+                    dentries.append(dentry_data)
 
     return sorted(dentries, key=lambda d: d['Name'].lower())
 
 def parse_command(cmd_line):
-    cmd_line = re.sub(r'\%[fF]', '', cmd_line)
+    cmd_line = re.sub(r'\%[fFuU]', '', cmd_line)
 
     split = cmd_line.split(' ')
     cmd = split[0]
