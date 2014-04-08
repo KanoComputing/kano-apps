@@ -120,7 +120,7 @@ GtkLabel {
     -GtkRange-trough-border: 0;
     -GtkScrollbar-has-backward-stepper: false;
     -GtkScrollbar-has-forward-stepper: false;
-    -GtkRange-slider-width: 8;
+    -GtkRange-slider-width: 12;
     /* minimum size for the slider. sadly can't be in '.slider'
        where it belongs */
     -GtkScrollbar-min-slider-length: 42;
