@@ -3,6 +3,7 @@ kano_extras usr/lib/python2.7/dist-packages/
 media usr/share/kano-extras/
 extras usr/share/kano-extras/
 installers usr/share/kano-extras/
+icons usr/share/kano-extras/
 
 icon/Extras.lnk usr/share/kano-desktop/kdesk/kdesktop/
 icon/extras.png usr/share/kano-desktop/icons/
