@@ -123,11 +123,15 @@ class AppGridEntry(Gtk.EventBox):
 class AppGrid(Gtk.ScrolledWindow):
     def __init__(self):
         Gtk.ScrolledWindow.__init__(self, hexpand=True, vexpand=True)
-        self.props.margin = 20
+        self.props.margin_top = 20
+        self.props.margin_bottom = 20
+        self.props.margin_left = 20
+        self.props.margin_right = 10
 
         self._number_of_entries = 0
 
         self._grid = Gtk.Grid()
+        self._grid.props.margin_right = 10
         self.add_with_viewport(self._grid)
 
     def add_entry(self, app_name, label, desc, cmd):
