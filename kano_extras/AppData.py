@@ -31,9 +31,14 @@ def get_applications():
 
     # process icons
     for loc in _DENTRY_LOCATIONS:
+        loc = os.path.expanduser(loc)
         if os.path.exists(loc):
-            for dentry in os.listdir(os.path.expanduser(loc)):
-                dentry_data = _parse_dentry(loc + '/' + dentry)
+            for dentry in os.listdir():
+                dentry_path = loc + '/' + dentry
+                if os.path.isdir(dentry_path):
+                    continue
+
+                dentry_data = _parse_dentry(dentry_path)
                 if 'TryExec' in dentry_data:
                     if try_exec(dentry_data['TryExec']):
                         dentries.append(dentry_data)
@@ -42,9 +47,14 @@ def get_applications():
 
     # process installers
     for loc in _INSTALLERS_LOCATIONS:
+        loc = os.path.expanduser(loc)
         if os.path.exists(loc):
-            for dentry in os.listdir(os.path.expanduser(loc)):
-                dentry_data = _parse_dentry(loc + '/' + dentry)
+            for dentry in os.listdir(loc):
+                dentry_path = loc + '/' + dentry
+                if os.path.isdir(dentry_path):
+                    continue
+
+                dentry_data = _parse_dentry(dentry_path)
                 if 'TryExec' in dentry_data and not try_exec(dentry_data['TryExec']):
                     dentries.append(dentry_data)
 
