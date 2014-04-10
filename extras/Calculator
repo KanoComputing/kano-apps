@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Calculator
+Name[en_GB]=Calculator
+Icon=/usr/share/kano-extras/icons/calculator.png
+TryExec=gcalculator
+Exec=gcalculator
+Comment[en_GB]=Perform simple and scientific calculations
+StartupNotify=true
+Categories=Utility;
+Terminal=false
