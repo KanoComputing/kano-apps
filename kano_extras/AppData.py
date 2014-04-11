@@ -33,7 +33,7 @@ def get_applications():
     for loc in _DENTRY_LOCATIONS:
         loc = os.path.expanduser(loc)
         if os.path.exists(loc):
-            for dentry in os.listdir():
+            for dentry in os.listdir(loc):
                 dentry_path = loc + '/' + dentry
                 if os.path.isdir(dentry_path):
                     continue

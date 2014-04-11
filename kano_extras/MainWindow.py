@@ -9,7 +9,8 @@ import os
 from gi.repository import Gtk, Gdk
 
 from kano_extras import Media
-from kano_extras.UIElements import TopBar, AppGrid, AppGridEntry
+from kano_extras.UIElements import TopBar, Contents, AppGrid
+from kano_extras.UIElements import SystemApp, UserApp, AddButton
 from kano_extras.AppData import get_applications
 
 class MainWindow(Gtk.Window):
@@ -17,8 +18,8 @@ class MainWindow(Gtk.Window):
         Gtk.Window.__init__(self, title='Kano Extras')
 
         screen = Gdk.Screen.get_default()
-        self._win_width = 800
-        self._win_height = int(screen.get_height() * 0.5)
+        self._win_width = 750
+        self._win_height = 595#int(screen.get_height() * 0.5)
 
         self.set_decorated(False)
         self.set_resizable(False)
@@ -34,19 +35,23 @@ class MainWindow(Gtk.Window):
         style_context.add_provider_for_screen(screen, css_provider,
                                               Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
+        style = self.get_style_context()
+        style.add_class('main_window')
+
         self._grid = Gtk.Grid()
 
         self._top_bar = TopBar()
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
-        self._apps = AppGrid()
+        self._contents = Contents(self)
+        app_grid = AppGrid(get_applications(), self)
+        self._contents.set_contents(app_grid)
 
-        apps = get_applications()
-        for app in apps:
-            self._apps.add_entry(app['Name'], app['Comment[en_GB]'],
-                                 app['Icon'], app['Exec'])
-        self._grid.attach(self._apps, 0, 1, 1, 1)
+        self._grid.attach(self._contents, 0, 1, 1, 1)
 
         self._grid.set_row_spacing(0)
 
         self.add(self._grid)
+
+    def get_main_area(self):
+        return self._contents

@@ -19,14 +19,13 @@ def media_dir():
 
     raise Exception('Media directory not found.')
 
-def get_app_icon(loc):
+def get_app_icon(loc, size=APP_ICON_SIZE):
     try:
-        pb = GdkPixbuf.Pixbuf.new_from_file_at_size(loc, APP_ICON_SIZE,
-                                                    APP_ICON_SIZE)
+        pb = GdkPixbuf.Pixbuf.new_from_file_at_size(loc, size, size)
         icon = Gtk.Image.new_from_pixbuf(pb)
     except:
         icon = Gtk.Image.new_from_icon_name(loc, -1)
-        icon.set_pixel_size(APP_ICON_SIZE)
+        icon.set_pixel_size(size)
 
     return icon
 

@@ -6,10 +6,12 @@
 # Different parts of the app's UI
 
 import os
-from gi.repository import Gtk, Gdk, Pango
+import re
+from gi.repository import Gtk, Gdk, Pango, GdkPixbuf
 
 from kano_extras import Media
-from kano_extras.AppData import parse_command
+from kano_extras.AppData import parse_command, get_applications
+from kano_extras.Media import media_dir, get_app_icon
 
 class TopBar(Gtk.EventBox):
     _TOP_BAR_HEIGHT = 44
@@ -36,6 +38,7 @@ class TopBar(Gtk.EventBox):
         self._close_button.set_image(cross_icon)
         self._close_button.set_can_focus(False)
         self._close_button.get_style_context().add_class('top_bar_button')
+        self._close_button.get_style_context().add_class('no_border')
 
         self._close_button.connect('clicked', self._close_button_click)
         self._close_button.connect('enter-notify-event',
@@ -65,19 +68,14 @@ class TopBar(Gtk.EventBox):
         Gtk.main_quit()
 
 class AppGridEntry(Gtk.EventBox):
-    def __init__(self, label, desc, icon_loc, cmd):
+    def __init__(self, label, desc, icon_loc):
         Gtk.EventBox.__init__(self)
-
-        self._cmd = parse_command(cmd)
 
         entry = Gtk.Grid()
         entry.set_row_spacing(0)
 
         icon = Media.get_app_icon(icon_loc)
-        icon.props.margin_left = 15
-        icon.props.margin_right = 15
-        icon.props.margin_top = 15
-        icon.props.margin_bottom = 15
+        icon.props.margin = 15
         entry.attach(icon, 0, 0, 1, 2)
 
         app_name = Gtk.Label(label, halign=Gtk.Align.START,
@@ -114,34 +112,272 @@ class AppGridEntry(Gtk.EventBox):
         self.get_root_window().set_cursor(cursor)
 
     def _mouse_click(self, ebox, event):
+        pass
+
+class SystemApp(AppGridEntry):
+    def __init__(self, label, desc, icon_loc, cmd):
+        self._cmd = parse_command(cmd)
+        AppGridEntry.__init__(self, label, desc, icon_loc)
+
+    def _mouse_click(self, ebox, event):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
         os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
 
-class AppGrid(Gtk.ScrolledWindow):
-    def __init__(self):
+class UserApp(SystemApp):
+    def __init__(self, label, desc, icon_loc, cmd):
+        SystemApp.__init__(self, label, desc, icon_loc, cmd)
+
+        # TODO: Add remove button
+
+
+class AddButton(AppGridEntry):
+    def __init__(self, window):
+        self._window = window
+        AppGridEntry.__init__(self, 'Add application',
+                              'Want to access more apps?',
+                              media_dir() + 'icons/add.png')
+
+    def _mouse_click(self, ebox, event):
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+        Gdk.flush()
+
+        # Todo remove itself from the scroll area
+        dialog = AddDialog(self._window)
+        self._window.get_main_area().set_contents(dialog)
+
+
+class Contents(Gtk.ScrolledWindow):
+    def __init__(self, win):
         Gtk.ScrolledWindow.__init__(self, hexpand=True, vexpand=True)
         self.props.margin_top = 20
         self.props.margin_bottom = 20
         self.props.margin_left = 20
         self.props.margin_right = 10
 
+        self._current = None
+        self._box = Gtk.Box(hexpand=True, vexpand=True)
+        self.add_with_viewport(self._box)
+
+        self._win = win
+
+    def get_window(self):
+        return self._win
+
+    def set_contents(self, obj):
+        for w in self._box.get_children():
+            self._box.remove(w)
+
+        obj.props.margin_right = 10
+        Gtk.Container.add(self._box, obj)
+        self._show_all(obj)
+
+    def _show_all(self, w):
+        w.show()
+        if hasattr(w, '__iter__'):
+            for c in w:
+                self._show_all(c)
+
+class AppGrid(Gtk.Grid):
+    def __init__(self, apps, main_win):
+        Gtk.Grid.__init__(self)
         self._number_of_entries = 0
+        self._entries = []
 
-        self._grid = Gtk.Grid()
-        self._grid.props.margin_right = 10
-        self.add_with_viewport(self._grid)
+        for app in apps:
+            entry = SystemApp(app['Name'], app['Comment[en_GB]'],
+                              app['Icon'], app['Exec'])
+            self.add_entry(entry)
 
-    def add_entry(self, app_name, label, desc, cmd):
-        entry = AppGridEntry(app_name, label, desc, cmd)
+        button = AddButton(main_win)
+        self.add_entry(button)
 
+    def add_entry(self, entry):
         if (self._number_of_entries / 2) % 2:
             entry.get_style_context().add_class('appgrid_grey')
 
         xpos = self._number_of_entries % 2
         ypos = self._number_of_entries / 2
-        self._grid.attach(entry, xpos, ypos, 1, 1)
+        self.attach(entry, xpos, ypos, 1, 1)
 
         self._number_of_entries += 1
+        self._entries.append(entry)
+
+class AddDialog(Gtk.Box):
+    def __init__(self, main_win):
+        Gtk.Box.__init__(self, hexpand=True, vexpand=True,
+                         halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
+                         orientation=Gtk.Orientation.VERTICAL, spacing=0)
+
+        self._icon_file = 'exec'
+        self._window = main_win
+
+        self._init_header()
+        self._init_form()
+        self._init_buttons()
+
+    def _init_header(self):
+        title = Gtk.Label('Add application')
+        description = Gtk.Label('Add your own application to Extras')
+
+        title_style = title.get_style_context()
+        title_style.add_class('title')
+
+        description_style = description.get_style_context()
+        description_style.add_class('description')
+
+        box = Gtk.Box(spacing=5, orientation=Gtk.Orientation.VERTICAL,
+                      halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
+        box.pack_start(title, False, False, 0)
+        box.pack_start(description, False, False, 0)
+        self.pack_start(box, False, False, 0)
+
+    def _init_form(self):
+        form = Gtk.Grid(row_spacing=22, column_spacing=22)
+
+        icon = get_app_icon(media_dir() + "icons/add-icon.png", 132)
+        icon.props.valign = Gtk.Align.START
+        self._icon = icon
+
+        icon_button = Gtk.EventBox()
+        icon_button.add(icon)
+        icon_button.connect('button-release-event', self._icon_click)
+        icon_button.connect('enter-notify-event', self._button_mouse_enter)
+        icon_button.connect('leave-notify-event', self._button_mouse_leave)
+        form.attach(icon_button, 0, 0, 1, 3)
+
+        name = Gtk.Entry()
+        name.props.placeholder_text = "Application's name"
+        name.set_size_request(280, 44)
+        self._name = name
+        form.attach(name, 1, 0, 1, 1)
+
+        desc = Gtk.Entry()
+        desc.props.placeholder_text = "Description"
+        desc.set_size_request(280, 44)
+        self._desc = desc
+        form.attach(desc, 1, 1, 1, 1)
+
+        cmd = Gtk.Entry()
+        cmd.props.placeholder_text = "Command"
+        cmd.set_size_request(280, 44)
+        self._cmd = cmd
+        form.attach(cmd, 1, 2, 1, 1)
+
+        self.pack_start(form, False, False, 40)
+
+    def _init_buttons(self):
+        container = Gtk.Box(spacing=25, halign=Gtk.Align.CENTER)
+
+        cancel = Gtk.Button('CANCEL')
+        cancel.set_size_request(124, 44)
+        cancel.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
+        cancel_style = cancel.get_style_context()
+        cancel_style.add_class('cancel_button')
+        cancel_style.add_class('no_border')
+        cancel.connect('clicked', self._cancel_click)
+        cancel.connect('enter-notify-event', self._button_mouse_enter)
+        cancel.connect('leave-notify-event', self._button_mouse_leave)
+
+        add = Gtk.Button('ADD APPLICATION')
+        add.set_size_request(174, 44)
+        add_style = add.get_style_context()
+        add_style.add_class('add_button')
+        add_style.add_class('no_border')
+        add.connect('clicked', self._add_click)
+        add.connect('enter-notify-event', self._button_mouse_enter)
+        add.connect('leave-notify-event', self._button_mouse_leave)
+
+        container.pack_start(cancel, False, False, 0)
+        container.pack_start(add, False, False, 0)
+
+        self.pack_start(container, False, False, 40)
+
+    def _cancel_click(self, event):
+        self._reset_cursor()
+        app_grid = AppGrid(get_applications(), self._window)
+        self._window.get_main_area().set_contents(app_grid)
+
+    def _add_click(self, event):
+        self._reset_cursor()
+        self._new_user_dentry(self._name.get_text(),
+                              self._desc.get_text(),
+                              self._cmd.get_text(),
+                              self._icon_path)
+
+    def _new_user_dentry(self, name, desc, cmd, icon_path):
+        dentry = '[Desktop Entry]\n'
+        dentry += 'Encoding=UTF-8\n'
+        dentry += 'Type=Application\n'
+        dentry += 'Name={}\n'.format(name)
+        dentry += 'Name[en_GB]={}\n'.format(name)
+        dentry += 'Icon={}\n'.format(icon_path)
+        dentry += 'Exec={}\n'.format(cmd)
+        dentry += 'Comment[en_GB]={}'.format(desc)
+
+        extras_dir = os.path.expanduser('~/.extras/')
+        if not os.path.exists(extras_dir):
+            os.makedirs(extras_dir)
+
+        file_name = re.sub(' ', '-', name)
+        f = open(extras_dir + name, 'w')
+        f.write(dentry)
+        f.close()
+
+        app_grid = AppGrid(get_applications(), self._window)
+        self._window.get_main_area().set_contents(app_grid)
+
+    def _icon_click(self, ebox, event):
+        self._reset_cursor()
+
+        dialog = Gtk.FileChooserDialog("Please choose an icon", self._window,
+                   Gtk.FileChooserAction.OPEN,
+                   (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                   Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+
+        # Set up file filters
+        filter_text = Gtk.FileFilter()
+        filter_text.set_name("Image files")
+        filter_text.add_mime_type("image/png")
+        filter_text.add_mime_type("image/jpeg")
+        filter_text.add_mime_type("image/svg+xml")
+        filter_text.add_mime_type("image/gif")
+        dialog.add_filter(filter_text)
+
+        filter_any = Gtk.FileFilter()
+        filter_any.set_name("Any files")
+        filter_any.add_pattern("*")
+        dialog.add_filter(filter_any)
+
+        dialog.set_current_folder(os.path.expanduser('~'))
+
+        response = dialog.run()
+
+        if response == Gtk.ResponseType.OK:
+            self._icon_path = dialog.get_filename()
+
+            pb = GdkPixbuf.Pixbuf.new_from_file_at_size(self._icon_path,
+                                                        132, 132)
+            self._icon.set_from_pixbuf(pb)
+        elif response == Gtk.ResponseType.CANCEL:
+            pass
+
+        dialog.destroy()
+
+    def _button_mouse_enter(self, button, event):
+        # Change the cursor to hour Glass
+        cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
+        self.get_root_window().set_cursor(cursor)
+
+    def _button_mouse_leave(self, button, event):
+        # Set the cursor to normal Arrow
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+
+    def _reset_cursor(self):
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+        Gdk.flush()

@@ -20,30 +20,19 @@
 
 /* All */
 * {
-    -GtkButton-inner-border: 0;
-
-    /* Removes the annoying red outline on active buttons*/
-    -unico-focus-border-color: transparent;
-
-    /* Turns off annoying borders */
-    engine: none;
-    border-width: 0px;
-
     -GtkScrolledWindow-scrollbar-spacing: 0;
     -GtkScrolledWindow-scrollbars-within-bevel: 1;
 }
 
-GtkWindow {
+GtkScrolledWindow, GtkViewport {
+    border-width: 0px;
+    -GtkWidget-focus-line-width: 0px;
+}
+
+.main_window {
     color: #ffffff;
     background: #ffffff;
     background-color: #ffffff;
-}
-
-GtkButton {
-    background:transparent;
-    border-style: none; /* Remove grey border on outside */
-    border-width:0px;
-    border-color: transparent;
 }
 
 /*GtkEntry*/
@@ -55,13 +44,6 @@ GtkEntry {
     border-radius:3px;
     padding: 10px;
 }
-GtkEntry:insensitive {
-    border-color: @inactive_border;
-    color: @inactive_writing;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-}
 
 GtkImage {
     background: transparent;
@@ -69,6 +51,44 @@ GtkImage {
 
 GtkLabel {
     color: @active_writing;
+}
+
+.title {
+    color: @title_color;
+    padding-top:25px;
+    font: Bariol Bold 18;
+}
+
+.description {
+    color: @subheading_color;
+    padding-bottom: 18px;
+    font: Bariol 14;
+}
+
+.no_border {
+    background:transparent;
+    border-style: none; /* Remove grey border on outside */
+    border-width: 0px;
+    border-color: transparent;
+
+    -unico-focus-border-color: transparent;
+    -GtkWidget-focus-line-width: 0px;
+}
+
+.add_button {
+    background-color: #91D064;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
+.cancel_button {
+    background-color: #F37677;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
+.add_button GtkLabel, .cancel_button GtkLabel {
+    color: #ffffff;
 }
 
 /* The bar at the top that mimics the window bar */
