@@ -41,4 +41,4 @@ fi
 
 echo -n "Press [ENTER] to continue"
 read dummy
-exit 0
+exec kano-extras
