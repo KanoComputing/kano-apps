@@ -34,6 +34,7 @@ class TopBar(Gtk.EventBox):
 
         self._close_button = Gtk.Button()
         self._close_button.set_image(cross_icon)
+        self._close_button.props.margin_right = 2
         self._close_button.set_can_focus(False)
         self._close_button.get_style_context().add_class('top_bar_button')
 
@@ -126,7 +127,7 @@ class AppGrid(Gtk.ScrolledWindow):
         self.props.margin_top = 20
         self.props.margin_bottom = 20
         self.props.margin_left = 20
-        self.props.margin_right = 10
+        self.props.margin_right = 12
 
         self._number_of_entries = 0
 
