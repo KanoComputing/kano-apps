@@ -8,8 +8,9 @@
 import os
 import re
 
-_DENTRY_LOCATIONS = ['/usr/share/kano-extras/extras', '~/.extras']
-_INSTALLERS_LOCATIONS = ['/usr/share/kano-extras/installers']
+_SYSTEM_ICONS_LOC = '/usr/share/kano-extras/extras'
+_USER_ICONS_LOC = '~/.extras'
+_INSTALLERS_LOC = '/usr/share/kano-extras/installers'
 
 def try_exec(app):
     path = None
@@ -26,28 +27,40 @@ def try_exec(app):
 
     return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
-def get_applications():
+# types can be on of 'app', 'installer'
+def _load_dentries_from_dir(loc, dentry_type='app', removable=False):
     dentries = []
+    loc = os.path.expanduser(loc)
+    if os.path.exists(loc):
+        for dentry in os.listdir(loc):
+            dentry_path = loc + '/' + dentry
+            if os.path.isdir(dentry_path):
+                continue
 
-    # process icons
-    for loc in _DENTRY_LOCATIONS:
-        if os.path.exists(loc):
-            for dentry in os.listdir(os.path.expanduser(loc)):
-                dentry_data = _parse_dentry(loc + '/' + dentry)
+            dentry_data = _parse_dentry(dentry_path)
+
+            if dentry_type == 'installer':
+                if 'TryExec' in dentry_data and not try_exec(dentry_data['TryExec']):
+                    dentries.append(dentry_data)
+            else:
                 if 'TryExec' in dentry_data:
                     if try_exec(dentry_data['TryExec']):
                         dentries.append(dentry_data)
                 else:
                     dentries.append(dentry_data)
 
-    # process installers
-    for loc in _INSTALLERS_LOCATIONS:
-        if os.path.exists(loc):
-            for dentry in os.listdir(os.path.expanduser(loc)):
-                dentry_data = _parse_dentry(loc + '/' + dentry)
-                if 'TryExec' in dentry_data and not try_exec(dentry_data['TryExec']):
-                    dentries.append(dentry_data)
+            if removable:
+                dentry_data['icon_source'] = dentry_path
 
+    return dentries
+
+def get_applications():
+
+    system_icons = _load_dentries_from_dir(_SYSTEM_ICONS_LOC, 'app')
+    user_icons = _load_dentries_from_dir(_USER_ICONS_LOC, 'app', True)
+    installers = _load_dentries_from_dir(_INSTALLERS_LOC, 'installer')
+
+    dentries = system_icons + user_icons + installers
     return sorted(dentries, key=lambda d: d['Name'].lower())
 
 def parse_command(cmd_line):
