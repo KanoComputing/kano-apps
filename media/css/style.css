@@ -110,6 +110,10 @@ GtkLabel {
     color: #999999;
 }
 
+.app_link {
+    color: @orange;
+}
+
 .appgrid_grey {
     background: #eeeeee;
 }

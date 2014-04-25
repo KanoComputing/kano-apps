@@ -18,7 +18,7 @@ class MainWindow(Gtk.Window):
         Gtk.Window.__init__(self, title='Kano Extras')
 
         screen = Gdk.Screen.get_default()
-        self._win_width = 750
+        self._win_width = 850
         self._win_height = 595#int(screen.get_height() * 0.5)
 
         self.set_decorated(False)

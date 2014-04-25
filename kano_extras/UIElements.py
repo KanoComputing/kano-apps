@@ -71,14 +71,14 @@ class AppGridEntry(Gtk.EventBox):
     def __init__(self, label, desc, icon_loc):
         Gtk.EventBox.__init__(self)
 
-        entry = Gtk.Grid()
+        self._entry = entry = Gtk.Grid()
         entry.set_row_spacing(0)
 
-        icon = Media.get_app_icon(icon_loc)
+        self._icon = icon = Media.get_app_icon(icon_loc)
         icon.props.margin = 15
-        entry.attach(icon, 0, 0, 1, 2)
+        entry.attach(icon, 0, 0, 1, 3)
 
-        app_name = Gtk.Label(label, halign=Gtk.Align.START,
+        self._app_name = app_name = Gtk.Label(label, halign=Gtk.Align.START,
                                     valign=Gtk.Align.CENTER,
                                     hexpand=True)
         app_name.get_style_context().add_class('app_name')
@@ -87,7 +87,7 @@ class AppGridEntry(Gtk.EventBox):
 
         entry.attach(app_name, 1, 0, 1, 1)
 
-        app_desc = Gtk.Label(desc,
+        self._app_desc = app_desc = Gtk.Label(desc,
                              halign=Gtk.Align.START,
                              valign=Gtk.Align.START,
                              hexpand=True)
@@ -126,12 +126,44 @@ class SystemApp(AppGridEntry):
 
         os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
 
+
 class UserApp(SystemApp):
-    def __init__(self, label, desc, icon_loc, cmd):
+    def __init__(self, label, desc, icon_loc, cmd, icon_source, window):
         SystemApp.__init__(self, label, desc, icon_loc, cmd)
 
-        # TODO: Add remove button
+        self._icon_source = icon_source
+        self._window = window
 
+        self._app_name.props.margin_top = 14
+        self._app_desc.props.margin_bottom = 0
+
+        # TODO: Add remove button
+        self._remove = remove = Gtk.Label("Remove",
+                           halign=Gtk.Align.START,
+                           valign=Gtk.Align.START,
+                           hexpand=True)
+        remove.get_style_context().add_class('app_link')
+        remove.modify_font(Pango.FontDescription('Bariol bold 12'))
+        remove.props.margin_bottom = 14
+
+        ebox = Gtk.EventBox()
+        ebox.add(remove)
+
+        self._entry.attach(ebox, 1, 2, 1, 1)
+
+        ebox.connect("button-release-event", self._remove_mouse_click)
+        ebox.connect("enter-notify-event", self._mouse_enter)
+        ebox.connect("leave-notify-event", self._mouse_leave)
+
+    def _remove_mouse_click(self, widget, event):
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        self.get_root_window().set_cursor(cursor)
+        Gdk.flush()
+
+        os.unlink(self._icon_source)
+        app_grid = AppGrid(get_applications(), self._window)
+        self._window.get_main_area().set_contents(app_grid)
+        return True
 
 class AddButton(AppGridEntry):
     def __init__(self, window):
@@ -188,8 +220,14 @@ class AppGrid(Gtk.Grid):
         self._entries = []
 
         for app in apps:
-            entry = SystemApp(app['Name'], app['Comment[en_GB]'],
-                              app['Icon'], app['Exec'])
+            entry = None
+            if 'icon_source' in app:
+                entry = UserApp(app['Name'], app['Comment[en_GB]'],
+                                app['Icon'], app['Exec'], app['icon_source'],
+                                main_win)
+            else:
+                entry = SystemApp(app['Name'], app['Comment[en_GB]'],
+                                  app['Icon'], app['Exec'])
             self.add_entry(entry)
 
         button = AddButton(main_win)
