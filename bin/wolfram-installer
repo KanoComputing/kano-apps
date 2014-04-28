@@ -14,29 +14,36 @@ if [ `id -u` -ne 0 ]; then
     exit 1
 fi
 
-# We need at least 850MB of free space
-FreeSpace=`df -P | grep -v "Available" | awk '{print $4}' | head -n1`
-if [ $FreeSpace -le 850000 ]; then
-    typewriter_echo "You don't have enough available space, ~850MB required." 0 1
-    typewriter_echo "Please run Updater in Extras." 0 2
-    echo -n "Press [ENTER] to exit"
-    read dummy
-    exit 1
-fi
 
-# Check if wolfram-engine is already installed
-dpkg -s wolfram-engine > /dev/null 2> /dev/null
-if [ $? -eq 1 ]; then
-    # Install wolfram
-    sudo apt-get install wolfram-engine
-    if [ $? -eq 0 ]; then
-        # Installed successfully
-        clear
-        typewriter_echo "Congratulations, Wolfram has been installed successfully." 0 1
-        typewriter_echo "Go to Extras and click on Wolfram or Mathematika to use it." 0 2
+if [ "$1" == "uninstall" ]; then
+    if [ -z "`dpkg -l wolfram-engine`" ]; then
+        apt-get purge wolfram-engine
     fi
 else
-    typewriter_echo "Wolfram is already installed in your Kanux system" 0 2
+    # We need at least 850MB of free space
+    FreeSpace=`df -P | grep -v "Available" | awk '{print $4}' | head -n1`
+    if [ $FreeSpace -le 850000 ]; then
+        typewriter_echo "You don't have enough available space, ~850MB required." 0 1
+        typewriter_echo "Please run Updater in Extras." 0 2
+        echo -n "Press [ENTER] to exit"
+        read dummy
+        exit 1
+    fi
+
+    # Check if wolfram-engine is already installed
+    dpkg -s wolfram-engine > /dev/null 2> /dev/null
+    if [ $? -eq 1 ]; then
+        # Install wolfram
+        sudo apt-get install wolfram-engine
+        if [ $? -eq 0 ]; then
+            # Installed successfully
+            clear
+            typewriter_echo "Congratulations, Wolfram has been installed successfully." 0 1
+            typewriter_echo "Go to Extras and click on Wolfram or Mathematika to use it." 0 2
+        fi
+    else
+        typewriter_echo "Wolfram is already installed in your Kanux system" 0 2
+    fi
 fi
 
 echo -n "Press [ENTER] to continue"

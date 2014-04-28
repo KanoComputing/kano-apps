@@ -14,30 +14,37 @@ if [ `id -u` -ne 0 ]; then
     exit 1
 fi
 
-# We need at least 350MB of free space
-FreeSpace=`df -P | grep -v "Available" | awk '{print $4}' | head -n1`
-if [ $FreeSpace -le 350000 ]; then
-    typewriter_echo "You don't have enough available space, ~350MB required." 0 1
-    typewriter_echo "Please run Updater in Extras." 0 2
-    echo -n "Press [ENTER] to exit"
-    read dummy
-    exit 1
-fi
-
-# Check if libreoffice is already installed
-dpkg -s libreoffice > /dev/null 2> /dev/null
-if [ $? -eq 1 ]; then
-    # Install libreoffice
-    sudo apt-get install -y --no-install-recommends libreoffice
-    if [ $? -eq 0 ]; then
-        # Installed successfully
-        clear
-        typewriter_echo "Congratulations, LibreOffice has been installed successfully." 0 1
-        typewriter_echo "Go to Extras and click on LibreOffice to use it." 0 2
+if [ "$1" == "uninstall" ]; then
+    if [ -z "`dpkg -l libreoffice*`" ]; then
+        apt-get purge libreoffice*
     fi
 else
-    typewriter_echo "LibreOffice is already installed in your Kanux system" 0 2
+    # We need at least 350MB of free space
+    FreeSpace=`df -P | grep -v "Available" | awk '{print $4}' | head -n1`
+    if [ $FreeSpace -le 350000 ]; then
+        typewriter_echo "You don't have enough available space, ~350MB required." 0 1
+        typewriter_echo "Please run Updater in Extras." 0 2
+        echo -n "Press [ENTER] to exit"
+        read dummy
+        exit 1
+    fi
+
+    # Check if libreoffice is already installed
+    dpkg -s libreoffice > /dev/null 2> /dev/null
+    if [ $? -eq 1 ]; then
+        # Install libreoffice
+        sudo apt-get install -y --no-install-recommends libreoffice
+        if [ $? -eq 0 ]; then
+            # Installed successfully
+            clear
+            typewriter_echo "Congratulations, LibreOffice has been installed successfully." 0 1
+            typewriter_echo "Go to Extras and click on LibreOffice to use it." 0 2
+        fi
+    else
+        typewriter_echo "LibreOffice is already installed in your Kanux system" 0 2
+    fi
 fi
+
 
 echo -n "Press [ENTER] to continue"
 read dummy
