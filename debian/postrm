@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# postrm
+#
+# Copyright (C) 2013 Kano Computing Ltd.
+# License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+case "$1" in
+    remove|upgrade)
+        # Remove Wolfram config file in sudoers
+        rm /etc/sudoers.d/wolfram-installer_conf
+
+        # Remove LibreOffice config file in sudoers
+        rm /etc/sudoers.d/libreoffice-installer_conf
+
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
