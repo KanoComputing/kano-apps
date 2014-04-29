@@ -168,7 +168,10 @@ class UninstallableApp(SystemApp):
     def __init__(self, label, desc, icon_loc, cmd, uninstall_cmd, window):
         SystemApp.__init__(self, label, desc, icon_loc, cmd)
 
+        # Deal with the params placeholder
+        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall && kano-extras', uninstall_cmd)
         self._uninstall_cmd = parse_command(uninstall_cmd)
+
         self._window = window
 
         self._app_name.props.margin_top = 14

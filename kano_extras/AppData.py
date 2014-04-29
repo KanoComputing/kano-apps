@@ -65,7 +65,6 @@ def get_applications():
             else:
                 icons.append(installer)
 
-    print icons
     return sorted(icons, key=lambda d: d['Name'].lower())
 
 def parse_command(cmd_line):

@@ -16,8 +16,8 @@ fi
 
 
 if [ "$1" == "uninstall" ]; then
-    if [ -z "`dpkg -l wolfram-engine`" ]; then
-        apt-get purge wolfram-engine
+    if [ -z "`dpkg -l 'wolfram-engine'`" ]; then
+        apt-get purge 'wolfram-engine'
     fi
 else
     # We need at least 850MB of free space
@@ -48,4 +48,3 @@ fi
 
 echo -n "Press [ENTER] to continue"
 read dummy
-exec kano-extras
