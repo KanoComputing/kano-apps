@@ -41,5 +41,5 @@ fi
 echo -n "Press [ENTER] to continue"
 read dummy
 
-nohup kano-extras & >/dev/null
+nohup kano-extras 2>/dev/null >/dev/null & >/dev/null
 sleep 5
