@@ -61,14 +61,14 @@ def get_applications():
             if try_exec(installer['TryExec']):
                 for icon in icons:
                     if 'TryExec' in icon and icon['TryExec'] == installer['TryExec']:
-                        icon['Uninstall'] = installer['Exec'] + ' uninstall'
+                        icon['Uninstall'] = installer['Exec']
             else:
                 icons.append(installer)
 
     return sorted(icons, key=lambda d: d['Name'].lower())
 
 def parse_command(cmd_line):
-    cmd_line = re.sub(r'\%[fFuU]', '', cmd_line)
+    cmd_line = re.sub(r'\%[fFuUpP]', '', cmd_line)
 
     split = cmd_line.split(' ')
     cmd = split[0]
