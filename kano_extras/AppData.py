@@ -28,7 +28,7 @@ def try_exec(app):
     return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
 # types can be on of 'app', 'installer'
-def _load_dentries_from_dir(loc, dentry_type='app', removable=False):
+def _load_dentries_from_dir(loc, removable=False):
     dentries = []
     loc = os.path.expanduser(loc)
     if os.path.exists(loc):
@@ -38,30 +38,35 @@ def _load_dentries_from_dir(loc, dentry_type='app', removable=False):
                 continue
 
             dentry_data = _parse_dentry(dentry_path)
-
-            if dentry_type == 'installer':
-                if 'TryExec' in dentry_data and not try_exec(dentry_data['TryExec']):
-                    dentries.append(dentry_data)
-            else:
-                if 'TryExec' in dentry_data:
-                    if try_exec(dentry_data['TryExec']):
-                        dentries.append(dentry_data)
-                else:
-                    dentries.append(dentry_data)
-
             if removable:
                 dentry_data['icon_source'] = dentry_path
+            dentries.append(dentry_data)
 
     return dentries
 
 def get_applications():
+    system_icons = _load_dentries_from_dir(_SYSTEM_ICONS_LOC)
+    user_icons = _load_dentries_from_dir(_USER_ICONS_LOC, True)
+    installers = _load_dentries_from_dir(_INSTALLERS_LOC)
 
-    system_icons = _load_dentries_from_dir(_SYSTEM_ICONS_LOC, 'app')
-    user_icons = _load_dentries_from_dir(_USER_ICONS_LOC, 'app', True)
-    installers = _load_dentries_from_dir(_INSTALLERS_LOC, 'installer')
+    icons = []
+    for app in system_icons + user_icons:
+        if 'TryExec' in app:
+            if not try_exec(app['TryExec']):
+                continue
+        icons.append(app)
 
-    dentries = system_icons + user_icons + installers
-    return sorted(dentries, key=lambda d: d['Name'].lower())
+    for installer in installers:
+        if 'TryExec' in installer:
+            if try_exec(installer['TryExec']):
+                for icon in icons:
+                    if 'TryExec' in icon and icon['TryExec'] == installer['TryExec']:
+                        icon['Uninstall'] = installer['Exec'] + ' uninstall'
+            else:
+                icons.append(installer)
+
+    print icons
+    return sorted(icons, key=lambda d: d['Name'].lower())
 
 def parse_command(cmd_line):
     cmd_line = re.sub(r'\%[fFuU]', '', cmd_line)
