@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Kano Book 1
+Name[en_GB]=Kano Book 1
+Icon=/usr/share/kano-extras/icons/book1.png
+TryExec=epdfview
+Exec=epdfview books/Book\ 1\ -\ Make\ a\ Computer.pdf
+Comment[en_GB]=Book 1: Make a computer
+StartupNotify=true
+Categories=Office;
+Terminal=false
