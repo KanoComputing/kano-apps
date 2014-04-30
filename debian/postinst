@@ -24,6 +24,9 @@ TMP_LIBREOFFICE_FILE=/tmp/libreoffice-installer_conf
         chown root:root $TMP_LIBREOFFICE_FILE
         chmod 0440 $TMP_LIBREOFFICE_FILE
         mv $TMP_LIBREOFFICE_FILE /etc/sudoers.d/
+
+        # Create symbolic link in /etc/skel
+        ln -s /usr/share/kano-extras/books /etc/skel/books
     ;;
 
 esac

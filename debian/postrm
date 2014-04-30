@@ -2,7 +2,7 @@
 
 # postrm
 #
-# Copyright (C) 2013 Kano Computing Ltd.
+# Copyright (C) 2014 Kano Computing Ltd.
 # License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
@@ -13,6 +13,9 @@ case "$1" in
 
         # Remove LibreOffice config file in sudoers
         rm /etc/sudoers.d/libreoffice-installer_conf
+
+        # Removing symbolic link
+        rm -f /etc/skel/books
 
     ;;
 esac
