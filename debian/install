@@ -6,6 +6,7 @@ installers usr/share/kano-extras/
 icons usr/share/kano-extras/
 books usr/share/kano-extras/
 
+kdesktop/kano-extras.desktop /usr/share/applications/
 icon/Extras.lnk usr/share/kano-desktop/kdesk/kdesktop/
 icon/extras.png usr/share/kano-desktop/icons/
 icon/extras-hover.png usr/share/kano-desktop/icons/
