@@ -291,7 +291,7 @@ class AddDialog(Gtk.Box):
                          halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
                          orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
-        self._icon_file = 'exec'
+        self._icon_path = 'exec'
         self._window = main_win
 
         self._init_header()
