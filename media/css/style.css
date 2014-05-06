@@ -81,6 +81,12 @@ GtkLabel {
     border-radius: 3px;
 }
 
+.add_button:insensitive {
+    background-color: #cdcdcd;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
 .cancel_button {
     background-color: #F37677;
     font: Bariol Bold 16;

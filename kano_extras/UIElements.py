@@ -332,18 +332,21 @@ class AddDialog(Gtk.Box):
         name.props.placeholder_text = "Application's name"
         name.set_size_request(280, 44)
         self._name = name
+        name.connect('changed', self._entry_changed)
         form.attach(name, 1, 0, 1, 1)
 
         desc = Gtk.Entry()
         desc.props.placeholder_text = "Description"
         desc.set_size_request(280, 44)
         self._desc = desc
+        desc.connect('changed', self._entry_changed)
         form.attach(desc, 1, 1, 1, 1)
 
         cmd = Gtk.Entry()
         cmd.props.placeholder_text = "Command"
         cmd.set_size_request(280, 44)
         self._cmd = cmd
+        cmd.connect('changed', self._entry_changed)
         form.attach(cmd, 1, 2, 1, 1)
 
         self.pack_start(form, False, False, 40)
@@ -361,7 +364,7 @@ class AddDialog(Gtk.Box):
         cancel.connect('enter-notify-event', self._button_mouse_enter)
         cancel.connect('leave-notify-event', self._button_mouse_leave)
 
-        add = Gtk.Button('ADD APPLICATION')
+        self._add = add = Gtk.Button('ADD APPLICATION')
         add.set_size_request(174, 44)
         add_style = add.get_style_context()
         add_style.add_class('add_button')
@@ -369,6 +372,7 @@ class AddDialog(Gtk.Box):
         add.connect('clicked', self._add_click)
         add.connect('enter-notify-event', self._button_mouse_enter)
         add.connect('leave-notify-event', self._button_mouse_leave)
+        add.set_sensitive(False)
 
         container.pack_start(cancel, False, False, 0)
         container.pack_start(add, False, False, 0)
@@ -460,3 +464,13 @@ class AddDialog(Gtk.Box):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
+
+    def _entry_changed(self, entry, data=None):
+        self._add.set_sensitive(self._check_form())
+        return True
+
+    def _check_form(self):
+        name = self._name.get_text()
+        desc = self._desc.get_text()
+        cmd = self._cmd.get_text()
+        return len(name) > 0 and len(desc) > 0 and len(cmd) > 0
