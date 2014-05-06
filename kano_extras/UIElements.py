@@ -338,6 +338,7 @@ class AddDialog(Gtk.Box):
         desc = Gtk.Entry()
         desc.props.placeholder_text = "Description"
         desc.set_size_request(280, 44)
+        desc.set_max_length(25)
         self._desc = desc
         desc.connect('changed', self._entry_changed)
         form.attach(desc, 1, 1, 1, 1)
