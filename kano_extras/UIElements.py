@@ -115,6 +115,20 @@ class AppGridEntry(Gtk.EventBox):
     def _mouse_click(self, ebox, event):
         pass
 
+    def _launch_app(self, cmd, args):
+        try:
+            os.execvp(cmd, [cmd] + args)
+        except:
+            pass
+
+        # The execvp should not return, so if we reach this point,
+        # there was an error.
+        message = Gtk.MessageDialog(type=Gtk.MessageType.ERROR,
+                                    buttons=Gtk.ButtonsType.OK)
+        message.set_markup("Unable to start the application.")
+        message.run()
+        message.destroy()
+
 class SystemApp(AppGridEntry):
     def __init__(self, label, desc, icon_loc, cmd):
         self._cmd = parse_command(cmd)
@@ -125,7 +139,7 @@ class SystemApp(AppGridEntry):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
+        self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
 class UserApp(SystemApp):
     def __init__(self, label, desc, icon_loc, cmd, icon_source, window):
@@ -199,8 +213,7 @@ class UninstallableApp(SystemApp):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        os.execvp(self._uninstall_cmd['cmd'],
-                  [self._uninstall_cmd['cmd']] + self._uninstall_cmd['args'])
+        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
 
 class AddButton(AppGridEntry):
     def __init__(self, window):
