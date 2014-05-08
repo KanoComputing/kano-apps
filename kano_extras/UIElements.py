@@ -344,6 +344,7 @@ class AddDialog(Gtk.Box):
         name = Gtk.Entry()
         name.props.placeholder_text = "Application's name"
         name.set_size_request(280, 44)
+        name.set_max_length(25)
         self._name = name
         name.connect('changed', self._entry_changed)
         form.attach(name, 1, 0, 1, 1)
