@@ -1,4 +1,4 @@
-# kano-extras
+# Media.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -8,7 +8,7 @@
 import os
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
-MEDIA_LOCS = ['../media', '/usr/share/kano-extras/media']
+MEDIA_LOCS = ['../media', '/usr/share/kano-apps/media']
 APP_ICON_SIZE = 68
 
 

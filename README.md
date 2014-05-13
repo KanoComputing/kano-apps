@@ -1,4 +1,4 @@
-kano-extras
+kano-apps
 ===========
 
-Launcher for different utilities 
+Launcher for different utilities

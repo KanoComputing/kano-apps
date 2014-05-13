@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=LibreOffice
-Icon=/usr/share/kano-extras/icons/libreoffice.png
+Icon=/usr/share/kano-apps/icons/libreoffice.png
 TryExec=libreoffice
 Exec=libreoffice %U
 Comment[en_GB]=The office productivity suite.

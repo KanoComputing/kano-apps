@@ -1,4 +1,4 @@
-# kano-extras
+# UIElements.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -9,9 +9,9 @@ import os
 import re
 from gi.repository import Gtk, Gdk, Pango, GdkPixbuf
 
-from kano_extras import Media
-from kano_extras.AppData import parse_command, get_applications
-from kano_extras.Media import media_dir, get_app_icon
+from kano_apps import Media
+from kano_apps.AppData import parse_command, get_applications
+from kano_apps.Media import media_dir, get_app_icon
 
 class TopBar(Gtk.EventBox):
     _TOP_BAR_HEIGHT = 44
@@ -23,7 +23,7 @@ class TopBar(Gtk.EventBox):
         box = Gtk.Box()
         box.set_size_request(-1, self._TOP_BAR_HEIGHT)
 
-        self._header = Gtk.Label('Extras', halign=Gtk.Align.CENTER,
+        self._header = Gtk.Label('Apps', halign=Gtk.Align.CENTER,
                                            valign=Gtk.Align.CENTER,
                                            hexpand=True)
         box.pack_start(self._header, True, True, 0)
@@ -115,20 +115,6 @@ class AppGridEntry(Gtk.EventBox):
     def _mouse_click(self, ebox, event):
         pass
 
-    def _launch_app(self, cmd, args):
-        try:
-            os.execvp(cmd, [cmd] + args)
-        except:
-            pass
-
-        # The execvp should not return, so if we reach this point,
-        # there was an error.
-        message = Gtk.MessageDialog(type=Gtk.MessageType.ERROR,
-                                    buttons=Gtk.ButtonsType.OK)
-        message.set_markup("Unable to start the application.")
-        message.run()
-        message.destroy()
-
 class SystemApp(AppGridEntry):
     def __init__(self, label, desc, icon_loc, cmd):
         self._cmd = parse_command(cmd)
@@ -139,7 +125,7 @@ class SystemApp(AppGridEntry):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        self._launch_app(self._cmd['cmd'], self._cmd['args'])
+        os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
 
 class UserApp(SystemApp):
     def __init__(self, label, desc, icon_loc, cmd, icon_source, window):
@@ -213,7 +199,8 @@ class UninstallableApp(SystemApp):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
+        os.execvp(self._uninstall_cmd['cmd'],
+                  [self._uninstall_cmd['cmd']] + self._uninstall_cmd['args'])
 
 class AddButton(AppGridEntry):
     def __init__(self, window):
@@ -304,7 +291,7 @@ class AddDialog(Gtk.Box):
                          halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
                          orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
-        self._icon_path = 'exec'
+        self._icon_file = 'exec'
         self._window = main_win
 
         self._init_header()
@@ -313,7 +300,7 @@ class AddDialog(Gtk.Box):
 
     def _init_header(self):
         title = Gtk.Label('Add application')
-        description = Gtk.Label('Add your own application to Extras')
+        description = Gtk.Label('Add your own application to Apps')
 
         title_style = title.get_style_context()
         title_style.add_class('title')
@@ -344,24 +331,19 @@ class AddDialog(Gtk.Box):
         name = Gtk.Entry()
         name.props.placeholder_text = "Application's name"
         name.set_size_request(280, 44)
-        name.set_max_length(25)
         self._name = name
-        name.connect('changed', self._entry_changed)
         form.attach(name, 1, 0, 1, 1)
 
         desc = Gtk.Entry()
         desc.props.placeholder_text = "Description"
         desc.set_size_request(280, 44)
-        desc.set_max_length(25)
         self._desc = desc
-        desc.connect('changed', self._entry_changed)
         form.attach(desc, 1, 1, 1, 1)
 
         cmd = Gtk.Entry()
         cmd.props.placeholder_text = "Command"
         cmd.set_size_request(280, 44)
         self._cmd = cmd
-        cmd.connect('changed', self._entry_changed)
         form.attach(cmd, 1, 2, 1, 1)
 
         self.pack_start(form, False, False, 40)
@@ -379,7 +361,7 @@ class AddDialog(Gtk.Box):
         cancel.connect('enter-notify-event', self._button_mouse_enter)
         cancel.connect('leave-notify-event', self._button_mouse_leave)
 
-        self._add = add = Gtk.Button('ADD APPLICATION')
+        add = Gtk.Button('ADD APPLICATION')
         add.set_size_request(174, 44)
         add_style = add.get_style_context()
         add_style.add_class('add_button')
@@ -387,7 +369,6 @@ class AddDialog(Gtk.Box):
         add.connect('clicked', self._add_click)
         add.connect('enter-notify-event', self._button_mouse_enter)
         add.connect('leave-notify-event', self._button_mouse_leave)
-        add.set_sensitive(False)
 
         container.pack_start(cancel, False, False, 0)
         container.pack_start(add, False, False, 0)
@@ -416,12 +397,12 @@ class AddDialog(Gtk.Box):
         dentry += 'Exec={}\n'.format(cmd)
         dentry += 'Comment[en_GB]={}'.format(desc)
 
-        extras_dir = os.path.expanduser('~/.extras/')
-        if not os.path.exists(extras_dir):
-            os.makedirs(extras_dir)
+        apps_dir = os.path.expanduser('~/.apps/')
+        if not os.path.exists(apps_dir):
+            os.makedirs(apps_dir)
 
         file_name = re.sub(' ', '-', name)
-        f = open(extras_dir + name, 'w')
+        f = open(apps_dir + name, 'w')
         f.write(dentry)
         f.close()
 
@@ -479,13 +460,3 @@ class AddDialog(Gtk.Box):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
-
-    def _entry_changed(self, entry, data=None):
-        self._add.set_sensitive(self._check_form())
-        return True
-
-    def _check_form(self):
-        name = self._name.get_text()
-        desc = self._desc.get_text()
-        cmd = self._cmd.get_text()
-        return len(name) > 0 and len(desc) > 0 and len(cmd) > 0

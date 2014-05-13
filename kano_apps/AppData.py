@@ -1,4 +1,4 @@
-# kano-extras
+# AppData.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -8,9 +8,9 @@
 import os
 import re
 
-_SYSTEM_ICONS_LOC = '/usr/share/kano-extras/extras'
-_USER_ICONS_LOC = '~/.extras'
-_INSTALLERS_LOC = '/usr/share/kano-extras/installers'
+_SYSTEM_ICONS_LOC = '/usr/share/kano-apps/apps'
+_USER_ICONS_LOC = '~/.apps'
+_INSTALLERS_LOC = '/usr/share/kano-apps/installers'
 
 def try_exec(app):
     path = None

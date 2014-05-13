@@ -1,12 +1,12 @@
 bin/* usr/bin/
-kano_extras usr/lib/python2.7/dist-packages/
-media usr/share/kano-extras/
-extras usr/share/kano-extras/
-installers usr/share/kano-extras/
-icons usr/share/kano-extras/
-books usr/share/kano-extras/
+kano_apps usr/lib/python2.7/dist-packages/
+media usr/share/kano-apps/
+apps usr/share/kano-apps/
+installers usr/share/kano-apps/
+icons usr/share/kano-apps/
+books usr/share/kano-apps/
 
-kdesktop/kano-extras.desktop /usr/share/applications/
-icon/Extras.lnk usr/share/kano-desktop/kdesk/kdesktop/
-icon/extras.png usr/share/kano-desktop/icons/
-icon/extras-hover.png usr/share/kano-desktop/icons/
+kdesktop/kano-apps.desktop /usr/share/applications/
+icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
+icon/apps.png usr/share/kano-desktop/icons/
+icon/apps-hover.png usr/share/kano-desktop/icons/

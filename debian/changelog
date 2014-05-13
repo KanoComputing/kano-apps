@@ -1,10 +1,16 @@
-kano-extras (1.0-2) unstable; urgency=low
+kano-apps (1.0-3) unstable; urgency=low
+
+  * Renamed package from Extras to Apps
+
+ -- Team Kano <dev@kano.me>  Tue, 8 Apr 2014 15:18:11 +0000
+
+kano-apps (1.0-2) unstable; urgency=low
 
   * Adding the extras directory from kano-desktop
 
  -- Team Kano <dev@kano.me>  Tue, 8 Apr 2014 15:18:11 +0000
 
-kano-extras (1.0-1) unstable; urgency=low
+kano-apps (1.0-1) unstable; urgency=low
 
   * Initial packaging
 

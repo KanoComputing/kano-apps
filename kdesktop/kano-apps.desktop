@@ -2,10 +2,10 @@
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Exec=/usr/bin/kano-extras
-Icon=/usr/share/kano-desktop/icons/extras.png
+Exec=/usr/bin/kano-apps
+Icon=/usr/share/kano-desktop/icons/apps.png
 Terminal=false
-Name=Kano Extras
+Name=Kano Apps
 Comment= Launch all your favourite Kano applications
 Categories=Application;Utility;Kano;
-MimeType=application/x-kano-extras
+MimeType=application/x-kano-apps

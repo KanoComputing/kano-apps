@@ -15,7 +15,7 @@ else
     FreeSpace=`df -P | grep -v "Available" | awk '{print $4}' | head -n1`
     if [ $FreeSpace -le 850000 ]; then
         typewriter_echo "You don't have enough available space, ~850MB required." 0 1
-        typewriter_echo "Please run Updater in Extras." 0 2
+        typewriter_echo "Please run Updater in Apps." 0 2
         echo -n "Press [ENTER] to exit"
         read dummy
     else
@@ -28,7 +28,7 @@ else
                 # Installed successfully
                 clear
                 typewriter_echo "Congratulations, Wolfram has been installed successfully." 0 1
-                typewriter_echo "Go to Extras and click on Wolfram or Mathematika to use it." 0 2
+                typewriter_echo "Go to Apps and click on Wolfram or Mathematika to use it." 0 2
             fi
         else
             typewriter_echo "Wolfram is already installed in your Kanux system" 0 2
@@ -40,5 +40,5 @@ fi
 echo -n "Press [ENTER] to continue"
 read dummy
 
-nohup kano-extras 2>/dev/null >/dev/null & >/dev/null
+nohup kano-apps 2>/dev/null >/dev/null & >/dev/null
 sleep 5
