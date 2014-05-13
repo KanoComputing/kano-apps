@@ -99,7 +99,7 @@ GtkLabel {
 
 /* The bar at the top that mimics the window bar */
 .top_bar_container {
-    background: #eeeeee;
+    background: #e1e1e1;
 }
 
 /* Header in top bar (title of window) */
