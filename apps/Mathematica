@@ -7,4 +7,4 @@ TryExec=/opt/Wolfram/WolframEngine/10.0/Executables/mathematica
 Exec=/opt/Wolfram/WolframEngine/10.0/Executables/mathematica %F
 Comment[en_GB]=Technical Computing System
 StartupNotify=true
-Categories=Application;Education;
+Categories=Application;Education;Tools;

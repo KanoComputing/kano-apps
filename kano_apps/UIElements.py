@@ -102,6 +102,21 @@ class AppGridEntry(Gtk.EventBox):
         self.connect("leave-notify-event", self._mouse_leave)
         self.connect("button-release-event", self._mouse_click)
 
+    def _launch_app(self, cmd, args):
+        try:
+            os.execvp(cmd, [cmd] + args)
+        except:
+            pass
+
+        # The execvp should not return, so if we reach this point,
+        # there was an error.
+        message = Gtk.MessageDialog(type=Gtk.MessageType.ERROR,
+                                    buttons=Gtk.ButtonsType.OK)
+        message.set_markup("Unable to start the application.")
+        message.run()
+        message.destroy()
+
+
     def _mouse_enter(self, ebox, event):
         # Change the cursor to hour Glass
         cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
@@ -125,7 +140,7 @@ class SystemApp(AppGridEntry):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        os.execvp(self._cmd['cmd'], [self._cmd['cmd']] + self._cmd['args'])
+        self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
 class UserApp(SystemApp):
     def __init__(self, label, desc, icon_loc, cmd, icon_source, window):
@@ -199,8 +214,7 @@ class UninstallableApp(SystemApp):
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        os.execvp(self._uninstall_cmd['cmd'],
-                  [self._uninstall_cmd['cmd']] + self._uninstall_cmd['args'])
+        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
 
 class AddButton(AppGridEntry):
     def __init__(self, window):
@@ -219,30 +233,26 @@ class AddButton(AppGridEntry):
         self._window.get_main_area().set_contents(dialog)
 
 
-class Contents(Gtk.ScrolledWindow):
+class Contents(Gtk.EventBox):
     def __init__(self, win):
-        Gtk.ScrolledWindow.__init__(self, hexpand=True, vexpand=True)
-        self.props.margin_top = 20
-        self.props.margin_bottom = 20
-        self.props.margin_left = 20
-        self.props.margin_right = 12
+        Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
+
+        style = self.get_style_context()
+        style.add_class('contents')
 
         self._current = None
-        self._box = Gtk.Box(hexpand=True, vexpand=True)
-        self.add_with_viewport(self._box)
-
         self._win = win
 
     def get_window(self):
         return self._win
 
     def set_contents(self, obj):
-        for w in self._box.get_children():
-            self._box.remove(w)
+        for w in self.get_children():
+            self.remove(w)
 
-        obj.props.margin_right = 10
-        Gtk.Container.add(self._box, obj)
-        self._show_all(obj)
+        self.add(obj)
+        #self._show_all(obj)
+        obj.show_all()
 
     def _show_all(self, w):
         w.show()
@@ -250,9 +260,57 @@ class Contents(Gtk.ScrolledWindow):
             for c in w:
                 self._show_all(c)
 
-class AppGrid(Gtk.Grid):
+class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
-        Gtk.Grid.__init__(self)
+        Gtk.Notebook.__init__(self)
+
+        # split apps to 3 arrays
+        tools_apps = []
+        extras_apps = []
+        user_apps = []
+        for app in apps:
+            if "Categories" in app:
+                cats = app["Categories"].split(";")
+                if "Tools" in cats:
+                    tools_apps.append(app)
+                if "Extras" in cats:
+                    extras_apps.append(app)
+                if "User" in cats:
+                    user_apps.append(app)
+
+        tools = AppGrid(tools_apps, main_win)
+        extras = AppGrid(extras_apps, main_win)
+
+        user = AppGrid(user_apps, main_win)
+        user.add_entry(AddButton(main_win))
+
+        tools_label = Gtk.Label("TOOLS")
+        tools_label.modify_font(Pango.FontDescription('Bariol bold'))
+        self.append_page(tools, tools_label)
+
+        extras_label = Gtk.Label("EXTRAS")
+        extras_label.modify_font(Pango.FontDescription('Bariol bold'))
+        self.append_page(extras, extras_label)
+
+        user_label = Gtk.Label("USER")
+        user_label.modify_font(Pango.FontDescription('Bariol bold'))
+        self.append_page(user, user_label)
+
+class AppGrid(Gtk.EventBox):
+    def __init__(self, apps, main_win):
+        Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
+
+        self._sw = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+
+        style = self.get_style_context()
+        style.add_class('app-grid')
+
+        self._sw.props.margin_top = 20
+        self._sw.props.margin_bottom = 20
+        self._sw.props.margin_left = 20
+        self._sw.props.margin_right = 12
+
+        self._grid = Gtk.Grid()
         self._number_of_entries = 0
         self._entries = []
 
@@ -271,8 +329,8 @@ class AppGrid(Gtk.Grid):
                                   app['Icon'], app['Exec'])
             self.add_entry(entry)
 
-        button = AddButton(main_win)
-        self.add_entry(button)
+        self._sw.add_with_viewport(self._grid)
+        self.add(self._sw)
 
     def add_entry(self, entry):
         if (self._number_of_entries / 2) % 2:
@@ -280,10 +338,11 @@ class AppGrid(Gtk.Grid):
 
         xpos = self._number_of_entries % 2
         ypos = self._number_of_entries / 2
-        self.attach(entry, xpos, ypos, 1, 1)
+        self._grid.attach(entry, xpos, ypos, 1, 1)
 
         self._number_of_entries += 1
         self._entries.append(entry)
+
 
 class AddDialog(Gtk.Box):
     def __init__(self, main_win):
@@ -377,8 +436,10 @@ class AddDialog(Gtk.Box):
 
     def _cancel_click(self, event):
         self._reset_cursor()
-        app_grid = AppGrid(get_applications(), self._window)
-        self._window.get_main_area().set_contents(app_grid)
+
+        apps = Apps(get_applications(), self._window)
+        self._window.get_main_area().set_contents(apps)
+        apps.set_current_page(-1)
 
     def _add_click(self, event):
         self._reset_cursor()
@@ -395,6 +456,7 @@ class AddDialog(Gtk.Box):
         dentry += 'Name[en_GB]={}\n'.format(name)
         dentry += 'Icon={}\n'.format(icon_path)
         dentry += 'Exec={}\n'.format(cmd)
+        dentry += 'Categories=User;\n'
         dentry += 'Comment[en_GB]={}'.format(desc)
 
         apps_dir = os.path.expanduser('~/.apps/')
@@ -406,8 +468,9 @@ class AddDialog(Gtk.Box):
         f.write(dentry)
         f.close()
 
-        app_grid = AppGrid(get_applications(), self._window)
-        self._window.get_main_area().set_contents(app_grid)
+        apps = Apps(get_applications(), self._window)
+        self._window.get_main_area().set_contents(apps)
+        apps.set_current_page(-1)
 
     def _icon_click(self, ebox, event):
         self._reset_cursor()

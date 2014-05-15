@@ -7,4 +7,5 @@ Icon=/usr/share/kano-apps/icons/terminal.png
 TryExec=lxterminal
 Exec=lxterminal
 Comment[en_GB]=Graphics Terminal frontend
+Categories=Tools;
 StartupNotify=true

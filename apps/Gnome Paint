@@ -8,4 +8,4 @@ TryExec=gnome-paint
 Exec=gnome-paint %U
 Comment[en_GB]=Create and Edit Drawings or Images
 StartupNotify=true
-Categories=GNOME;GTK;Graphics;RasterGraphics;
+Categories=GNOME;GTK;Graphics;RasterGraphics;Tools;

@@ -8,5 +8,5 @@ TryExec=epdfview
 Exec=epdfview %f
 Comment[en_GB]=Lightweight PDF document viewer
 StartupNotify=true
-Categories=Office;
+Categories=Office;Tools;
 Terminal=false

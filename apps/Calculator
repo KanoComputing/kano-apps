@@ -8,5 +8,5 @@ TryExec=galculator
 Exec=galculator
 Comment[en_GB]=Perform simple and scientific calculations
 StartupNotify=true
-Categories=Utility;
+Categories=Utility;Tools;
 Terminal=false

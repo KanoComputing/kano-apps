@@ -8,4 +8,4 @@ TryExec=chromium
 Exec=chromium --app=http://www.codecademy.com/
 Comment[en_GB]=Codecamy shortcut
 StartupNotify=true
-Categories=Application;Education;
+Categories=Application;Education;Tools;

@@ -8,5 +8,5 @@ TryExec=epdfview
 Exec=epdfview "books/Book 1 - Make a Computer.pdf"
 Comment[en_GB]=Book 1: Make a computer
 StartupNotify=true
-Categories=Office;
+Categories=Office;Extras;
 Terminal=false

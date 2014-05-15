@@ -8,4 +8,4 @@ TryExec=scratch
 Exec=scratch
 Comment[en_GB]=Scratch development environment
 StartupNotify=true
-Categories=Application;Education;
+Categories=Application;Education;Scratch;

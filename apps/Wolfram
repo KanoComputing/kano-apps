@@ -7,4 +7,4 @@ TryExec=wolfram
 Exec=rxvt -title "Wolfram Language" -e wolfram
 Comment[en_GB]=Technical Programming Environment
 StartupNotify=true
-Categories=Application;Education;
+Categories=Application;Education;Tools;
