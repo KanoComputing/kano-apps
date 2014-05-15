@@ -8,6 +8,7 @@
 import os
 import re
 
+_KANO_ICONS_LOC = '/usr/share/kano-apps/extras'
 _SYSTEM_ICONS_LOC = '/usr/share/kano-apps/apps'
 _USER_ICONS_LOC = '~/.apps'
 _INSTALLERS_LOC = '/usr/share/kano-apps/installers'
@@ -45,12 +46,13 @@ def _load_dentries_from_dir(loc, removable=False):
     return dentries
 
 def get_applications():
+    kano_icons = _load_dentries_from_dir(_KANO_ICONS_LOC)
     system_icons = _load_dentries_from_dir(_SYSTEM_ICONS_LOC)
     user_icons = _load_dentries_from_dir(_USER_ICONS_LOC, True)
     installers = _load_dentries_from_dir(_INSTALLERS_LOC)
 
     icons = []
-    for app in system_icons + user_icons:
+    for app in kano_icons + system_icons + user_icons:
         if 'TryExec' in app:
             if not try_exec(app['TryExec']):
                 continue
