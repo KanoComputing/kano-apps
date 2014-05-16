@@ -9,8 +9,7 @@ import os
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
-from kano_apps.UIElements import TopBar, Contents, AppGrid
-from kano_apps.UIElements import SystemApp, UserApp, AddButton
+from kano_apps.UIElements import TopBar, Contents, Apps
 from kano_apps.AppData import get_applications
 
 class MainWindow(Gtk.Window):
@@ -44,8 +43,9 @@ class MainWindow(Gtk.Window):
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
         self._contents = Contents(self)
-        app_grid = AppGrid(get_applications(), self)
-        self._contents.set_contents(app_grid)
+
+        apps = Apps(get_applications(), self)
+        self._contents.set_contents(apps)
 
         self._grid.attach(self._contents, 0, 1, 1, 1)
 

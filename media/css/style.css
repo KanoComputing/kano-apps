@@ -99,7 +99,7 @@ GtkLabel {
 
 /* The bar at the top that mimics the window bar */
 .top_bar_container {
-    background: #e1e1e1;
+    background: #eaeaea;
 }
 
 /* Header in top bar (title of window) */
@@ -122,6 +122,38 @@ GtkLabel {
 
 .appgrid_grey {
     background: #eeeeee;
+}
+
+.contents {
+    background: #eaeaea;
+    border: 10px solid blue;
+}
+
+.app-grid {
+    background: #fff;
+    border: 10px blue solid;
+}
+
+GtkNotebook {
+    border: none;
+    background-color: #fff;
+    -GtkNotebook-tab-overlap: -12px;
+    -GtkWidget-focus-line-width: 0px;
+    -GtkNotebook-initial-gap: 28px;
+}
+
+GtkNotebook tab {
+    border: none;
+    background-color: #dddddd;
+    color: #6e6e6e;
+    border-radius: 5px;
+    padding: 13px;
+    font-weight: bold;
+}
+
+GtkNotebook tab:active {
+    background-color: #fff;
+    color: #323232;
 }
 
 

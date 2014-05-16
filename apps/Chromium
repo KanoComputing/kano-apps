@@ -7,4 +7,5 @@ Icon=/usr/share/kano-apps/icons/chromium.png
 TryExec=chromium
 Exec=chromium
 Comment[en_GB]=Chromium Browser
+Categories=Tools;
 StartupNotify=true
