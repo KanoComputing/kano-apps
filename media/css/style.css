@@ -75,6 +75,10 @@ GtkLabel {
     -GtkWidget-focus-line-width: 0px;
 }
 
+.white-bg {
+    background: #fff;
+}
+
 .add_button {
     background-color: #91D064;
     font: Bariol Bold 16;
@@ -118,6 +122,10 @@ GtkLabel {
 
 .app_link {
     color: @orange;
+}
+
+.app_link_spacer {
+    color: #6e6e6e;
 }
 
 .appgrid_grey {
