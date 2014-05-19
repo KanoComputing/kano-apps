@@ -114,16 +114,29 @@ def parse_command(cmd_line):
 
 def _parse_dentry(dentry_path):
     dentry_data = {}
+    continuation = False
+    cont_key = None
     with open(dentry_path, 'r') as dentry_file:
         for line in dentry_file.readlines():
             line = line.strip()
             if len(line) <= 0 or line == '[Desktop Entry]':
                 continue
 
-            split = line.split('=')
+            if not continuation:
+                split = line.split('=')
 
-            key = split[0]
-            value = '='.join(split[1:])
-            dentry_data[key] = value
+                key = split[0]
+                value = '='.join(split[1:])
+                dentry_data[key] = value
+            else:
+                dentry_data[cont_key] += "\n" + line
+
+            if value[-1] == '\\':
+                continuation = True
+                cont_key = key
+                dentry_data[key] = dentry_data[key][:-1]
+            else:
+                continuation = False
+                cont_key = None
 
     return dentry_data

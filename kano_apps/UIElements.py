@@ -107,8 +107,6 @@ class AppGridEntry(Gtk.EventBox):
         entry.attach(self._links, 1, 2, 1, 1)
         self._links_count = 0
 
-        self._add_link("More", self._show_more)
-
         self.add(entry)
         self.connect("enter-notify-event", self._mouse_enter)
         self.connect("leave-notify-event", self._mouse_leave)
@@ -163,19 +161,24 @@ class AppGridEntry(Gtk.EventBox):
     def _mouse_click(self, ebox, event):
         pass
 
+class SystemApp(AppGridEntry):
+    def __init__(self, app, window):
+        AppGridEntry.__init__(self, app['Name'], app['Comment[en_GB]'],
+                              app['Icon'], window)
+
+        self._app = app
+
+        self._cmd = parse_command(app['Exec'])
+        self._add_link("More", self._show_more)
+
     def _show_more(self, widget, event):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         self.get_root_window().set_cursor(cursor)
         Gdk.flush()
 
-        more_view = MoreView(self._window)
+        more_view = MoreView(self._app, self._window)
         self._window.get_main_area().set_contents(more_view)
         return True
-
-class SystemApp(AppGridEntry):
-    def __init__(self, label, desc, icon_loc, cmd, window):
-        self._cmd = parse_command(cmd)
-        AppGridEntry.__init__(self, label, desc, icon_loc, window)
 
     def _mouse_click(self, ebox, event):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
@@ -185,10 +188,10 @@ class SystemApp(AppGridEntry):
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
 class UserApp(SystemApp):
-    def __init__(self, label, desc, icon_loc, cmd, icon_source, window):
-        SystemApp.__init__(self, label, desc, icon_loc, cmd, window)
+    def __init__(self, app, window):
+        SystemApp.__init__(self, app, window)
 
-        self._icon_source = icon_source
+        self._icon_source = app['icon_source']
 
         self._add_link("Remove", self._remove_mouse_click)
 
@@ -204,8 +207,8 @@ class UserApp(SystemApp):
         return True
 
 class UninstallableApp(SystemApp):
-    def __init__(self, label, desc, icon_loc, cmd, uninstall_cmd, window):
-        SystemApp.__init__(self, label, desc, icon_loc, cmd, window)
+    def __init__(self, app, window):
+        SystemApp.__init__(self, app, window)
 
         # Deal with the params placeholder
         uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', uninstall_cmd)
@@ -255,14 +258,7 @@ class Contents(Gtk.EventBox):
             self.remove(w)
 
         self.add(obj)
-        #self._show_all(obj)
         obj.show_all()
-
-    def _show_all(self, w):
-        w.show()
-        if hasattr(w, '__iter__'):
-            for c in w:
-                self._show_all(c)
 
 class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
@@ -321,16 +317,11 @@ class AppGrid(Gtk.EventBox):
         for app in apps:
             entry = None
             if 'Uninstall' in app:
-                entry = UninstallableApp(app['Name'], app['Comment[en_GB]'],
-                                app['Icon'], app['Exec'], app['Uninstall'],
-                                main_win)
+                entry = UninstallableApp(app, main_win)
             elif 'icon_source' in app:
-                entry = UserApp(app['Name'], app['Comment[en_GB]'],
-                                app['Icon'], app['Exec'], app['icon_source'],
-                                main_win)
+                entry = UserApp(app, main_win)
             else:
-                entry = SystemApp(app['Name'], app['Comment[en_GB]'],
-                                  app['Icon'], app['Exec'], main_win)
+                entry = SystemApp(app, main_win)
             self.add_entry(entry)
 
         self._sw.add_with_viewport(self._grid)
@@ -533,124 +524,165 @@ class AddDialog(Gtk.EventBox):
 
 
 class MoreView(Gtk.EventBox):
-    def __init__(self, main_win):
-        Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
-        self._box = Gtk.Box(hexpand=True, vexpand=True,
-                         halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
-                         orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    def __init__(self, app, main_win):
+        Gtk.EventBox.__init__(self, hexpand=True, vexpand=False)
+        self.get_style_context().add_class('grey-bg')
 
+        self._app = app
         self._window = main_win
 
-        self.get_style_context().add_class('white-bg')
+        self._box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
+                            vexpand=True, spacing=0)
+        self._box.props.margin_top = 25
+        self._box.props.margin_left = 80
+        self._box.props.margin_right = 100
+        self._box.props.margin_bottom = 100
 
+        back = Gtk.Button()
+        back.get_style_context().add_class('no_border')
+        back.set_image(get_app_icon(media_dir() + 'icons/back.png', 24))
+        back_alignment = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+        back_alignment.add(back)
+        back.connect('clicked', self._back_click)
+        back.connect('enter-notify-event', self._button_mouse_enter)
+        back.connect('leave-notify-event', self._button_mouse_leave)
+        self._box.pack_start(back_alignment, False, False, 10)
 
-        self._icon = "exec"
-        #self._init_header()
-        self._init_form()
-        #self._init_buttons()
+        content_box = self._initialise_content()
+        self._box.pack_start(content_box, True, True, 0)
+
         self.add(self._box)
 
-    def _init_header(self):
-        title = Gtk.Label('Add application')
-        description = Gtk.Label('Add your own application to Apps')
+    def _initialise_content(self):
+        content_box = Gtk.EventBox(vexpand=False, hexpand=False)
+        content_box.get_style_context().add_class('help-box')
 
-        title_style = title.get_style_context()
-        title_style.add_class('title')
+        content_grid = Gtk.Grid(vexpand=False, hexpand=False)
+        content_grid.props.margin = 25
+        content_grid.props.margin_left = 15
+        content_grid.props.margin_right = 15
 
-        description_style = description.get_style_context()
-        description_style.add_class('description')
+        icon = get_app_icon(self._app["Icon"])
+        icon.props.margin_right = 10
+        icon_alignment = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+        icon_alignment.add(icon)
+        content_grid.attach(icon_alignment, 0, 0, 1, 2)
 
-        box = Gtk.Box(spacing=5, orientation=Gtk.Orientation.VERTICAL,
-                      halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
-        box.pack_start(title, False, False, 0)
-        box.pack_start(description, False, False, 0)
-        self._box.pack_start(box, False, False, 0)
+        title = Gtk.Label(self._app['Name'])
+        title.get_style_context().add_class('help-title')
+        title.set_justify(Gtk.Justification.LEFT)
+        title_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
+        title_alignment.add(title)
+        content_grid.attach(title_alignment, 1, 0, 1, 1)
 
-    def _init_form(self):
-        head = Gtk.Grid(row_spacing=22, column_spacing=22)
+        if 'Help' in self._app:
+            help_text = Gtk.Label(self._app['Help'])
+            help_text.get_style_context().add_class('help-text')
+            help_text.set_justify(Gtk.Justification.FILL)
+            help_text.props.valign = Gtk.Align.START
+            help_text.props.halign = Gtk.Align.START
+            help_text.set_line_wrap(True)
+            help_text.props.margin_right = 15
 
-        icon = get_app_icon(media_dir() + "icons/add-icon.png", 132)
-        icon.props.valign = Gtk.Align.START
-        self._icon = icon
+            sw = Gtk.ScrolledWindow(hexpand=True)
+            sw.add_with_viewport(help_text)
+            sw.props.margin_top = 10
+            sw.props.margin_bottom = 15
 
-        title = Gtk.Label('Add application')
-        desc = Gtk.Label('Add your own application to Apps')
+            content_grid.attach(sw, 1, 1, 1, 1)
+            sw.set_size_request(-1, 250)
+        else:
+            help_text = Gtk.Label(self._app['Comment[en_GB]'])
+            help_text.get_style_context().add_class('help-text')
+            help_text.set_justify(Gtk.Justification.LEFT)
+            help_text.props.valign = Gtk.Align.START
+            help_text.props.halign = Gtk.Align.START
+            help_text.set_line_wrap(True)
+            help_text.props.margin_right = 15
+            help_text.props.margin_left = 3
+            content_grid.attach(help_text, 1, 1, 1, 1)
 
-        title.get_style_context().add_class('title')
-        desc.get_style_context().add_class('description')
+        content_grid.attach(self._initialise_buttons(), 1, 2, 1, 1)
 
-        head.attach(icon, 0, 0, 1, 2)
+        content_box.add(content_grid)
 
-        head.attach(title, 1, 0, 1, 1)
+        alignment = Gtk.Alignment(xalign=0.5, yalign=0, xscale=1, yscale=0)
+        alignment.add(content_box)
+        return alignment
 
-        head.attach(desc, 1, 1, 1, 1)
+    def _initialise_buttons(self):
+        buttons = Gtk.Box()
+        buttons.props.margin_top = 10
 
-        self._box.pack_start(head, False, False, 40)
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        file_name = re.sub(' ', '-', self._app["Name"]) + ".lnk"
+        on_desktop = os.path.exists(kdesk_dir + file_name)
 
-    def _init_buttons(self):
-        container = Gtk.Box(spacing=25, halign=Gtk.Align.CENTER)
+        if on_desktop:
+            btn_label = 'REMOVE FROM DESKTOP'
+            btn_style = 'cancel_button'
+            click_cb = self._desktop_toggle_rm
+        else:
+            btn_label = 'ADD TO DESKTOP'
+            btn_style = 'desktop_toggle_button'
+            click_cb = self._desktop_toggle_add
 
-        cancel = Gtk.Button('CANCEL')
-        cancel.set_size_request(124, 44)
-        cancel.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
-        cancel_style = cancel.get_style_context()
-        cancel_style.add_class('cancel_button')
-        cancel_style.add_class('no_border')
-        cancel.connect('clicked', self._cancel_click)
-        cancel.connect('enter-notify-event', self._button_mouse_enter)
-        cancel.connect('leave-notify-event', self._button_mouse_leave)
+        desktop_toggle = Gtk.Button(btn_label)
+        desktop_toggle.set_size_request(210, 44)
+        desktop_toggle.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
+        desktop_toggle_style = desktop_toggle.get_style_context()
+        desktop_toggle_style.add_class(btn_style)
+        desktop_toggle_style.add_class('no_border')
+        desktop_toggle.connect('clicked', click_cb)
+        desktop_toggle.connect('enter-notify-event', self._button_mouse_enter)
+        desktop_toggle.connect('leave-notify-event', self._button_mouse_leave)
 
-        add = Gtk.Button('ADD APPLICATION')
-        add.set_size_request(174, 44)
-        add_style = add.get_style_context()
-        add_style.add_class('add_button')
-        add_style.add_class('no_border')
-        add.connect('clicked', self._add_click)
-        add.connect('enter-notify-event', self._button_mouse_enter)
-        add.connect('leave-notify-event', self._button_mouse_leave)
+        buttons.pack_start(desktop_toggle, False, False, 0)
 
-        container.pack_start(cancel, False, False, 0)
-        container.pack_start(add, False, False, 0)
+        return buttons
+        
 
-        self._box.pack_start(container, False, False, 40)
+    def _desktop_toggle_add(self, event):
+        self._reset_cursor()
 
-    def _cancel_click(self, event):
+        self._create_desktop_icon()
+
+    def _desktop_toggle_rm(self, event):
+        self._reset_cursor()
+
+
+    def _back_click(self, event):
         self._reset_cursor()
 
         apps = Apps(get_applications(), self._window)
         self._window.get_main_area().set_contents(apps)
-        apps.set_current_page(-1)
 
-    def _add_click(self, event):
-        self._reset_cursor()
-        self._new_user_dentry(self._name.get_text(),
-                              self._desc.get_text(),
-                              self._cmd.get_text(),
-                              self._icon_path)
+    def _create_desktop_icon(self):
+        kdesk_entry = 'table Icon\n'
+        kdesk_entry += '  Caption:\n'
+        kdesk_entry += '  AppId: {}\n'.format(self._app["Name"])
+        kdesk_entry += '  Command: {}\n'.format(self._app["Exec"])
+        kdesk_entry += '  Singleton: true\n'
+        kdesk_entry += '  Icon: {}\n'.format(self._app["Icon"])
+        kdesk_entry += '  IconHover: {}\n'.format(self._app["Icon"])
+        kdesk_entry += '  HoverXoffset: 0\n'
+        kdesk_entry += '  Relative-to: grid\n'
+        kdesk_entry += '  X: auto\n'
+        kdesk_entry += '  Y: auto\n'
+        kdesk_entry += 'end\n'
 
-    def _new_user_dentry(self, name, desc, cmd, icon_path):
-        dentry = '[Desktop Entry]\n'
-        dentry += 'Encoding=UTF-8\n'
-        dentry += 'Type=Application\n'
-        dentry += 'Name={}\n'.format(name)
-        dentry += 'Name[en_GB]={}\n'.format(name)
-        dentry += 'Icon={}\n'.format(icon_path)
-        dentry += 'Exec={}\n'.format(cmd)
-        dentry += 'Categories=User;\n'
-        dentry += 'Comment[en_GB]={}'.format(desc)
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        if not os.path.exists(kdesk_dir):
+            os.makedirs(kdesk_dir)
 
-        apps_dir = os.path.expanduser('~/.apps/')
-        if not os.path.exists(apps_dir):
-            os.makedirs(apps_dir)
-
-        file_name = re.sub(' ', '-', name)
-        f = open(apps_dir + name, 'w')
-        f.write(dentry)
+        file_name = re.sub(' ', '-', self._app["Name"])
+        f = open(kdesk_dir + file_name + '.lnk', 'w')
+        f.write(kdesk_entry)
         f.close()
 
-        apps = Apps(get_applications(), self._window)
-        self._window.get_main_area().set_contents(apps)
-        apps.set_current_page(-1)
+        os.system('kdesk -r')
+        more_view = MoreView(self._app, self._window)
+        self._window.get_main_area().set_contents(more_view)
 
     def _icon_click(self, ebox, event):
         self._reset_cursor()
