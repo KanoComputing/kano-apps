@@ -74,5 +74,5 @@ class MainWindow(Gtk.Window):
         self.get_main_area().set_contents(more_view)
 
     def show_add_dialog(self):
-        dialog = AddDialog(self._window)
+        dialog = AddDialog(self)
         self.get_main_area().set_contents(dialog)
