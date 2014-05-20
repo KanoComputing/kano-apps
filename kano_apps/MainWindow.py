@@ -9,12 +9,17 @@ import os
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
-from kano_apps.UIElements import TopBar, Contents, Apps
+from kano_apps.UIElements import TopBar, Contents
+from kano_apps.AppGrid import Apps
+from kano_apps.AddDialog import AddDialog
+from kano_apps.MoreView import MoreView
 from kano_apps.AppData import get_applications
 
 class MainWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title='Kano Apps')
+
+        self._last_page = 0
 
         # Set up window
         screen = Gdk.Screen.get_default()
@@ -43,15 +48,31 @@ class MainWindow(Gtk.Window):
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
         self._contents = Contents(self)
-
-        apps = Apps(get_applications(), self)
-        self._contents.set_contents(apps)
-
         self._grid.attach(self._contents, 0, 1, 1, 1)
-
         self._grid.set_row_spacing(0)
-
         self.add(self._grid)
+
+        self.show_apps_view()
 
     def get_main_area(self):
         return self._contents
+
+    def get_last_page(self):
+        return self._last_page
+
+    def set_last_page(self, last_page_num):
+        self._last_page = last_page_num
+
+    def show_apps_view(self):
+        last_page = self.get_last_page()
+        apps = Apps(get_applications(), self)
+        self.get_main_area().set_contents(apps)
+        apps.set_current_page(last_page)
+
+    def show_more_view(self, app):
+        more_view = MoreView(app, self)
+        self.get_main_area().set_contents(more_view)
+
+    def show_add_dialog(self):
+        dialog = AddDialog(self._window)
+        self.get_main_area().set_contents(dialog)
