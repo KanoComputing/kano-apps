@@ -75,6 +75,14 @@ GtkLabel {
     -GtkWidget-focus-line-width: 0px;
 }
 
+.white-bg {
+    background: #fff;
+}
+
+.grey-bg {
+    background: #f0f0f0;
+}
+
 .add_button {
     background-color: #91D064;
     font: Bariol Bold 16;
@@ -93,7 +101,20 @@ GtkLabel {
     border-radius: 3px;
 }
 
-.add_button GtkLabel, .cancel_button GtkLabel {
+.desktop_toggle_button {
+    background-color: #91D064;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
+.orange_button {
+    background-color: @orange;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
+.add_button GtkLabel, .cancel_button GtkLabel,
+.desktop_toggle_button GtkLabel, .orange_button GtkLabel {
     color: #ffffff;
 }
 
@@ -120,6 +141,10 @@ GtkLabel {
     color: @orange;
 }
 
+.app_link_spacer {
+    color: #6e6e6e;
+}
+
 .appgrid_grey {
     background: #eeeeee;
 }
@@ -132,6 +157,21 @@ GtkLabel {
 .app-grid {
     background: #fff;
     border: 10px blue solid;
+}
+
+.help-box {
+    background: linear-gradient(to top, #fff);
+    border-radius: 5px;
+}
+
+.help-title {
+    color: @title_color;
+    font: Bariol Bold 18;
+}
+
+.help-text {
+    color: @subheading_color;
+    font: Bariol 12;
 }
 
 GtkNotebook {
