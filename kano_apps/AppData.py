@@ -131,7 +131,7 @@ def _parse_dentry(dentry_path):
             else:
                 dentry_data[cont_key] += "\n" + line
 
-            if value[-1] == '\\':
+            if line[-1] == '\\':
                 continuation = True
                 cont_key = key
                 dentry_data[key] = dentry_data[key][:-1]

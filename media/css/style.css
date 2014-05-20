@@ -107,8 +107,14 @@ GtkLabel {
     border-radius: 3px;
 }
 
+.orange_button {
+    background-color: @orange;
+    font: Bariol Bold 16;
+    border-radius: 3px;
+}
+
 .add_button GtkLabel, .cancel_button GtkLabel,
-.desktop_toggle_button GtkLabel {
+.desktop_toggle_button GtkLabel, .orange_button GtkLabel {
     color: #ffffff;
 }
 

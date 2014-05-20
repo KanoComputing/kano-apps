@@ -11,6 +11,11 @@ from gi.repository import Gtk, Gdk
 
 from kano_apps.Media import media_dir, get_app_icon, get_ui_icon
 
+try:
+    from kano_video.player import play_video
+except:
+    pass
+
 class MoreView(Gtk.EventBox):
     def __init__(self, app, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=False)
@@ -102,10 +107,7 @@ class MoreView(Gtk.EventBox):
         buttons = Gtk.Box()
         buttons.props.margin_top = 10
 
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        file_name = re.sub(' ', '-', self._app["Name"]) + ".lnk"
-        on_desktop = os.path.exists(kdesk_dir + file_name)
-
+        on_desktop = os.path.exists(self._get_kdesk_icon_path())
         if on_desktop:
             btn_label = 'REMOVE FROM DESKTOP'
             btn_style = 'cancel_button'
@@ -129,11 +131,10 @@ class MoreView(Gtk.EventBox):
 
         return buttons
 
-
     def _desktop_toggle_add(self, event):
         self._reset_cursor()
 
-        self._create_desktop_icon()
+        self._create_kdesk_icon()
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
@@ -141,9 +142,7 @@ class MoreView(Gtk.EventBox):
     def _desktop_toggle_rm(self, event):
         self._reset_cursor()
 
-        file_name = re.sub(' ', '-', self._app["Name"])
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        os.unlink(kdesk_dir + file_name + ".lnk")
+        os.unlink(self._get_kdesk_icon_path())
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
@@ -153,7 +152,7 @@ class MoreView(Gtk.EventBox):
 
         self._window.show_apps_view()
 
-    def _create_desktop_icon(self):
+    def _create_kdesk_icon(self):
         kdesk_entry =  'table Icon\n'
         kdesk_entry += '  Caption:\n'
         kdesk_entry += '  AppID:\n'
@@ -192,6 +191,9 @@ class MoreView(Gtk.EventBox):
         Gdk.flush()
 
 class MoreView(Gtk.EventBox):
+    _KDESK_DIR = '~/.kdesktop/'
+    _KDESK_EXEC = '/usr/bin/kdesk'
+
     def __init__(self, app, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=False)
         self.get_style_context().add_class('grey-bg')
@@ -279,41 +281,64 @@ class MoreView(Gtk.EventBox):
         return alignment
 
     def _initialise_buttons(self):
-        buttons = Gtk.Box()
+        buttons = Gtk.Box(spacing=15)
         buttons.props.margin_top = 10
 
         kdesk_dir = os.path.expanduser('~/.kdesktop/')
         file_name = re.sub(' ', '-', self._app["Name"]) + ".lnk"
         on_desktop = os.path.exists(kdesk_dir + file_name)
 
-        if on_desktop:
-            btn_label = 'REMOVE FROM DESKTOP'
-            btn_style = 'cancel_button'
-            click_cb = self._desktop_toggle_rm
-        else:
-            btn_label = 'ADD TO DESKTOP'
-            btn_style = 'desktop_toggle_button'
-            click_cb = self._desktop_toggle_add
+        if os.path.exists(self._KDESK_EXEC):
+            if on_desktop:
+                btn_label = 'REMOVE FROM DESKTOP'
+                btn_style = 'cancel_button'
+                click_cb = self._desktop_toggle_rm
+            else:
+                btn_label = 'ADD TO DESKTOP'
+                btn_style = 'desktop_toggle_button'
+                click_cb = self._desktop_toggle_add
 
-        desktop_toggle = Gtk.Button(btn_label)
-        desktop_toggle.set_size_request(210, 44)
-        desktop_toggle.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
-        desktop_toggle_style = desktop_toggle.get_style_context()
-        desktop_toggle_style.add_class(btn_style)
-        desktop_toggle_style.add_class('no_border')
-        desktop_toggle.connect('clicked', click_cb)
-        desktop_toggle.connect('enter-notify-event', self._button_mouse_enter)
-        desktop_toggle.connect('leave-notify-event', self._button_mouse_leave)
+            desktop_toggle = Gtk.Button(btn_label)
+            desktop_toggle.set_size_request(225, 44)
+            desktop_toggle.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
+            desktop_toggle_style = desktop_toggle.get_style_context()
+            desktop_toggle_style.add_class(btn_style)
+            desktop_toggle_style.add_class('no_border')
+            desktop_toggle.connect('clicked', click_cb)
+            desktop_toggle.connect('enter-notify-event', self._button_mouse_enter)
+            desktop_toggle.connect('leave-notify-event', self._button_mouse_leave)
 
-        buttons.pack_start(desktop_toggle, False, False, 0)
+            buttons.pack_start(desktop_toggle, False, False, 0)
+
+        if 'Video' in self._app:
+            has_video = True
+            try:
+                play_video
+            except:
+                has_video = False
+
+            if has_video:
+                video = Gtk.Button('WATCH VIDEO')
+                video.set_size_request(150, 44)
+                video.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
+                video_style = video.get_style_context()
+                video_style.add_class('orange_button')
+                video_style.add_class('no_border')
+                video.connect('clicked', self._video_clicked)
+                video.connect('enter-notify-event', self._button_mouse_enter)
+                video.connect('leave-notify-event', self._button_mouse_leave)
+
+                buttons.pack_start(video, False, False, 0)
 
         return buttons
 
+    def _video_clicked(self, event):
+        play_video(None, None, self._app['Video'], True)
 
     def _desktop_toggle_add(self, event):
         self._reset_cursor()
 
-        self._create_desktop_icon()
+        self._create_kdesk_icon()
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
@@ -321,9 +346,7 @@ class MoreView(Gtk.EventBox):
     def _desktop_toggle_rm(self, event):
         self._reset_cursor()
 
-        file_name = re.sub(' ', '-', self._app["Name"])
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        os.unlink(kdesk_dir + file_name + ".lnk")
+        os.unlink(self._get_kdesk_icon_path())
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
@@ -333,7 +356,11 @@ class MoreView(Gtk.EventBox):
 
         self._window.show_apps_view()
 
-    def _create_desktop_icon(self):
+    def _get_kdesk_icon_path(self):
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
+        return kdesk_dir + re.sub(' ', '-', self._app["Name"]) + ".lnk"
+
+    def _create_kdesk_icon(self):
         kdesk_entry =  'table Icon\n'
         kdesk_entry += '  Caption:\n'
         kdesk_entry += '  AppID:\n'
@@ -347,12 +374,11 @@ class MoreView(Gtk.EventBox):
         kdesk_entry += '  Y: auto\n'
         kdesk_entry += 'end\n'
 
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
         if not os.path.exists(kdesk_dir):
             os.makedirs(kdesk_dir)
 
-        file_name = re.sub(' ', '-', self._app["Name"])
-        f = open(kdesk_dir + file_name + '.lnk', 'w')
+        f = open(self._get_kdesk_icon_path(), 'w')
         f.write(kdesk_entry)
         f.close()
 
