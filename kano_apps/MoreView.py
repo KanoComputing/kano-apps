@@ -48,7 +48,6 @@ class MoreView(Gtk.EventBox):
         self._box.pack_start(content_box, True, True, 0)
 
         self.add(self._box)
-        print "aaaaa"
 
     def _initialise_content(self):
         content_box = Gtk.EventBox(vexpand=False, hexpand=False)
