@@ -159,7 +159,7 @@ class MoreView(Gtk.EventBox):
         kdesk_entry += '  Command: {}\n'.format(self._app["Exec"])
         kdesk_entry += '  Singleton: true\n'
         kdesk_entry += '  Icon: {}\n'.format(self._app["Icon"])
-        kdesk_entry += '  IconHover: {}\n'.format(self._app["Icon"])
+        kdesk_entry += '  IconHover: {}\n'.format(media_dir() + "icons/generic-hover.png")
         kdesk_entry += '  HoverXOffset: 0\n'
         kdesk_entry += '  Relative-To: grid\n'
         kdesk_entry += '  X: auto\n'
