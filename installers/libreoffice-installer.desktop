@@ -8,5 +8,5 @@ TryExec=libreoffice
 Exec=rxvt -title 'LibreOffice installer' -e libreoffice-installer %p
 Comment[en_GB]=Add LibreOffice to Kano OS
 StartupNotify=true
-Categories=Office;
+Categories=Office;Tools;
 Terminal=false

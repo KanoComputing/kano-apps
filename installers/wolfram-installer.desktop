@@ -8,5 +8,5 @@ TryExec=wolfram
 Exec=rxvt -title 'Wolfram installer' -e sudo wolfram-installer %p
 Comment[en_GB]=Add Wolfram to Kano OS
 StartupNotify=true
-Categories=Application;Education;
+Categories=Application;Education;Tools;
 Terminal=false
