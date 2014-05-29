@@ -1,6 +1,6 @@
 table Icon
   Caption:
-  AppID: pcmanfm App[s]
+  AppID: kano-apps
   Command: /usr/bin/kano-apps
   Singleton: true
   Icon: /usr/share/kano-desktop/icons/apps.png
