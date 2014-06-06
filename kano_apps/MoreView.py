@@ -150,16 +150,12 @@ class MoreView(Gtk.EventBox):
         play_video(None, None, self._app['Video'], True)
 
     def _desktop_toggle_add(self, event):
-        #self._reset_cursor()
-
         self._create_kdesk_icon()
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
 
     def _desktop_toggle_rm(self, event):
-        #self._reset_cursor()
-
         os.unlink(self._get_kdesk_icon_path())
 
         os.system('kdesk -r')

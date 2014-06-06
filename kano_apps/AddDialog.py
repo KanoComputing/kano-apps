@@ -99,7 +99,6 @@ class AddDialog(Gtk.EventBox):
         self._window.show_apps_view()
 
     def _add_click(self, event):
-        print "entered add_click"
         self._new_user_dentry(self._name.get_text(),
                               self._desc.get_text(),
                               self._cmd.get_text(),
