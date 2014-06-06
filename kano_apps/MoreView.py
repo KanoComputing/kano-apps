@@ -72,7 +72,7 @@ class MoreView(Gtk.EventBox):
         content_grid.attach(title_alignment, 1, 0, 1, 1)
 
         if 'Help' in self._app:
-            help_text = Gtk.Label(self._app['Help'])
+            help_text = Gtk.Label(re.sub(r'\\n', "\n", self._app['Help']))
             help_text.get_style_context().add_class('help-text')
             help_text.set_justify(Gtk.Justification.FILL)
             help_text.props.valign = Gtk.Align.START
