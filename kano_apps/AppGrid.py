@@ -6,10 +6,14 @@
 
 import os
 import re
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk
 
 from kano_apps.AppData import parse_command
-from kano_apps.Media import media_dir, get_app_icon, get_ui_icon
+from kano_apps.Media import media_dir, get_app_icon
+from kano.gtk3.buttons import OrangeButton
+from kano.gtk3.scrolled_window import ScrolledWindow
+from kano.gtk3.cursor import attach_cursor_events
+
 
 class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
@@ -39,25 +43,23 @@ class Apps(Gtk.Notebook):
         user.add_entry(AddButton(main_win))
 
         tools_label = Gtk.Label("TOOLS")
-        tools_label.modify_font(Pango.FontDescription('Bariol bold'))
         self.append_page(tools, tools_label)
 
         extras_label = Gtk.Label("EXTRAS")
-        extras_label.modify_font(Pango.FontDescription('Bariol bold'))
         self.append_page(extras, extras_label)
 
         user_label = Gtk.Label("USER")
-        user_label.modify_font(Pango.FontDescription('Bariol bold'))
         self.append_page(user, user_label)
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
+
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
 
-        self._sw = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
 
         style = self.get_style_context()
         style.add_class('app-grid')
@@ -95,6 +97,7 @@ class AppGrid(Gtk.EventBox):
         self._number_of_entries += 1
         self._entries.append(entry)
 
+
 class AppGridEntry(Gtk.EventBox):
     def __init__(self, label, desc, icon_loc, window):
         Gtk.EventBox.__init__(self)
@@ -109,20 +112,18 @@ class AppGridEntry(Gtk.EventBox):
         entry.attach(icon, 0, 0, 1, 3)
 
         self._app_name = app_name = Gtk.Label(label, halign=Gtk.Align.START,
-                                    valign=Gtk.Align.CENTER,
-                                    hexpand=True)
+                                              valign=Gtk.Align.CENTER,
+                                              hexpand=True)
         app_name.get_style_context().add_class('app_name')
-        app_name.modify_font(Pango.FontDescription('Bariol bold 18'))
         app_name.props.margin_top = 25
 
         entry.attach(app_name, 1, 0, 1, 1)
 
         self._app_desc = app_desc = Gtk.Label(desc,
-                             halign=Gtk.Align.START,
-                             valign=Gtk.Align.START,
-                             hexpand=True)
+                                              halign=Gtk.Align.START,
+                                              valign=Gtk.Align.START,
+                                              hexpand=True)
         app_desc.get_style_context().add_class('app_desc')
-        app_desc.modify_font(Pango.FontDescription('Bariol 12'))
         app_desc.props.margin_bottom = 25
         entry.attach(app_desc, 1, 1, 1, 1)
 
@@ -135,17 +136,11 @@ class AppGridEntry(Gtk.EventBox):
         self._links_count = 0
 
         self.add(entry)
-        self.connect("enter-notify-event", self._mouse_enter)
-        self.connect("leave-notify-event", self._mouse_leave)
+        attach_cursor_events(self)
         self.connect("button-release-event", self._mouse_click)
 
     def _add_link(self, label, callback):
-        ebox = Gtk.EventBox()
-        link = Gtk.Label(label, halign=Gtk.Align.START,
-                         valign=Gtk.Align.START)
-        link.get_style_context().add_class('app_link')
-        link.modify_font(Pango.FontDescription('Bariol bold 12'))
-        ebox.add(link)
+        ebox = OrangeButton(label)
 
         if self._links_count:
             spacer = Gtk.Label("|", halign=Gtk.Align.START,
@@ -158,8 +153,6 @@ class AppGridEntry(Gtk.EventBox):
         self._links_count += 1
 
         ebox.connect("button-release-event", callback)
-        ebox.connect("enter-notify-event", self._mouse_enter)
-        ebox.connect("leave-notify-event", self._mouse_leave)
 
     def _launch_app(self, cmd, args):
         try:
@@ -175,18 +168,9 @@ class AppGridEntry(Gtk.EventBox):
         message.run()
         message.destroy()
 
-    def _mouse_enter(self, ebox, event):
-        # Change the cursor to hour Glass
-        cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
-        self.get_root_window().set_cursor(cursor)
-
-    def _mouse_leave(self, ebox, event):
-        # Set the cursor to normal Arrow
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-
     def _mouse_click(self, ebox, event):
         pass
+
 
 class SystemApp(AppGridEntry):
     def __init__(self, app, window):
@@ -199,19 +183,12 @@ class SystemApp(AppGridEntry):
         self._add_link("More", self._show_more)
 
     def _show_more(self, widget, event):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
-
         self._window.show_more_view(self._app)
         return True
 
     def _mouse_click(self, ebox, event):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
-
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
+
 
 class UserApp(SystemApp):
     def __init__(self, app, window):
@@ -222,13 +199,10 @@ class UserApp(SystemApp):
         self._add_link("Remove", self._remove_mouse_click)
 
     def _remove_mouse_click(self, widget, event):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
-
         os.unlink(self._icon_source)
         self._window.show_apps_view()
         return True
+
 
 class UninstallableApp(SystemApp):
     def __init__(self, app, window):
@@ -241,11 +215,8 @@ class UninstallableApp(SystemApp):
         self._add_link("Uninstall", self._remove_mouse_click)
 
     def _remove_mouse_click(self, widget, event):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
-
         self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
+
 
 class AddButton(AppGridEntry):
     def __init__(self, window):
@@ -255,8 +226,4 @@ class AddButton(AppGridEntry):
                               media_dir() + 'icons/add.png', window)
 
     def _mouse_click(self, ebox, event):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
-
         self._window.show_add_dialog()

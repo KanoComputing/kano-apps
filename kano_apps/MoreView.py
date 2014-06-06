@@ -8,13 +8,15 @@
 import os
 import re
 from gi.repository import Gtk, Gdk
+from kano.gtk3.scrolled_window import ScrolledWindow
 
-from kano_apps.Media import media_dir, get_app_icon, get_ui_icon
+from kano_apps.Media import media_dir, get_app_icon
 
 try:
     from kano_video.player import play_video
 except:
     pass
+
 
 class MoreView(Gtk.EventBox):
     _KDESK_DIR = '~/.kdesktop/'
@@ -33,16 +35,6 @@ class MoreView(Gtk.EventBox):
         self._box.props.margin_left = 80
         self._box.props.margin_right = 100
         self._box.props.margin_bottom = 100
-
-        back = Gtk.Button()
-        back.get_style_context().add_class('no_border')
-        back.set_image(get_app_icon(media_dir() + 'icons/back.png', 24))
-        back_alignment = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
-        back_alignment.add(back)
-        back.connect('clicked', self._back_click)
-        back.connect('enter-notify-event', self._button_mouse_enter)
-        back.connect('leave-notify-event', self._button_mouse_leave)
-        self._box.pack_start(back_alignment, False, False, 10)
 
         content_box = self._initialise_content()
         self._box.pack_start(content_box, True, True, 0)
@@ -80,7 +72,7 @@ class MoreView(Gtk.EventBox):
             help_text.set_line_wrap(True)
             help_text.props.margin_right = 15
 
-            sw = Gtk.ScrolledWindow(hexpand=True)
+            sw = ScrolledWindow(hexpand=True)
             sw.add_with_viewport(help_text)
             sw.props.margin_top = 10
             sw.props.margin_bottom = 15
@@ -131,8 +123,6 @@ class MoreView(Gtk.EventBox):
             desktop_toggle_style.add_class(btn_style)
             desktop_toggle_style.add_class('no_border')
             desktop_toggle.connect('clicked', click_cb)
-            desktop_toggle.connect('enter-notify-event', self._button_mouse_enter)
-            desktop_toggle.connect('leave-notify-event', self._button_mouse_leave)
 
             buttons.pack_start(desktop_toggle, False, False, 0)
 
@@ -151,8 +141,6 @@ class MoreView(Gtk.EventBox):
                 video_style.add_class('orange_button')
                 video_style.add_class('no_border')
                 video.connect('clicked', self._video_clicked)
-                video.connect('enter-notify-event', self._button_mouse_enter)
-                video.connect('leave-notify-event', self._button_mouse_leave)
 
                 buttons.pack_start(video, False, False, 0)
 
@@ -162,7 +150,7 @@ class MoreView(Gtk.EventBox):
         play_video(None, None, self._app['Video'], True)
 
     def _desktop_toggle_add(self, event):
-        self._reset_cursor()
+        #self._reset_cursor()
 
         self._create_kdesk_icon()
 
@@ -170,24 +158,19 @@ class MoreView(Gtk.EventBox):
         self._window.show_more_view(self._app)
 
     def _desktop_toggle_rm(self, event):
-        self._reset_cursor()
+        #self._reset_cursor()
 
         os.unlink(self._get_kdesk_icon_path())
 
         os.system('kdesk -r')
         self._window.show_more_view(self._app)
 
-    def _back_click(self, event):
-        self._reset_cursor()
-
-        self._window.show_apps_view()
-
     def _get_kdesk_icon_path(self):
         kdesk_dir = os.path.expanduser(self._KDESK_DIR)
         return kdesk_dir + re.sub(' ', '-', self._app["Name"]) + ".lnk"
 
     def _create_kdesk_icon(self):
-        kdesk_entry =  'table Icon\n'
+        kdesk_entry = 'table Icon\n'
         kdesk_entry += '  Caption:\n'
         kdesk_entry += '  AppID:\n'
         kdesk_entry += '  Command: {}\n'.format(self._app["Exec"])
@@ -207,18 +190,3 @@ class MoreView(Gtk.EventBox):
         f = open(self._get_kdesk_icon_path(), 'w')
         f.write(kdesk_entry)
         f.close()
-
-    def _button_mouse_enter(self, button, event):
-        # Change the cursor to hour Glass
-        cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
-        self.get_root_window().set_cursor(cursor)
-
-    def _button_mouse_leave(self, button, event):
-        # Set the cursor to normal Arrow
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-
-    def _reset_cursor(self):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()

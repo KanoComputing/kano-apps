@@ -5,15 +5,17 @@
 #
 # The MainWindow class
 
-import os
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
-from kano_apps.UIElements import TopBar, Contents
+from kano_apps.UIElements import Contents
 from kano_apps.AppGrid import Apps
 from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
 from kano_apps.AppData import get_applications
+from kano.gtk3.top_bar import TopBar
+from kano.paths import common_css_dir
+
 
 class MainWindow(Gtk.Window):
     def __init__(self):
@@ -35,16 +37,24 @@ class MainWindow(Gtk.Window):
 
         # Styling
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(Media.media_dir() + 'css/style.css')
+        css_provider.load_from_path(common_css_dir + '/common.css')
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider,
                                               Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
+        specific_css_provider = Gtk.CssProvider()
+        specific_css_provider.load_from_path(Media.media_dir() + 'css/style.css')
+        specific_style_context = Gtk.StyleContext()
+        specific_style_context.add_provider_for_screen(screen, specific_css_provider,
+                                                       Gtk.STYLE_PROVIDER_PRIORITY_USER)
         style = self.get_style_context()
         style.add_class('main_window')
 
         # Create elements
         self._grid = Gtk.Grid()
-        self._top_bar = TopBar()
+        self._top_bar = TopBar("Kano-Apps", window_width=self._win_width)
+        self._top_bar.set_prev_callback(self.show_apps_view)
+        self._top_bar.set_close_callback(Gtk.main_quit)
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
         self._contents = Contents(self)
@@ -63,13 +73,15 @@ class MainWindow(Gtk.Window):
     def set_last_page(self, last_page_num):
         self._last_page = last_page_num
 
-    def show_apps_view(self):
+    def show_apps_view(self, button=None, event=None):
+        self._top_bar.disable_prev()
         last_page = self.get_last_page()
         apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(apps)
         apps.set_current_page(last_page)
 
     def show_more_view(self, app):
+        self._top_bar.enable_prev()
         more_view = MoreView(app, self)
         self.get_main_area().set_contents(more_view)
 

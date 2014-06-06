@@ -6,16 +6,19 @@
 
 import os
 import re
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
 
-from kano_apps.Media import media_dir, get_app_icon, get_ui_icon
+from kano_apps.Media import media_dir, get_app_icon
+from kano.gtk3.buttons import KanoButton
+from kano.gtk3.cursor import attach_cursor_events
+
 
 class AddDialog(Gtk.EventBox):
     def __init__(self, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
         self._box = Gtk.Box(hexpand=True, vexpand=True,
-                         halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
-                         orientation=Gtk.Orientation.VERTICAL, spacing=0)
+                            halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER,
+                            orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
         self._icon_path = 'exec'
         self._window = main_win
@@ -53,8 +56,7 @@ class AddDialog(Gtk.EventBox):
         icon_button = Gtk.EventBox()
         icon_button.add(icon)
         icon_button.connect('button-release-event', self._icon_click)
-        icon_button.connect('enter-notify-event', self._button_mouse_enter)
-        icon_button.connect('leave-notify-event', self._button_mouse_leave)
+        attach_cursor_events(icon_button)
         form.attach(icon_button, 0, 0, 1, 3)
 
         name = Gtk.Entry()
@@ -80,24 +82,13 @@ class AddDialog(Gtk.EventBox):
     def _init_buttons(self):
         container = Gtk.Box(spacing=25, halign=Gtk.Align.CENTER)
 
-        cancel = Gtk.Button('CANCEL')
+        cancel = KanoButton(text='CANCEL', color="red")
         cancel.set_size_request(124, 44)
-        cancel.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("white"))
-        cancel_style = cancel.get_style_context()
-        cancel_style.add_class('cancel_button')
-        cancel_style.add_class('no_border')
         cancel.connect('clicked', self._cancel_click)
-        cancel.connect('enter-notify-event', self._button_mouse_enter)
-        cancel.connect('leave-notify-event', self._button_mouse_leave)
 
-        add = Gtk.Button('ADD APPLICATION')
+        add = KanoButton('ADD APPLICATION')
         add.set_size_request(174, 44)
-        add_style = add.get_style_context()
-        add_style.add_class('add_button')
-        add_style.add_class('no_border')
         add.connect('clicked', self._add_click)
-        add.connect('enter-notify-event', self._button_mouse_enter)
-        add.connect('leave-notify-event', self._button_mouse_leave)
 
         container.pack_start(cancel, False, False, 0)
         container.pack_start(add, False, False, 0)
@@ -105,12 +96,10 @@ class AddDialog(Gtk.EventBox):
         self._box.pack_start(container, False, False, 40)
 
     def _cancel_click(self, event):
-        self._reset_cursor()
-
         self._window.show_apps_view()
 
     def _add_click(self, event):
-        self._reset_cursor()
+        print "entered add_click"
         self._new_user_dentry(self._name.get_text(),
                               self._desc.get_text(),
                               self._cmd.get_text(),
@@ -139,12 +128,12 @@ class AddDialog(Gtk.EventBox):
         self._window.show_apps_view()
 
     def _icon_click(self, ebox, event):
-        self._reset_cursor()
+        self._window._top_bar.enable_prev()
 
         dialog = Gtk.FileChooserDialog("Please choose an icon", self._window,
-                   Gtk.FileChooserAction.OPEN,
-                   (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                   Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+                                       Gtk.FileChooserAction.OPEN,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                        Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 
         # Set up file filters
         filter_text = Gtk.FileFilter()
@@ -174,19 +163,4 @@ class AddDialog(Gtk.EventBox):
             pass
 
         dialog.destroy()
-
-    def _button_mouse_enter(self, button, event):
-        # Change the cursor to hour Glass
-        cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
-        self.get_root_window().set_cursor(cursor)
-
-    def _button_mouse_leave(self, button, event):
-        # Set the cursor to normal Arrow
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-
-    def _reset_cursor(self):
-        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-        self.get_root_window().set_cursor(cursor)
-        Gdk.flush()
 
