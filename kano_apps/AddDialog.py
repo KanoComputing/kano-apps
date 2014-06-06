@@ -47,6 +47,8 @@ class AddDialog(Gtk.EventBox):
         self._box.pack_start(box, False, False, 0)
 
     def _init_form(self):
+        self._window._top_bar.enable_prev()
+
         form = Gtk.Grid(row_spacing=22, column_spacing=22)
 
         icon = get_app_icon(media_dir() + "icons/add-icon.png", 132)
@@ -127,8 +129,6 @@ class AddDialog(Gtk.EventBox):
         self._window.show_apps_view()
 
     def _icon_click(self, ebox, event):
-        self._window._top_bar.enable_prev()
-
         dialog = Gtk.FileChooserDialog("Please choose an icon", self._window,
                                        Gtk.FileChooserAction.OPEN,
                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
