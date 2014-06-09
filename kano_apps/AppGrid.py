@@ -227,6 +227,13 @@ class UserApp(SystemApp):
         Gdk.flush()
 
         os.unlink(self._icon_source)
+
+        kdesk_dir = os.path.expanduser("~/.kdesktop")
+        kdesk_icon = kdesk_dir + re.sub(' ', '-', self._app["Name"]) + ".lnk"
+
+        if os.path.exists(kdesk_icon):
+            os.unlink(kdesk_icon)
+
         self._window.show_apps_view()
         return True
 
