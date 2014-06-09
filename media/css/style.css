@@ -74,7 +74,7 @@ GtkScrolledWindow, GtkViewport {
 
 .app_desc {
     color: #999999;
-    font: Bariol bold 12;
+    font: Bariol 12;
 }
 
 .app_link_spacer {
