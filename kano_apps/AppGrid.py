@@ -209,7 +209,7 @@ class UninstallableApp(SystemApp):
         SystemApp.__init__(self, app, window)
 
         # Deal with the params placeholder
-        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', uninstall_cmd)
+        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
         self._uninstall_cmd = parse_command(uninstall_cmd)
 
         self._add_link("Uninstall", self._remove_mouse_click)
