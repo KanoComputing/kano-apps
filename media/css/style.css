@@ -130,7 +130,7 @@ GtkNotebook tab {
     padding: 13px;
 }
 
-GtkNotebook GtkLabel {
+GtkNotebook tab GtkLabel {
     font: Bariol bold 16;
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e

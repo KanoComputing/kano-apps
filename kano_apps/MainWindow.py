@@ -37,16 +37,18 @@ class MainWindow(Gtk.Window):
 
         # Styling
         css_provider = Gtk.CssProvider()
+        css_provider.load_from_path(common_css_dir + '/colours.css')
+        style_context = Gtk.StyleContext()
+        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        css_provider = Gtk.CssProvider()
         css_provider.load_from_path(common_css_dir + '/common.css')
         style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(screen, css_provider,
-                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
         specific_css_provider = Gtk.CssProvider()
         specific_css_provider.load_from_path(Media.media_dir() + 'css/style.css')
         specific_style_context = Gtk.StyleContext()
-        specific_style_context.add_provider_for_screen(screen, specific_css_provider,
-                                                       Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        specific_style_context.add_provider_for_screen(screen, specific_css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
         style = self.get_style_context()
         style.add_class('main_window')
 
