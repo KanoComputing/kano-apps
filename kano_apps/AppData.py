@@ -16,7 +16,7 @@ _INSTALLERS_LOC = '/usr/share/kano-apps/installers'
 def try_exec(app):
     path = None
     if len(app) <= 0:
-        return false
+        return False
     elif app[0] == '/':
         path = app
     else:
