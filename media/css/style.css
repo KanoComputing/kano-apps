@@ -86,7 +86,7 @@ GtkScrolledWindow, GtkViewport {
 }
 
 .contents {
-    background: #eaeaea;
+    background: #e1e1e1;
     border: 10px solid blue;
 }
 
@@ -125,7 +125,7 @@ GtkNotebook tab:active {
 
 GtkNotebook tab {
     border: none;
-    background-color: #dddddd;
+    background-color: #d1d1d1;
     border-radius: 5px;
     padding: 13px;
 }
