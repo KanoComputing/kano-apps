@@ -9,3 +9,4 @@ Exec=scratch
 Comment[en_GB]=Scratch development environment
 StartupNotify=true
 Categories=Application;Education;Scratch;Extras;
+Help=A different type of visual programming language that uses blocks to create cool programs.

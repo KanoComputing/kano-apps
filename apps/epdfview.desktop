@@ -10,3 +10,4 @@ Comment[en_GB]=Lightweight PDF document viewer
 StartupNotify=true
 Categories=Office;Tools;
 Terminal=false
+Help=PDFs are an amazing type of document that make it really easy to send words and pictures in the same file. ePDFView lets you read PDFs like the Kano Books right on your own computer.

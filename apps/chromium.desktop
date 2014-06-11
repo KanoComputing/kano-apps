@@ -9,3 +9,4 @@ Exec=chromium
 Comment[en_GB]=Chromium Browser
 Categories=Tools;
 StartupNotify=true
+Help=Browse the web with ease by using Chromium - the open source cousin of Google Chrome! Use tabs to open several web pages at once, bookmark your favourite sites and even check out Kano Blog!

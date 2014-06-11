@@ -1,11 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Name=LXTerminal
-Name[en_GB]=LXTerminal
+Name=Terminal
+Name[en_GB]=Terminal
 Icon=/usr/share/kano-apps/icons/terminal.png
 TryExec=lxterminal
 Exec=lxterminal
 Comment[en_GB]=Graphics Terminal frontend
 Categories=Tools;
 StartupNotify=true
+Help=Are you up for a challenge? The terminal lets you take complete control of your computer and dig deep into its internals.
