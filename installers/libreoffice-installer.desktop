@@ -10,3 +10,4 @@ Comment[en_GB]=Add LibreOffice to Kano OS
 StartupNotify=true
 Categories=Office;Tools;
 Terminal=false
+Help=LibreOffice has everything you need to create amazing documents. You can write, calculate, draw, make spreadsheets and presentations, and more. Click to Install.
