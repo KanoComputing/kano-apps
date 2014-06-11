@@ -10,3 +10,4 @@ Comment[en_GB]=Add Wolfram to Kano OS
 StartupNotify=true
 Categories=Application;Education;Tools;
 Terminal=false
+Help=Measure the world around you with Mathematica and Wolfram - the amazing computational knowledge engine that lets you make amazing graphs and dive into data! Click to Install.
