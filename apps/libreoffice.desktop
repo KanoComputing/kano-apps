@@ -8,4 +8,4 @@ Exec=libreoffice %U
 Comment[en_GB]=The office productivity suite.
 StartupNotify=true
 Categories=Office;Tools;
-Help=LibreOffice has everything you need to create amazing documents. You can write, calculate, draw, make spreadsheets and presentations, and more. Click to Install.
+Help=LibreOffice has everything you need to create amazing documents. You can write, calculate, draw, make spreadsheets and presentations, and more.
