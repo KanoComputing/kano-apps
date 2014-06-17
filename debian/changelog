@@ -1,3 +1,9 @@
+kano-apps (1.1-1) unstable; urgency=low
+
+  * Prerelease review
+
+ -- Team Kano <dev@kano.me>  Tue, 17 Jun 2014 19:55:51 +0000
+
 kano-apps (1.0-3) unstable; urgency=low
 
   * Renamed package from Extras to Apps
