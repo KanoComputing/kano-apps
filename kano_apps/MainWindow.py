@@ -14,7 +14,7 @@ from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
 from kano_apps.AppData import get_applications
 from kano.gtk3.top_bar import TopBar
-from kano.paths import common_css_dir
+from kano.gtk3.apply_styles import apply_styles
 
 
 class MainWindow(Gtk.Window):
@@ -36,15 +36,7 @@ class MainWindow(Gtk.Window):
         self.connect('delete-event', Gtk.main_quit)
 
         # Styling
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(common_css_dir + '/colours.css')
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(common_css_dir + '/common.css')
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
+        apply_styles()
         specific_css_provider = Gtk.CssProvider()
         specific_css_provider.load_from_path(Media.media_dir() + 'css/style.css')
         specific_style_context = Gtk.StyleContext()
