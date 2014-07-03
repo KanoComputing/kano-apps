@@ -19,7 +19,7 @@ from kano.gtk3.apply_styles import apply_styles
 
 class MainWindow(Gtk.Window):
     def __init__(self):
-        Gtk.Window.__init__(self, title='Kano Apps')
+        Gtk.Window.__init__(self, title='Apps')
 
         self._last_page = 0
 
