@@ -43,7 +43,7 @@ GtkScrolledWindow, GtkViewport {
     background: #f0f0f0;
 }
 
-.add-button {
+.desktop-button {
     background: transparent;
 }
 

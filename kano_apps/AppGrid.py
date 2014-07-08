@@ -98,6 +98,9 @@ class AppGrid(Gtk.EventBox):
 
 
 class AppGridEntry(Gtk.EventBox):
+    _KDESK_DIR = '~/.kdesktop/'
+    _KDESK_EXEC = '/usr/bin/kdesk'
+
     def __init__(self, app, window):
         Gtk.EventBox.__init__(self)
 
@@ -144,24 +147,37 @@ class AppGridEntry(Gtk.EventBox):
 
         entry.pack_start(texts, True, True, 0)
 
-        more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
-        add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
-        rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
-
         more_btn = Gtk.Button(vexpand=False, hexpand=False)
+        more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
         more_btn.set_image(more)
         more_btn.props.margin_right = 21
         more_btn.props.valign = Gtk.Align.CENTER
         more_btn.get_style_context().add_class('more-button')
-        more_btn.connect("button-release-event", self._show_more)
+        more_btn.connect("clicked", self._show_more)
         entry.pack_start(more_btn, False, False, 0)
 
-        add_btn = Gtk.Button(vexpand=False, hexpand=False)
-        add_btn.set_image(add)
-        add_btn.props.margin_right = 21
-        add_btn.props.valign = Gtk.Align.CENTER
-        add_btn.get_style_context().add_class('add-button')
-        entry.pack_start(add_btn, False, False, 0)
+
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        file_name = re.sub(' ', '-', self._app["Name"]) + ".lnk"
+        on_desktop = os.path.exists(kdesk_dir + file_name)
+
+        desktop_btn = Gtk.Button(vexpand=False, hexpand=False)
+        desktop_btn.props.margin_right = 21
+        desktop_btn.props.valign = Gtk.Align.CENTER
+
+        if os.path.exists(self._KDESK_EXEC):
+            if on_desktop:
+                rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
+                desktop_btn.set_image(rm)
+                desktop_btn.get_style_context().add_class('desktop-button')
+                desktop_btn.connect("clicked", self._desktop_rm)
+            else:
+                add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
+                desktop_btn.set_image(add)
+                desktop_btn.get_style_context().add_class('desktop-button')
+                desktop_btn.connect("clicked", self._desktop_add)
+
+        entry.pack_start(desktop_btn, False, False, 0)
 
         self.add(entry)
         attach_cursor_events(self)
@@ -181,7 +197,7 @@ class AppGridEntry(Gtk.EventBox):
         message.run()
         message.destroy()
 
-    def _show_more(self, widget, event):
+    def _show_more(self, widget):
         self._window.blur()
         kdialog = kano_dialog.KanoDialog(
             self._app["Name"],
@@ -208,6 +224,44 @@ class AppGridEntry(Gtk.EventBox):
         print "x"
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
         return True
+
+    def _desktop_add(self, event):
+        self._create_kdesk_icon()
+
+        os.system('kdesk -r')
+        self._window.show_apps_view()
+
+    def _desktop_rm(self, event):
+        os.unlink(self._get_kdesk_icon_path())
+
+        os.system('kdesk -r')
+        self._window.show_apps_view()
+
+    def _get_kdesk_icon_path(self):
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
+        return kdesk_dir + re.sub(' ', '-', self._app["Name"]) + ".lnk"
+
+    def _create_kdesk_icon(self):
+        kdesk_entry = 'table Icon\n'
+        kdesk_entry += '  Caption:\n'
+        kdesk_entry += '  AppID:\n'
+        kdesk_entry += '  Command: {}\n'.format(self._app["Exec"])
+        kdesk_entry += '  Singleton: true\n'
+        kdesk_entry += '  Icon: {}\n'.format(self._app["Icon"])
+        kdesk_entry += '  IconHover: {}\n'.format(media_dir() + "icons/generic-hover.png")
+        kdesk_entry += '  HoverXOffset: 0\n'
+        kdesk_entry += '  Relative-To: grid\n'
+        kdesk_entry += '  X: auto\n'
+        kdesk_entry += '  Y: auto\n'
+        kdesk_entry += 'end\n'
+
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
+        if not os.path.exists(kdesk_dir):
+            os.makedirs(kdesk_dir)
+
+        f = open(self._get_kdesk_icon_path(), 'w')
+        f.write(kdesk_entry)
+        f.close()
 
 class SystemApp:
     pass
