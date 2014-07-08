@@ -9,7 +9,7 @@ import os
 from gi.repository import Gtk, GdkPixbuf
 
 MEDIA_LOCS = ['../media', '/usr/share/kano-apps/media']
-APP_ICON_SIZE = 68
+APP_ICON_SIZE = 66
 
 
 def media_dir():

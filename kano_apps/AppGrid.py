@@ -6,13 +6,15 @@
 
 import os
 import re
-from gi.repository import Gtk
+import random
+from gi.repository import Gtk, Gdk
 
 from kano_apps.AppData import parse_command
 from kano_apps.Media import media_dir, get_app_icon
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
+import kano.gtk3.kano_dialog as kano_dialog
 
 
 class Apps(Gtk.Notebook):
@@ -54,70 +56,82 @@ class Apps(Gtk.Notebook):
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
-
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
-
-        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
-
         style = self.get_style_context()
         style.add_class('app-grid')
 
-        self._sw.props.margin_top = 20
-        self._sw.props.margin_bottom = 20
-        self._sw.props.margin_left = 20
-        self._sw.props.margin_right = 12
+        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
 
-        self._grid = Gtk.Grid()
+        self._sw.props.margin_top = 7
+        self._sw.props.margin_bottom = 0
+        self._sw.props.margin_left = 0
+        self._sw.props.margin_right = 0
+        self._sw.props.border_width = 0
+        self._sw.set_shadow_type(Gtk.ShadowType.NONE)
+
+        self._box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
         self._number_of_entries = 0
         self._entries = []
 
         for app in apps:
-            entry = None
-            if 'Uninstall' in app:
-                entry = UninstallableApp(app, main_win)
-            elif 'icon_source' in app:
-                entry = UserApp(app, main_win)
-            else:
-                entry = SystemApp(app, main_win)
-            self.add_entry(entry)
+            self.add_entry(AppGridEntry(app, main_win))
 
-        self._sw.add_with_viewport(self._grid)
+        self._sw.add_with_viewport(self._box)
         self.add(self._sw)
 
     def add_entry(self, entry):
-        if (self._number_of_entries / 2) % 2:
-            entry.get_style_context().add_class('appgrid_grey')
+        #if (self._number_of_entries / 2) % 2:
+        #    entry.get_style_context().add_class('appgrid_grey')
 
-        xpos = self._number_of_entries % 2
-        ypos = self._number_of_entries / 2
-        self._grid.attach(entry, xpos, ypos, 1, 1)
+        #xpos = self._number_of_entries % 2
+        #ypos = self._number_of_entries / 2
+        #self._grid.attach(entry, xpos, ypos, 1, 1)
 
-        self._number_of_entries += 1
-        self._entries.append(entry)
+        #self._number_of_entries += 1
+        #self._entries.append(entry)
+
+        entry.props.valign = Gtk.Align.START
+        self._box.pack_start(entry, True, True, 0)
 
 
 class AppGridEntry(Gtk.EventBox):
-    def __init__(self, label, desc, icon_loc, window):
+    def __init__(self, app, window):
         Gtk.EventBox.__init__(self)
 
+        colours = [
+            "#84C36D", "#E44648", "#5AB7CC", "#4A5152", "#C3AA82",
+            "#7694E6", "#70C2F6", "#84B34D", "#57C0B5", "#2C9BCB",
+            "#D1B47E", "#DDAC42", "#C277DC", "#E94245", "#F4A15D",
+            "#E5696A", "#49BCD7", "#75984B", "#98BDDF"
+        ]
+        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(random.choice(colours)))
+
         self._window = window
+        self._entry = entry = Gtk.HBox()
 
-        self._entry = entry = Gtk.Grid()
-        entry.set_row_spacing(0)
+        self._app = app
+        label = app['Name']
+        desc = app['Comment[en_GB]']
+        icon_loc = app['Icon']
+        self._cmd = parse_command(app['Exec'])
 
-        self._icon = icon = get_app_icon(icon_loc)
-        icon.props.margin = 15
-        entry.attach(icon, 0, 0, 1, 3)
+        self._icon = get_app_icon(icon_loc)
+        self._icon.props.margin = 21
+
+        entry.pack_start(self._icon, False, False, 0)
+
+        texts = Gtk.VBox()
 
         self._app_name = app_name = Gtk.Label(label, halign=Gtk.Align.START,
                                               valign=Gtk.Align.CENTER,
                                               hexpand=True)
         app_name.get_style_context().add_class('app_name')
-        app_name.props.margin_top = 25
+        app_name.props.margin_top = 28
 
-        entry.attach(app_name, 1, 0, 1, 1)
+        texts.pack_start(app_name, False, False, 0)
 
         self._app_desc = app_desc = Gtk.Label(desc,
                                               halign=Gtk.Align.START,
@@ -125,34 +139,33 @@ class AppGridEntry(Gtk.EventBox):
                                               hexpand=True)
         app_desc.get_style_context().add_class('app_desc')
         app_desc.props.margin_bottom = 25
-        entry.attach(app_desc, 1, 1, 1, 1)
 
-        self._app_name.props.margin_top = 14
-        self._app_desc.props.margin_bottom = 0
+        texts.pack_start(app_desc, False, False, 0)
 
-        self._links = Gtk.HBox(False, 0)
-        self._links.props.margin_bottom = 14
-        entry.attach(self._links, 1, 2, 1, 1)
-        self._links_count = 0
+        entry.pack_start(texts, True, True, 0)
+
+        more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
+        add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
+        rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
+
+        more_btn = Gtk.Button(vexpand=False, hexpand=False)
+        more_btn.set_image(more)
+        more_btn.props.margin_right = 21
+        more_btn.props.valign = Gtk.Align.CENTER
+        more_btn.get_style_context().add_class('more-button')
+        more_btn.connect("button-release-event", self._show_more)
+        entry.pack_start(more_btn, False, False, 0)
+
+        add_btn = Gtk.Button(vexpand=False, hexpand=False)
+        add_btn.set_image(add)
+        add_btn.props.margin_right = 21
+        add_btn.props.valign = Gtk.Align.CENTER
+        add_btn.get_style_context().add_class('add-button')
+        entry.pack_start(add_btn, False, False, 0)
 
         self.add(entry)
         attach_cursor_events(self)
         self.connect("button-release-event", self._mouse_click)
-
-    def _add_link(self, label, callback):
-        ebox = OrangeButton(label)
-
-        if self._links_count:
-            spacer = Gtk.Label("|", halign=Gtk.Align.START,
-                               valign=Gtk.Align.START)
-            spacer.get_style_context().add_class('app_link_spacer')
-            self._links.pack_start(spacer, False, False, 2)
-
-        self._links.pack_start(ebox, False, False, 2)
-
-        self._links_count += 1
-
-        ebox.connect("button-release-event", callback)
 
     def _launch_app(self, cmd, args):
         try:
@@ -168,27 +181,36 @@ class AppGridEntry(Gtk.EventBox):
         message.run()
         message.destroy()
 
-    def _mouse_click(self, ebox, event):
-        pass
-
-
-class SystemApp(AppGridEntry):
-    def __init__(self, app, window):
-        AppGridEntry.__init__(self, app['Name'], app['Comment[en_GB]'],
-                              app['Icon'], window)
-
-        self._app = app
-
-        self._cmd = parse_command(app['Exec'])
-        self._add_link("More", self._show_more)
-
     def _show_more(self, widget, event):
-        self._window.show_more_view(self._app)
+        self._window.blur()
+        kdialog = kano_dialog.KanoDialog(
+            self._app["Name"],
+            self._app['Help'] if "Help" in self._app else self._app['Comment[en_GB]'],
+            {
+                "OK, GOT IT": {
+                    "return_value": 0,
+                    "color": "green"
+                },
+                "UNINSTALL": {
+                        "return_value": 0,
+                        "color": "red"
+                }
+            }
+        )
+        kdialog.set_action_background("grey")
+        response = kdialog.run()
+        self._window.unblur()
+
+        print "y"
         return True
 
     def _mouse_click(self, ebox, event):
+        print "x"
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
+        return True
 
+class SystemApp:
+    pass
 
 class UserApp(SystemApp):
     def __init__(self, app, window):
@@ -229,9 +251,13 @@ class UninstallableApp(SystemApp):
 class AddButton(AppGridEntry):
     def __init__(self, window):
         self._window = window
-        AppGridEntry.__init__(self, 'Add application',
-                              'Want to access more apps?',
-                              media_dir() + 'icons/add.png', window)
+        app = {
+            'Name': 'Add application',
+            'Comment[en_GB]': 'Want to access more apps?',
+            'Icon': media_dir() + 'icons/add.png',
+            'Exec': ''
+        }
+        AppGridEntry.__init__(self, app, window)
 
     def _mouse_click(self, ebox, event):
         self._window.show_add_dialog()
