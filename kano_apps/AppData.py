@@ -7,11 +7,12 @@
 
 import os
 import re
+import json
 
-_KANO_ICONS_LOC = '/usr/share/kano-apps/extras'
-_SYSTEM_ICONS_LOC = '/usr/share/kano-apps/apps'
-_USER_ICONS_LOC = '~/.apps'
-_INSTALLERS_LOC = '/usr/share/kano-apps/installers'
+_SYSTEM_ICONS_LOC = '/usr/share/kano-applications/'
+_INSTALLED_ICONS_LOC = '/usr/local/share/kano-applications/'
+#_USER_ICONS_LOC = '~/.apps'
+#_INSTALLERS_LOC = '/usr/share/kano-apps/installers'
 
 def try_exec(app):
     path = None
@@ -28,46 +29,33 @@ def try_exec(app):
 
     return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
-# types can be on of 'app', 'installer'
-def _load_dentries_from_dir(loc, removable=False):
-    dentries = []
+def _load_apps_from_dir(loc):
+    apps = []
     loc = os.path.expanduser(loc)
     if os.path.exists(loc):
-        for dentry in os.listdir(loc):
-            dentry_path = loc + '/' + dentry
-            if os.path.isdir(dentry_path):
+        for app_file in os.listdir(loc):
+            if app_file[-3:] != "app":
                 continue
 
-            dentry_data = _parse_dentry(dentry_path)
-            if removable:
-                dentry_data['icon_source'] = dentry_path
-            dentries.append(dentry_data)
+            app_file_path = loc + '/' + app_file
+            if os.path.isdir(app_file_path):
+                continue
 
-    return dentries
+            with open(app_file_path, "r") as f:
+                apps.append(json.load(f))
+
+    return apps
 
 def get_applications():
-    kano_icons = _load_dentries_from_dir(_KANO_ICONS_LOC)
-    system_icons = _load_dentries_from_dir(_SYSTEM_ICONS_LOC)
-    user_icons = _load_dentries_from_dir(_USER_ICONS_LOC, True)
-    installers = _load_dentries_from_dir(_INSTALLERS_LOC)
+    apps = _load_apps_from_dir(_SYSTEM_ICONS_LOC)
+    apps += _load_apps_from_dir(_INSTALLED_ICONS_LOC)
+    apps += _load_apps_from_dir("../apps") # FIXME: for devel only
 
-    icons = []
-    for app in kano_icons + system_icons + user_icons:
-        if 'TryExec' in app:
-            if not try_exec(app['TryExec']):
-                continue
-        icons.append(app)
+    for app in apps:
+        if 'exec' in app:
+            app['exec'] = parse_command(app['exec'])
 
-    for installer in installers:
-        if 'TryExec' in installer:
-            if try_exec(installer['TryExec']):
-                for icon in icons:
-                    if 'TryExec' in icon and icon['TryExec'] == installer['TryExec']:
-                        icon['Uninstall'] = installer['Exec']
-            else:
-                icons.append(installer)
-
-    return sorted(icons, key=lambda d: d['Name'].lower())
+    return sorted(apps, key=lambda a: a['name'].lower())
 
 def parse_command(cmd_line):
     cmd_line = re.sub(r'\%[fFuUpP]', '', cmd_line)

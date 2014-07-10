@@ -149,7 +149,7 @@ GtkNotebook tab {
 }
 
 GtkNotebook tab GtkLabel {
-    font: Bariol bold 14;
+    font: Bariol bold 13;
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/

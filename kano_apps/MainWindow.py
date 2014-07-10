@@ -46,8 +46,7 @@ class MainWindow(Gtk.Window):
 
         # Create elements
         self._grid = Gtk.Grid()
-        self._top_bar = TopBar("Apps", window_width=self._win_width)
-        self._top_bar.set_prev_callback(self.show_apps_view)
+        self._top_bar = TopBar("Apps", self._win_width, False)
         self._top_bar.set_close_callback(Gtk.main_quit)
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
