@@ -1,9 +1,14 @@
-# UIElements.py
+# MoreView.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# Different parts of the app's UI
+# TODO: Remove at some point.
+#
+# This file is currently not being in active use, as the MoreView was
+# simplified a good deal. However, chances are we might need a more complex
+# one in the future as the kano-apps part of kano world becomes more
+# complicated.
 
 import os
 import re

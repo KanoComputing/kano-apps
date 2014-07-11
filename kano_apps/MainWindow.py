@@ -91,11 +91,15 @@ class MainWindow(Gtk.Window):
         self.get_main_area().set_contents(apps)
         apps.set_current_page(last_page)
 
-    def show_more_view(self, app):
-        self._top_bar.enable_prev()
-        more_view = MoreView(app, self)
-        self.get_main_area().set_contents(more_view)
+    # TODO: Remove at some point.
+    # Not in use any more. See MoreView class for more info.
+    #def show_more_view(self, app):
+    #    self._top_bar.enable_prev()
+    #    more_view = MoreView(app, self)
+    #    self.get_main_area().set_contents(more_view)
 
+    # TODO: Remove.
+    # Not in use any more. See AddDialog class for more info.
     def show_add_dialog(self):
         dialog = AddDialog(self)
         self.get_main_area().set_contents(dialog)
