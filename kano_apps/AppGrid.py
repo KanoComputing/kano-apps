@@ -262,56 +262,53 @@ class AppGridEntry(Gtk.EventBox):
         f.write(kdesk_entry)
         f.close()
 
-class SystemApp:
-    pass
-
-class UserApp(SystemApp):
-    def __init__(self, app, window):
-        SystemApp.__init__(self, app, window)
-
-        self._icon_source = app['icon_source']
-
-        self._add_link("Remove", self._remove_mouse_click)
-
-    def _remove_mouse_click(self, widget, event):
-        os.unlink(self._icon_source)
-
-        kdesk_dir = os.path.expanduser("~/.kdesktop")
-        kdesk_icon = kdesk_dir + "/" + re.sub(' ', '-', self._app["name"]) + ".lnk"
-
-        if os.path.exists(kdesk_icon):
-            os.unlink(kdesk_icon)
-            os.system("kdesk -r")
-
-        self._window.show_apps_view()
-        return True
+#class UserApp(SystemApp):
+#    def __init__(self, app, window):
+#        SystemApp.__init__(self, app, window)
+#
+#        self._icon_source = app['icon_source']
+#
+#        self._add_link("Remove", self._remove_mouse_click)
+#
+#    def _remove_mouse_click(self, widget, event):
+#        os.unlink(self._icon_source)
+#
+#        kdesk_dir = os.path.expanduser("~/.kdesktop")
+#        kdesk_icon = kdesk_dir + "/" + re.sub(' ', '-', self._app["name"]) + ".lnk"
+#
+#        if os.path.exists(kdesk_icon):
+#            os.unlink(kdesk_icon)
+#            os.system("kdesk -r")
+#
+#        self._window.show_apps_view()
+#        return True
 
 
-class UninstallableApp(SystemApp):
-    def __init__(self, app, window):
-        SystemApp.__init__(self, app, window)
+#class UninstallableApp(SystemApp):
+#    def __init__(self, app, window):
+#        SystemApp.__init__(self, app, window)
+#
+#        # Deal with the params placeholder
+#        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
+#        self._uninstall_cmd = parse_command(uninstall_cmd)
+#
+#        self._add_link("Uninstall", self._remove_mouse_click)
+#
+#    def _remove_mouse_click(self, widget, event):
+#        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
 
-        # Deal with the params placeholder
-        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
-        self._uninstall_cmd = parse_command(uninstall_cmd)
 
-        self._add_link("Uninstall", self._remove_mouse_click)
-
-    def _remove_mouse_click(self, widget, event):
-        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
-
-
-class AddButton(AppGridEntry):
-    def __init__(self, window):
-        self._window = window
-        app = {
-            'name': 'Add application',
-            'description': 'Want to access more apps?',
-            'icon': media_dir() + 'icons/add.png',
-            'exec': '',
-            'colour': '#F4A15D'
-        }
-        AppGridEntry.__init__(self, app, window)
-
-    def _mouse_click(self, ebox, event):
-        self._window.show_add_dialog()
+#class AddButton(AppGridEntry):
+#    def __init__(self, window):
+#        self._window = window
+#        app = {
+#            'name': 'Add application',
+#            'description': 'Want to access more apps?',
+#            'icon': media_dir() + 'icons/add.png',
+#            'exec': '',
+#            'colour': '#F4A15D'
+#        }
+#        AppGridEntry.__init__(self, app, window)
+#
+#    def _mouse_click(self, ebox, event):
+#        self._window.show_add_dialog()
