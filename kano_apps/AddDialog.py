@@ -6,7 +6,7 @@
 # TODO: Remove at some point.
 #
 # This not in use any more. However, but we might need it back at some point,
-# so we keep here for a while until we're sure.
+# so we keep here for a while until we're sure.
 
 import os
 import re

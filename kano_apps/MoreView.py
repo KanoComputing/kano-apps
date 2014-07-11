@@ -8,7 +8,7 @@
 # This file is currently not being in active use, as the MoreView was
 # simplified a good deal. However, chances are we might need a more complex
 # one in the future as the kano-apps part of kano world becomes more
-# complicated.
+# complicated.
 
 import os
 import re
