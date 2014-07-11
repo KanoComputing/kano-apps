@@ -8,15 +8,7 @@
 
 case "$1" in
     remove|upgrade)
-        # Remove Wolfram config file in sudoers
-        rm /etc/sudoers.d/wolfram-installer_conf
-
-        # Remove LibreOffice config file in sudoers
-        rm /etc/sudoers.d/libreoffice-installer_conf
-
-        # Removing symbolic link
-        rm -f /etc/skel/books
-
+    # Not used anymore
     ;;
 esac
 

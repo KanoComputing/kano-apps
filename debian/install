@@ -6,7 +6,6 @@ installers usr/share/kano-apps/
 icons/* usr/share/icons/Kano/66x66/apps/
 books usr/share/kano-apps/
 
-kdesktop/kano-apps.desktop /usr/share/applications/
 icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
 icon/apps.png usr/share/kano-desktop/icons/
 icon/apps-hover.png usr/share/kano-desktop/icons/
