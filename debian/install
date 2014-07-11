@@ -2,7 +2,6 @@ bin/* usr/bin/
 kano_apps usr/lib/python2.7/dist-packages/
 media usr/share/kano-apps/
 apps usr/share/kano-apps/
-installers usr/share/kano-apps/
 icons/* usr/share/icons/Kano/66x66/apps/
 books usr/share/kano-apps/
 
