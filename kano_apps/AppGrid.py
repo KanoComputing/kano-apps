@@ -43,26 +43,30 @@ class Apps(Gtk.Notebook):
                 if "media" in app["categories"]:
                     media_apps.append(app)
 
-        tools = AppGrid(tools_apps, main_win)
-        others = AppGrid(others_apps, main_win)
-        games = AppGrid(games_apps, main_win)
-        code = AppGrid(code_apps, main_win)
-        media = AppGrid(media_apps, main_win)
+        if len(games_apps) > 0:
+            games = AppGrid(games_apps, main_win)
+            games_label = Gtk.Label("GAMES")
+            self.append_page(games, games_label)
 
-        games_label = Gtk.Label("GAMES")
-        self.append_page(games, games_label)
+        if len(media_apps) > 0:
+            media = AppGrid(media_apps, main_win)
+            media_label = Gtk.Label("MEDIA")
+            self.append_page(media, media_label)
 
-        media_label = Gtk.Label("MEDIA")
-        self.append_page(media, media_label)
+        if len(code_apps) > 0:
+            code = AppGrid(code_apps, main_win)
+            code_label = Gtk.Label("CODE")
+            self.append_page(code, code_label)
 
-        code_label = Gtk.Label("CODE")
-        self.append_page(code, code_label)
+        if len(tools_apps) > 0:
+            tools = AppGrid(tools_apps, main_win)
+            tools_label = Gtk.Label("TOOLS")
+            self.append_page(tools, tools_label)
 
-        tools_label = Gtk.Label("TOOLS")
-        self.append_page(tools, tools_label)
-
-        others_label = Gtk.Label("OTHERS")
-        self.append_page(others, others_label)
+        if len(others_apps) > 0:
+            others = AppGrid(others_apps, main_win)
+            others_label = Gtk.Label("OTHERS")
+            self.append_page(others, others_label)
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
