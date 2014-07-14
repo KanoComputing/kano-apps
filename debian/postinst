@@ -8,9 +8,12 @@
 
 case "$1" in
     configure)
-    # Nothing here anymore
+        # Nothing here anymore
     ;;
 
+    triggered)
+        update-app-dir
+    ;;
 esac
 
 #DEBHELPER#

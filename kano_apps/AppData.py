@@ -49,7 +49,6 @@ def _load_apps_from_dir(loc):
 def get_applications():
     apps = _load_apps_from_dir(_SYSTEM_ICONS_LOC)
     apps += _load_apps_from_dir(_INSTALLED_ICONS_LOC)
-    apps += _load_apps_from_dir("../apps") # FIXME: for devel only
 
     for app in apps:
         if 'exec' in app:
