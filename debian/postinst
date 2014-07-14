@@ -8,7 +8,7 @@
 
 case "$1" in
     configure)
-        # Nothing here anymore
+        update-app-dir
     ;;
 
     triggered)

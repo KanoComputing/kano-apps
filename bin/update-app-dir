@@ -29,7 +29,7 @@ def create_desktop_entry(app):
 
     icon = app["icon"]
     if icon[0] != "/":
-        icon = _ICONS_LOC + icon
+        icon = _ICONS_LOC + icon + ".png"
 
     categories = ";".join(app["categories"] + [""])
 
@@ -48,13 +48,25 @@ def create_desktop_entry(app):
 
     return de
 
+def _get_dentry_filename(app):
+    return "auto_" + app["name"].lower().replace(" ", "_") + ".desktop"
+
 def main():
-    for app in get_applications():
+    apps = get_applications()
+
+    # Remove unused ones
+    apps_dentries = map(lambda a: _get_dentry_filename(a), apps)
+    for de in os.listdir(_DENTRIES_LOC):
+        if de[0:5] == de and de not in apps_dentries:
+            logger.info("Removing desktop entry {}".format(de))
+            os.unlink(os.join(_DENTRIES_LOC, de))
+
+    # Regenerate all others
+    for app in apps:
         logger.info("Generating a desktop entry for {}".format(app["name"]))
 
         de = create_desktop_entry(app)
-
-        file_name = app["name"].lower().replace(" ", "_") + ".desktop"
+        file_name = _get_dentry_filename(app)
 
         try:
             with open(os.path.join(_DENTRIES_LOC, file_name), "w") as f:
