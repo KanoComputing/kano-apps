@@ -3,6 +3,10 @@
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# TODO: Remove at some point.
+#
+# This not in use any more. However, but we might need it back at some point,
+# so we keep here for a while until we're sure.
 
 import os
 import re

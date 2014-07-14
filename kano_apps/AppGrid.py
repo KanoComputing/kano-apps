@@ -6,13 +6,15 @@
 
 import os
 import re
-from gi.repository import Gtk
+import random
+from gi.repository import Gtk, Gdk
 
 from kano_apps.AppData import parse_command
 from kano_apps.Media import media_dir, get_app_icon
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
+import kano.gtk3.kano_dialog as kano_dialog
 
 
 class Apps(Gtk.Notebook):
@@ -22,137 +24,173 @@ class Apps(Gtk.Notebook):
         self._window = main_win
         self.connect("switch-page", self._switch_page)
 
-        # split apps to 3 arrays
+        # split apps to 5 arrays
         tools_apps = []
-        extras_apps = []
-        user_apps = []
+        others_apps = []
+        games_apps = []
+        code_apps = []
+        media_apps = []
         for app in apps:
-            if "Categories" in app:
-                cats = app["Categories"].split(";")
-                if "Tools" in cats:
+            if "categories" in app:
+                if "tools" in app["categories"]:
                     tools_apps.append(app)
-                if "Extras" in cats:
-                    extras_apps.append(app)
-                if "User" in cats:
-                    user_apps.append(app)
+                if "others" in app["categories"]:
+                    others_apps.append(app)
+                if "games" in app["categories"]:
+                    games_apps.append(app)
+                if "code" in app["categories"]:
+                    code_apps.append(app)
+                if "media" in app["categories"]:
+                    media_apps.append(app)
 
-        tools = AppGrid(tools_apps, main_win)
-        extras = AppGrid(extras_apps, main_win)
+        if len(games_apps) > 0:
+            games = AppGrid(games_apps, main_win)
+            games_label = Gtk.Label("GAMES")
+            self.append_page(games, games_label)
 
-        user = AppGrid(user_apps, main_win)
-        user.add_entry(AddButton(main_win))
+        if len(media_apps) > 0:
+            media = AppGrid(media_apps, main_win)
+            media_label = Gtk.Label("MEDIA")
+            self.append_page(media, media_label)
 
-        tools_label = Gtk.Label("TOOLS")
-        self.append_page(tools, tools_label)
+        if len(code_apps) > 0:
+            code = AppGrid(code_apps, main_win)
+            code_label = Gtk.Label("CODE")
+            self.append_page(code, code_label)
 
-        extras_label = Gtk.Label("EXTRAS")
-        self.append_page(extras, extras_label)
+        if len(tools_apps) > 0:
+            tools = AppGrid(tools_apps, main_win)
+            tools_label = Gtk.Label("TOOLS")
+            self.append_page(tools, tools_label)
 
-        user_label = Gtk.Label("USER")
-        self.append_page(user, user_label)
+        if len(others_apps) > 0:
+            others = AppGrid(others_apps, main_win)
+            others_label = Gtk.Label("OTHERS")
+            self.append_page(others, others_label)
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
-
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
-
-        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
-
         style = self.get_style_context()
         style.add_class('app-grid')
 
-        self._sw.props.margin_top = 20
-        self._sw.props.margin_bottom = 20
-        self._sw.props.margin_left = 20
-        self._sw.props.margin_right = 12
+        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
 
-        self._grid = Gtk.Grid()
+        self._sw.props.margin_top = 7
+        self._sw.props.margin_bottom = 0
+        self._sw.props.margin_left = 0
+        self._sw.props.margin_right = 0
+        self._sw.props.border_width = 0
+        self._sw.set_shadow_type(Gtk.ShadowType.NONE)
+
+        self._box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
         self._number_of_entries = 0
         self._entries = []
 
         for app in apps:
-            entry = None
-            if 'Uninstall' in app:
-                entry = UninstallableApp(app, main_win)
-            elif 'icon_source' in app:
-                entry = UserApp(app, main_win)
-            else:
-                entry = SystemApp(app, main_win)
-            self.add_entry(entry)
+            self.add_entry(AppGridEntry(app, main_win))
 
-        self._sw.add_with_viewport(self._grid)
+        self._sw.add_with_viewport(self._box)
         self.add(self._sw)
 
     def add_entry(self, entry):
-        if (self._number_of_entries / 2) % 2:
-            entry.get_style_context().add_class('appgrid_grey')
-
-        xpos = self._number_of_entries % 2
-        ypos = self._number_of_entries / 2
-        self._grid.attach(entry, xpos, ypos, 1, 1)
-
-        self._number_of_entries += 1
-        self._entries.append(entry)
+        entry.props.valign = Gtk.Align.START
+        self._box.pack_start(entry, False, False, 0)
 
 
 class AppGridEntry(Gtk.EventBox):
-    def __init__(self, label, desc, icon_loc, window):
+    _KDESK_DIR = '~/.kdesktop/'
+    _KDESK_EXEC = '/usr/bin/kdesk'
+
+    def __init__(self, app, window):
         Gtk.EventBox.__init__(self)
 
+        self._app = app
+        self._cmd = app['exec']
+
+        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(app['colour']))
+
         self._window = window
+        self._entry = entry = Gtk.HBox()
 
-        self._entry = entry = Gtk.Grid()
-        entry.set_row_spacing(0)
+        self._icon = get_app_icon(app['icon'])
+        self._icon.props.margin = 21
 
-        self._icon = icon = get_app_icon(icon_loc)
-        icon.props.margin = 15
-        entry.attach(icon, 0, 0, 1, 3)
+        entry.pack_start(self._icon, False, False, 0)
 
-        self._app_name = app_name = Gtk.Label(label, halign=Gtk.Align.START,
-                                              valign=Gtk.Align.CENTER,
-                                              hexpand=True)
+        texts = Gtk.VBox()
+
+        self._app_name = app_name = Gtk.Label(
+            app['name'],
+            halign=Gtk.Align.START,
+            valign=Gtk.Align.CENTER,
+            hexpand=True
+        )
         app_name.get_style_context().add_class('app_name')
-        app_name.props.margin_top = 25
+        app_name.props.margin_top = 28
 
-        entry.attach(app_name, 1, 0, 1, 1)
+        texts.pack_start(app_name, False, False, 0)
 
-        self._app_desc = app_desc = Gtk.Label(desc,
-                                              halign=Gtk.Align.START,
-                                              valign=Gtk.Align.START,
-                                              hexpand=True)
+        self._app_desc = app_desc = Gtk.Label(
+            app['description'],
+            halign=Gtk.Align.START,
+            valign=Gtk.Align.START,
+            hexpand=True
+        )
         app_desc.get_style_context().add_class('app_desc')
         app_desc.props.margin_bottom = 25
-        entry.attach(app_desc, 1, 1, 1, 1)
 
-        self._app_name.props.margin_top = 14
-        self._app_desc.props.margin_bottom = 0
+        texts.pack_start(app_desc, False, False, 0)
 
-        self._links = Gtk.HBox(False, 0)
-        self._links.props.margin_bottom = 14
-        entry.attach(self._links, 1, 2, 1, 1)
-        self._links_count = 0
+        entry.pack_start(texts, True, True, 0)
+
+        if "help" in self._app:
+            more_btn = Gtk.Button(vexpand=False, hexpand=False)
+            more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
+            more_btn.set_image(more)
+            more_btn.props.margin_right = 21
+            more_btn.props.valign = Gtk.Align.CENTER
+            more_btn.get_style_context().add_class('more-button')
+            more_btn.connect("clicked", self._show_more)
+            more_btn.set_tooltip_text("More information")
+            more_btn.connect("realize", self._set_cursor_to_hand)
+            entry.pack_start(more_btn, False, False, 0)
+
+
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        file_name = re.sub(' ', '-', self._app["name"]) + ".lnk"
+        on_desktop = os.path.exists(kdesk_dir + file_name)
+
+        desktop_btn = Gtk.Button(vexpand=False, hexpand=False)
+        desktop_btn.props.margin_right = 21
+        desktop_btn.props.valign = Gtk.Align.CENTER
+
+        if os.path.exists(self._KDESK_EXEC):
+            if on_desktop:
+                rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
+                desktop_btn.set_image(rm)
+                desktop_btn.get_style_context().add_class('desktop-button')
+                desktop_btn.connect("clicked", self._desktop_rm)
+                desktop_btn.set_tooltip_text("Remove from desktop")
+            else:
+                add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
+                desktop_btn.set_image(add)
+                desktop_btn.get_style_context().add_class('desktop-button')
+                desktop_btn.connect("clicked", self._desktop_add)
+                desktop_btn.set_tooltip_text("Add to desktop")
+
+        entry.pack_start(desktop_btn, False, False, 0)
 
         self.add(entry)
         attach_cursor_events(self)
         self.connect("button-release-event", self._mouse_click)
 
-    def _add_link(self, label, callback):
-        ebox = OrangeButton(label)
-
-        if self._links_count:
-            spacer = Gtk.Label("|", halign=Gtk.Align.START,
-                               valign=Gtk.Align.START)
-            spacer.get_style_context().add_class('app_link_spacer')
-            self._links.pack_start(spacer, False, False, 2)
-
-        self._links.pack_start(ebox, False, False, 2)
-
-        self._links_count += 1
-
-        ebox.connect("button-release-event", callback)
+    def _set_cursor_to_hand(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _launch_app(self, cmd, args):
         try:
@@ -168,70 +206,113 @@ class AppGridEntry(Gtk.EventBox):
         message.run()
         message.destroy()
 
-    def _mouse_click(self, ebox, event):
-        pass
+    def _show_more(self, widget):
+        self._window.blur()
+        kdialog = kano_dialog.KanoDialog(
+            self._app["name"],
+            self._app['help'] if "help" in self._app else self._app['description'],
+            {
+                "OK, GOT IT": {
+                    "return_value": 0,
+                    "color": "green"
+                }
+            }
+        )
+        kdialog.set_action_background("grey")
+        response = kdialog.run()
+        self._window.unblur()
 
-
-class SystemApp(AppGridEntry):
-    def __init__(self, app, window):
-        AppGridEntry.__init__(self, app['Name'], app['Comment[en_GB]'],
-                              app['Icon'], window)
-
-        self._app = app
-
-        self._cmd = parse_command(app['Exec'])
-        self._add_link("More", self._show_more)
-
-    def _show_more(self, widget, event):
-        self._window.show_more_view(self._app)
         return True
 
     def _mouse_click(self, ebox, event):
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
-
-
-class UserApp(SystemApp):
-    def __init__(self, app, window):
-        SystemApp.__init__(self, app, window)
-
-        self._icon_source = app['icon_source']
-
-        self._add_link("Remove", self._remove_mouse_click)
-
-    def _remove_mouse_click(self, widget, event):
-        os.unlink(self._icon_source)
-
-        kdesk_dir = os.path.expanduser("~/.kdesktop")
-        kdesk_icon = kdesk_dir + "/" + re.sub(' ', '-', self._app["Name"]) + ".lnk"
-
-        if os.path.exists(kdesk_icon):
-            os.unlink(kdesk_icon)
-            os.system("kdesk -r")
-
-        self._window.show_apps_view()
         return True
 
+    def _desktop_add(self, event):
+        self._create_kdesk_icon()
 
-class UninstallableApp(SystemApp):
-    def __init__(self, app, window):
-        SystemApp.__init__(self, app, window)
+        os.system('kdesk -r')
+        self._window.show_apps_view()
 
-        # Deal with the params placeholder
-        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
-        self._uninstall_cmd = parse_command(uninstall_cmd)
+    def _desktop_rm(self, event):
+        os.unlink(self._get_kdesk_icon_path())
 
-        self._add_link("Uninstall", self._remove_mouse_click)
+        os.system('kdesk -r')
+        self._window.show_apps_view()
 
-    def _remove_mouse_click(self, widget, event):
-        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
+    def _get_kdesk_icon_path(self):
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
+        return kdesk_dir + re.sub(' ', '-', self._app["name"]) + ".lnk"
+
+    def _create_kdesk_icon(self):
+        kdesk_entry = 'table Icon\n'
+        kdesk_entry += '  Caption:\n'
+        kdesk_entry += '  AppID:\n'
+        kdesk_entry += '  Command: {}\n'.format(self._app["exec"])
+        kdesk_entry += '  Singleton: true\n'
+        kdesk_entry += '  Icon: {}\n'.format(self._app["icon"])
+        kdesk_entry += '  IconHover: {}\n'.format(media_dir() + "icons/generic-hover.png")
+        kdesk_entry += '  HoverXOffset: 0\n'
+        kdesk_entry += '  Relative-To: grid\n'
+        kdesk_entry += '  X: auto\n'
+        kdesk_entry += '  Y: auto\n'
+        kdesk_entry += 'end\n'
+
+        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
+        if not os.path.exists(kdesk_dir):
+            os.makedirs(kdesk_dir)
+
+        f = open(self._get_kdesk_icon_path(), 'w')
+        f.write(kdesk_entry)
+        f.close()
+
+#class UserApp(SystemApp):
+#    def __init__(self, app, window):
+#        SystemApp.__init__(self, app, window)
+#
+#        self._icon_source = app['icon_source']
+#
+#        self._add_link("Remove", self._remove_mouse_click)
+#
+#    def _remove_mouse_click(self, widget, event):
+#        os.unlink(self._icon_source)
+#
+#        kdesk_dir = os.path.expanduser("~/.kdesktop")
+#        kdesk_icon = kdesk_dir + "/" + re.sub(' ', '-', self._app["name"]) + ".lnk"
+#
+#        if os.path.exists(kdesk_icon):
+#            os.unlink(kdesk_icon)
+#            os.system("kdesk -r")
+#
+#        self._window.show_apps_view()
+#        return True
 
 
-class AddButton(AppGridEntry):
-    def __init__(self, window):
-        self._window = window
-        AppGridEntry.__init__(self, 'Add application',
-                              'Want to access more apps?',
-                              media_dir() + 'icons/add.png', window)
+#class UninstallableApp(SystemApp):
+#    def __init__(self, app, window):
+#        SystemApp.__init__(self, app, window)
+#
+#        # Deal with the params placeholder
+#        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
+#        self._uninstall_cmd = parse_command(uninstall_cmd)
+#
+#        self._add_link("Uninstall", self._remove_mouse_click)
+#
+#    def _remove_mouse_click(self, widget, event):
+#        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
 
-    def _mouse_click(self, ebox, event):
-        self._window.show_add_dialog()
+
+#class AddButton(AppGridEntry):
+#    def __init__(self, window):
+#        self._window = window
+#        app = {
+#            'name': 'Add application',
+#            'description': 'Want to access more apps?',
+#            'icon': media_dir() + 'icons/add.png',
+#            'exec': '',
+#            'colour': '#F4A15D'
+#        }
+#        AppGridEntry.__init__(self, app, window)
+#
+#    def _mouse_click(self, ebox, event):
+#        self._window.show_add_dialog()

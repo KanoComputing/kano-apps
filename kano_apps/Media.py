@@ -8,8 +8,10 @@
 import os
 from gi.repository import Gtk, GdkPixbuf
 
+# TODO: It would be easier to keep this within kano_apps as package
+# data so we wouldn't have to resolve the path like that.
 MEDIA_LOCS = ['../media', '/usr/share/kano-apps/media']
-APP_ICON_SIZE = 68
+APP_ICON_SIZE = 66
 
 
 def media_dir():

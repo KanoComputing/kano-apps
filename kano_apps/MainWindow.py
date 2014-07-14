@@ -25,8 +25,8 @@ class MainWindow(Gtk.Window):
 
         # Set up window
         screen = Gdk.Screen.get_default()
-        self._win_width = 850
-        self._win_height = 595
+        self._win_width = 600
+        self._win_height = 488
         self.set_decorated(False)
         self.set_resizable(False)
         self.set_size_request(self._win_width, self._win_height)
@@ -46,17 +46,34 @@ class MainWindow(Gtk.Window):
 
         # Create elements
         self._grid = Gtk.Grid()
-        self._top_bar = TopBar("Kano-Apps", window_width=self._win_width)
-        self._top_bar.set_prev_callback(self.show_apps_view)
+        self._top_bar = TopBar("Apps", self._win_width, False)
         self._top_bar.set_close_callback(Gtk.main_quit)
         self._grid.attach(self._top_bar, 0, 0, 1, 1)
 
         self._contents = Contents(self)
         self._grid.attach(self._contents, 0, 1, 1, 1)
         self._grid.set_row_spacing(0)
-        self.add(self._grid)
+
+        self._overlay = Gtk.Overlay()
+        self._overlay.add(self._grid)
+
+        self._blur = Gtk.EventBox()
+        style = self._blur.get_style_context()
+        style.add_class('blur')
+
+        self.add(self._overlay)
 
         self.show_apps_view()
+
+        #self.blur()
+        #self.unblur()
+
+    def blur(self):
+        self._overlay.add_overlay(self._blur)
+        self._blur.show()
+
+    def unblur(self):
+        self._overlay.remove(self._blur)
 
     def get_main_area(self):
         return self._contents
@@ -74,11 +91,15 @@ class MainWindow(Gtk.Window):
         self.get_main_area().set_contents(apps)
         apps.set_current_page(last_page)
 
-    def show_more_view(self, app):
-        self._top_bar.enable_prev()
-        more_view = MoreView(app, self)
-        self.get_main_area().set_contents(more_view)
+    # TODO: Remove at some point.
+    # Not in use any more. See MoreView class for more info.
+    #def show_more_view(self, app):
+    #    self._top_bar.enable_prev()
+    #    more_view = MoreView(app, self)
+    #    self.get_main_area().set_contents(more_view)
 
+    # TODO: Remove.
+    # Not in use any more. See AddDialog class for more info.
     def show_add_dialog(self):
         dialog = AddDialog(self)
         self.get_main_area().set_contents(dialog)

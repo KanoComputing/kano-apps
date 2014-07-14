@@ -21,6 +21,10 @@ GtkScrolledWindow, GtkViewport {
     background-color: #ffffff;
 }
 
+.blur {
+    background-color: RGBA(0, 0, 0, 0.35);
+}
+
 .no_border {
     background:transparent;
     border-style: none; /* Remove grey border on outside */
@@ -37,6 +41,14 @@ GtkScrolledWindow, GtkViewport {
 
 .grey-bg {
     background: #f0f0f0;
+}
+
+.desktop-button {
+    background: transparent;
+}
+
+.more-button {
+    background: transparent;
 }
 
 .add_button {
@@ -69,12 +81,12 @@ GtkScrolledWindow, GtkViewport {
 }
 
 .app_name {
-    color: #323232;
+    color: #fff;
     font: Bariol bold 18;
 }
 
 .app_desc {
-    color: #999999;
+    color: #fff;
     font: Bariol 12;
 }
 
@@ -88,12 +100,16 @@ GtkScrolledWindow, GtkViewport {
 
 .contents {
     background: #e1e1e1;
-    border: 10px solid blue;
 }
 
 .app-grid {
     background: #fff;
-    border: 10px blue solid;
+    padding: 0px;
+    margin: 0px;
+}
+
+.app-grid GtkViewport {
+    padding: 0px;
 }
 
 .help-box {
@@ -112,27 +128,28 @@ GtkScrolledWindow, GtkViewport {
 }
 
 GtkNotebook {
-    border: none;
     background-color: #fff;
     -GtkNotebook-tab-overlap: -12px;
     -GtkWidget-focus-line-width: 0px;
     -GtkNotebook-initial-gap: 28px;
+
+    padding: 0px;
 }
 
 GtkNotebook tab:active {
     background-color: #fff;
-    color: #00ff00;
+    border: 0px;
 }
 
 GtkNotebook tab {
     border: none;
     background-color: #d1d1d1;
     border-radius: 5px;
-    padding: 13px;
+    padding: 10px;
 }
 
 GtkNotebook tab GtkLabel {
-    font: Bariol bold 16;
+    font: Bariol bold 13;
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/

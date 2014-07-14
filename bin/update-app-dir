@@ -1,0 +1,81 @@
+#!/usr/bin/env python
+#
+# update-app-dir
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Generates desktop entries in /usr/share/applications for all apps in
+# /usr/share/kano-applications and /usr/local/share/kano-applications
+#
+
+import sys
+import os
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path = [dir_path] + sys.path
+
+from kano_apps.AppData import get_applications
+from kano.logging import logger
+
+_DENTRIES_LOC = "/usr/share/applications/"
+_ICONS_LOC = "/usr/share/icons/Kano/66x66/"
+
+def create_desktop_entry(app):
+    args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, app["exec"]["args"])
+    cmd = "{} {}".format(app["exec"]["cmd"], " ".join(args))
+
+    icon = app["icon"]
+    if icon[0] != "/":
+        icon = _ICONS_LOC + icon + ".png"
+
+    categories = ";".join(app["categories"] + [""])
+
+    de = (
+        "[Desktop Entry]\n" +
+        "Encoding=UTF-8\n" +
+        "Version=1.0\n" +
+        "Type=Application\n" +
+        "Exec={}\n" +
+        "Icon={}\n" +
+        "Terminal=false\n" +
+        "Name={}\n" +
+        "Comment={}\n" +
+        "Categories={}\n"
+    ).format(cmd, icon, app["name"], app["description"], categories)
+
+    return de
+
+def _get_dentry_filename(app):
+    return "auto_" + app["name"].lower().replace(" ", "_") + ".desktop"
+
+def main():
+    apps = get_applications()
+
+    # Remove unused ones
+    apps_dentries = map(lambda a: _get_dentry_filename(a), apps)
+    for de in os.listdir(_DENTRIES_LOC):
+        if de[0:5] == de and de not in apps_dentries:
+            logger.info("Removing desktop entry {}".format(de))
+            os.unlink(os.join(_DENTRIES_LOC, de))
+
+    # Regenerate all others
+    for app in apps:
+        logger.info("Generating a desktop entry for {}".format(app["name"]))
+
+        de = create_desktop_entry(app)
+        file_name = _get_dentry_filename(app)
+
+        try:
+            with open(os.path.join(_DENTRIES_LOC, file_name), "w") as f:
+                f.write(de)
+        except IOError as err:
+            logger.error("Unable to write to {}".format(_DENTRIES_LOC))
+            logger.error(str(err))
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
