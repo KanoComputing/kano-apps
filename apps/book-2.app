@@ -5,7 +5,7 @@
     "icon": "book2",
     "colour": "#6B7678",
 
-    "categories": ["others"],
+    "categories": ["media"],
 
     "app_package": "",
     "dependencies": ["epdfviewer"],
