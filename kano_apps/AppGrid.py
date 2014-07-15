@@ -246,12 +246,22 @@ class AppGridEntry(Gtk.EventBox):
         return kdesk_dir + re.sub(' ', '-', self._app["name"]) + ".lnk"
 
     def _create_kdesk_icon(self):
+        icon_theme = Gtk.IconTheme.get_default()
+        icon_info = icon_theme.lookup_icon(self._app["icon"], 66, 0)
+
+        icon = self._app["icon"]
+        if icon_info != None:
+            icon = icon_info.get_filename()
+
+        args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["exec"]["args"])
+        cmd = "{} {}".format(self._app["exec"]["cmd"], " ".join(args))
+
         kdesk_entry = 'table Icon\n'
         kdesk_entry += '  Caption:\n'
         kdesk_entry += '  AppID:\n'
-        kdesk_entry += '  Command: {}\n'.format(self._app["exec"])
+        kdesk_entry += '  Command: {}\n'.format(cmd)
         kdesk_entry += '  Singleton: true\n'
-        kdesk_entry += '  Icon: {}\n'.format(self._app["icon"])
+        kdesk_entry += '  Icon: {}\n'.format(icon)
         kdesk_entry += '  IconHover: {}\n'.format(media_dir() + "icons/generic-hover.png")
         kdesk_entry += '  HoverXOffset: 0\n'
         kdesk_entry += '  Relative-To: grid\n'
