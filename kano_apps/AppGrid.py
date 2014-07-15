@@ -77,7 +77,8 @@ class AppGrid(Gtk.EventBox):
         style = self.get_style_context()
         style.add_class('app-grid')
 
-        self._sw = ScrolledWindow(hexpand=True, vexpand=True)
+        self._sw = ScrolledWindow(hexpand=True, vexpand=True,
+                                  wide_scrollbar=True)
 
         self._sw.props.margin_top = 7
         self._sw.props.margin_bottom = 0
