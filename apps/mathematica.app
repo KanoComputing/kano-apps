@@ -3,7 +3,7 @@
     "description": "Technical Computing System",
 
     "icon": "mathematica-app",
-    "colour": "#E5696A",
+    "colour": "#C43B2A",
 
     "categories": ["tools"],
 

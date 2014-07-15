@@ -4,7 +4,7 @@
     "help": "Leafpad is the easiest way to read and edit your text files.",
 
     "icon": "leafpad-app",
-    "colour": "#84C36D",
+    "colour": "#509C3B",
 
     "categories": ["tools"],
 

@@ -6,7 +6,7 @@
     "icon": "terminal-app",
     "colour": "#4A5152",
 
-    "categories": ["tools"],
+    "categories": ["code"],
 
     "app_package": "",
     "dependencies": ["lxterminal"],

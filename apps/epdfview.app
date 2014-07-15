@@ -4,7 +4,7 @@
     "help": "PDFs are an amazing type of document that make it really easy to send words and pictures in the same file. ePDFView lets you read PDFs like the Kano Books right on your own computer.",
 
     "icon": "epdfview-app",
-    "colour": "#E44648",
+    "colour": "#DA3F41",
 
     "categories": ["tools"],
 

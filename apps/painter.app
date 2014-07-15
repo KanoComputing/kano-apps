@@ -3,9 +3,9 @@
     "description": "Create and Edit Drawings or Images",
 
     "icon": "painter-app",
-    "colour": "#C3AA82",
+    "colour": "#B09366",
 
-    "categories": ["tools"],
+    "categories": ["media"],
 
     "app_package": "gnome-paint",
     "dependencies": [],

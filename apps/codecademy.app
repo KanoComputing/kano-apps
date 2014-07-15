@@ -4,7 +4,7 @@
     "help": "Codecademy is a cool way to learn how to code, through fun lessons and simple steps.",
 
     "icon": "codecademy",
-    "colour": "#4A5152",
+    "colour": "#204255",
 
     "categories": ["tools"],
 

@@ -3,7 +3,7 @@
     "description": "Perform simple and scientific calculations",
 
     "icon": "calculator",
-    "colour": "#6B7678",
+    "colour": "#647072",
 
     "categories": ["tools"],
 
