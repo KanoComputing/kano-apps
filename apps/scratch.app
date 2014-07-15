@@ -8,7 +8,7 @@
 
     "categories": ["code"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["scratch"],
     "exec": "scratch"
 }

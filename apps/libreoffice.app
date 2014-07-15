@@ -8,7 +8,7 @@
 
     "categories": ["tools"],
 
-    "app_package": "libreoffice",
+    "packages": ["libreoffice"],
     "dependencies": [],
     "exec": "libreoffice"
 }

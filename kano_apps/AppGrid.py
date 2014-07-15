@@ -7,6 +7,7 @@
 import os
 import re
 import random
+import json
 from gi.repository import Gtk, Gdk
 
 from kano_apps.AppData import parse_command
@@ -15,7 +16,7 @@ from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 import kano.gtk3.kano_dialog as kano_dialog
-
+from kano_updater.utils import get_dpkg_dict, install
 
 class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
@@ -24,6 +25,8 @@ class Apps(Gtk.Notebook):
         self._window = main_win
         self.connect("switch-page", self._switch_page)
 
+        self._installed_packages = get_dpkg_dict()[0]
+
         # split apps to 5 arrays
         tools_apps = []
         others_apps = []
@@ -31,6 +34,9 @@ class Apps(Gtk.Notebook):
         code_apps = []
         media_apps = []
         for app in apps:
+            if not self.is_app_installed(app):
+                app["_install"] = True
+
             if "categories" in app:
                 if "tools" in app["categories"]:
                     tools_apps.append(app)
@@ -67,6 +73,12 @@ class Apps(Gtk.Notebook):
             others = AppGrid(others_apps, main_win)
             others_label = Gtk.Label("OTHERS")
             self.append_page(others, others_label)
+
+    def is_app_installed(self, app):
+        for pkg in app["packages"] + app["dependencies"]:
+            if pkg not in self._installed_packages:
+                return False
+        return True
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
@@ -125,6 +137,10 @@ class AppGridEntry(Gtk.EventBox):
 
         texts = Gtk.VBox()
 
+        name = app["name"]
+        if "_install" in app:
+            name = "Install {}".format(name)
+
         self._app_name = app_name = Gtk.Label(
             app['name'],
             halign=Gtk.Align.START,
@@ -150,11 +166,11 @@ class AppGridEntry(Gtk.EventBox):
         entry.pack_start(texts, True, True, 0)
 
         if "help" in self._app:
-            more_btn = Gtk.Button(vexpand=False, hexpand=False)
+            more_btn = Gtk.Button(hexpand=False)
             more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
             more_btn.set_image(more)
             more_btn.props.margin_right = 21
-            more_btn.props.valign = Gtk.Align.CENTER
+            #more_btn.props.valign = Gtk.Align.CENTER
             more_btn.get_style_context().add_class('more-button')
             more_btn.connect("clicked", self._show_more)
             more_btn.set_tooltip_text("More information")
@@ -166,25 +182,26 @@ class AppGridEntry(Gtk.EventBox):
         file_name = re.sub(' ', '-', self._app["name"]) + ".lnk"
         on_desktop = os.path.exists(kdesk_dir + file_name)
 
-        desktop_btn = Gtk.Button(vexpand=False, hexpand=False)
+        desktop_btn = Gtk.Button(hexpand=False)
         desktop_btn.props.margin_right = 21
-        desktop_btn.props.valign = Gtk.Align.CENTER
+        #desktop_btn.props.valign = Gtk.Align.CENTER
 
-        if os.path.exists(self._KDESK_EXEC):
-            if on_desktop:
-                rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
-                desktop_btn.set_image(rm)
-                desktop_btn.get_style_context().add_class('desktop-button')
-                desktop_btn.connect("clicked", self._desktop_rm)
-                desktop_btn.set_tooltip_text("Remove from desktop")
-            else:
-                add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
-                desktop_btn.set_image(add)
-                desktop_btn.get_style_context().add_class('desktop-button')
-                desktop_btn.connect("clicked", self._desktop_add)
-                desktop_btn.set_tooltip_text("Add to desktop")
+        if "_install" not in self._app:
+            if os.path.exists(self._KDESK_EXEC):
+                if on_desktop:
+                    rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
+                    desktop_btn.set_image(rm)
+                    desktop_btn.get_style_context().add_class('desktop-button')
+                    desktop_btn.connect("clicked", self._desktop_rm)
+                    desktop_btn.set_tooltip_text("Remove from desktop")
+                else:
+                    add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
+                    desktop_btn.set_image(add)
+                    desktop_btn.get_style_context().add_class('desktop-button')
+                    desktop_btn.connect("clicked", self._desktop_add)
+                    desktop_btn.set_tooltip_text("Add to desktop")
 
-        entry.pack_start(desktop_btn, False, False, 0)
+            entry.pack_start(desktop_btn, False, False, 0)
 
         self.add(entry)
         attach_cursor_events(self)
@@ -220,20 +237,35 @@ class AppGridEntry(Gtk.EventBox):
             }
         )
         kdialog.set_action_background("grey")
+        kdialog.dialog.set_size_request(300, 0)
         response = kdialog.run()
         self._window.unblur()
 
         return True
 
     def _mouse_click(self, ebox, event):
+        if "_install" in self._app:
+            install(self._app["packages"] + self._app["dependencies"])
+
         self._launch_app(self._cmd['cmd'], self._cmd['args'])
         return True
 
     def _desktop_add(self, event):
-        self._create_kdesk_icon()
+        display_name = Gdk.Display.get_default().get_name()
+        kdesk_data_file = "/tmp/kdesk-metrics{}.dump".format(display_name)
 
-        os.system('kdesk -r')
-        self._window.show_apps_view()
+        desktop_full = False
+        if os.path.exists(kdesk_data_file):
+            with open(kdesk_data_file, "r") as f:
+                kdesk_data = json.load(f)
+                if "grid_full" in kdesk_data:
+                    desktop_full = kdesk_data["grid-full"]
+
+        if desktop_full != True:
+            self._create_kdesk_icon()
+
+            os.system('kdesk -r')
+            self._window.show_apps_view()
 
     def _desktop_rm(self, event):
         os.unlink(self._get_kdesk_icon_path())

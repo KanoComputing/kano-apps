@@ -8,7 +8,7 @@
 
     "categories": ["tools"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["chromium-browser"],
     "exec": "chromium"
 }

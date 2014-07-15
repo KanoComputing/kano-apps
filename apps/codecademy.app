@@ -8,7 +8,7 @@
 
     "categories": ["code"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["chromium-browser"],
     "exec": "chromium --app=http://www.codecademy.com/"
 }

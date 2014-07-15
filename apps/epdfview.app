@@ -8,7 +8,7 @@
 
     "categories": ["media"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["epdfview"],
     "exec": "epdfview"
 }

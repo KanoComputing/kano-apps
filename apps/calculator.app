@@ -7,7 +7,7 @@
 
     "categories": ["tools"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["galculator"],
     "exec": "galculator"
 }

@@ -7,7 +7,7 @@
 
     "categories": ["media"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["epdfviewer"],
     "exec": "epdfview 'books/Book 2 - Levels.pdf'"
 }

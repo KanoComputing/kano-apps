@@ -8,7 +8,7 @@
 
     "categories": ["tools"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["wolfram-engine"],
     "exec": "rxvt -title 'Wolfram Language' -e wolfram"
 }

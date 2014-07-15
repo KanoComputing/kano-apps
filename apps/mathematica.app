@@ -7,7 +7,7 @@
 
     "categories": ["tools"],
 
-    "app_package": "wolfram-engine",
-    "dependencies": [],
+    "packages": [],
+    "dependencies": ["wolfram-engine"],
     "exec": "/opt/Wolfram/WolframEngine/10.0/Executables/mathematica"
 }

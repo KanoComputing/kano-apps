@@ -8,7 +8,7 @@
 
     "categories": ["code"],
 
-    "app_package": "",
+    "packages": [],
     "dependencies": ["lxterminal"],
     "exec": "lxterminal"
 }

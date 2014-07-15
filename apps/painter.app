@@ -7,7 +7,7 @@
 
     "categories": ["media"],
 
-    "app_package": "gnome-paint",
+    "packages": ["gnome-paint"],
     "dependencies": [],
     "exec": "gnome-paint"
 }
