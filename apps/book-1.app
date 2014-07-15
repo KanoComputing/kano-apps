@@ -8,6 +8,6 @@
     "categories": ["media"],
 
     "packages": [],
-    "dependencies": ["epdfviewer"],
+    "dependencies": ["epdfview"],
     "exec": "epdfview 'books/Book 1 - Make a Computer.pdf'"
 }

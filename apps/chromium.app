@@ -9,6 +9,6 @@
     "categories": ["tools"],
 
     "packages": [],
-    "dependencies": ["chromium-browser"],
+    "dependencies": ["chromium"],
     "exec": "chromium"
 }

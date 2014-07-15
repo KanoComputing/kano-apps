@@ -142,7 +142,7 @@ class AppGridEntry(Gtk.EventBox):
             name = "Install {}".format(name)
 
         self._app_name = app_name = Gtk.Label(
-            app['name'],
+            name,
             halign=Gtk.Align.START,
             valign=Gtk.Align.CENTER,
             hexpand=True

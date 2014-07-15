@@ -9,6 +9,6 @@
     "categories": ["code"],
 
     "packages": [],
-    "dependencies": ["chromium-browser"],
+    "dependencies": ["chromium"],
     "exec": "chromium --app=http://www.codecademy.com/"
 }
