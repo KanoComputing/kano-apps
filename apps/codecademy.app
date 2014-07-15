@@ -6,7 +6,7 @@
     "icon": "codecademy",
     "colour": "#204255",
 
-    "categories": ["tools"],
+    "categories": ["code"],
 
     "app_package": "",
     "dependencies": ["chromium-browser"],

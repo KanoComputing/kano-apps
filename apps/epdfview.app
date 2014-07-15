@@ -6,7 +6,7 @@
     "icon": "epdfview-app",
     "colour": "#DA3F41",
 
-    "categories": ["tools"],
+    "categories": ["media"],
 
     "app_package": "",
     "dependencies": ["epdfview"],
