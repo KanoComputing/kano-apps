@@ -9,5 +9,5 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "exec": "epdfview 'books/Book 1 - Make a Computer.pdf'"
+    "exec": "epdfview '/usr/share/kano-apps/books/Book 1 - Make a Computer.pdf'"
 }

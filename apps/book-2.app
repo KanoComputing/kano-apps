@@ -9,5 +9,5 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "exec": "epdfview 'books/Book 2 - Levels.pdf'"
+    "exec": "epdfview '/usr/share/kano-apps/books/Book 2 - Levels.pdf'"
 }
