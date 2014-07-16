@@ -237,7 +237,6 @@ class AppGridEntry(Gtk.EventBox):
             }
         )
         kdialog.set_action_background("grey")
-        kdialog.dialog.set_size_request(300, 0)
         response = kdialog.run()
         self._window.unblur()
 
@@ -245,10 +244,49 @@ class AppGridEntry(Gtk.EventBox):
 
     def _mouse_click(self, ebox, event):
         if "_install" in self._app:
-            install(self._app["packages"] + self._app["dependencies"])
+            self._install()
+        else:
+            self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
-        self._launch_app(self._cmd['cmd'], self._cmd['args'])
         return True
+
+    # TODO: This should be a part of the updater
+    def _install(self):
+        pkgs = " ".join(self._app["packages"] + self._app["dependencies"])
+        rv = os.system("rxvt -title 'Installing {}' -e bash -c 'sudo apt-get install -y {}'".format(self._app["name"], pkgs))
+
+        done = True
+        installed_packages = get_dpkg_dict()[0]
+        for pkg in self._app["packages"] + self._app["dependencies"]:
+            if pkg not in installed_packages:
+                done = False
+                break
+
+        head = "Installation failed"
+        message = "{} cannot be installed at the moment.".format(self._app["name"]) + \
+                  "Please make sure your kit is connected to the internet and there " + \
+                  "is enough space left on your card."
+        if done:
+            head = "Done!"
+            message = "{} installed succesfully!".format(self._app["name"])
+
+            self._app_name.set_text(self._app["name"])
+            del self._app["_install"]
+
+        kdialog = kano_dialog.KanoDialog(
+            head, message,
+            {
+                "OK": {
+                    "return_value": 0,
+                    "color": "green"
+                }
+            }
+        )
+        kdialog.set_action_background("grey")
+
+        self._window.blur()
+        response = kdialog.run()
+        self._window.unblur()
 
     def _desktop_add(self, event):
         display_name = Gdk.Display.get_default().get_name()
