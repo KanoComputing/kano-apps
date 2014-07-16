@@ -286,7 +286,9 @@ class AppGridEntry(Gtk.EventBox):
             icon = icon_info.get_filename()
 
         args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["exec"]["args"])
-        cmd = "{} {}".format(self._app["exec"]["cmd"], " ".join(args))
+        cmd = self._app["exec"]["cmd"]
+        if len(args) > 0:
+            cmd += " " + " ".join(args)
 
         kdesk_entry = 'table Icon\n'
         kdesk_entry += '  Caption:\n'
