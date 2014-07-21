@@ -10,33 +10,25 @@ from gi.repository import Gtk, Gdk
 from kano_apps import Media
 from kano_apps.UIElements import Contents
 from kano_apps.AppGrid import Apps
-from kano_apps.AddDialog import AddDialog
+#from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
 from kano_apps.AppData import get_applications
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
+from kano.gtk3.application_window import ApplicationWindow
 
 
-class MainWindow(Gtk.Window):
+class MainWindow(ApplicationWindow):
     def __init__(self):
-        Gtk.Window.__init__(self, title='Apps')
+        ApplicationWindow.__init__(self, 'Apps', 600, 488)
 
         self._last_page = 0
-
-        # Set up window
-        screen = Gdk.Screen.get_default()
-        self._win_width = 600
-        self._win_height = 488
-        self.set_decorated(False)
-        self.set_resizable(False)
-        self.set_size_request(self._win_width, self._win_height)
-        self.set_position(Gtk.WindowPosition.CENTER)
 
         # Destructor
         self.connect('delete-event', Gtk.main_quit)
 
         # Styling
-        apply_styles()
+        screen = Gdk.Screen.get_default()
         specific_css_provider = Gtk.CssProvider()
         specific_css_provider.load_from_path(Media.media_dir() + 'css/style.css')
         specific_style_context = Gtk.StyleContext()
@@ -54,26 +46,9 @@ class MainWindow(Gtk.Window):
         self._grid.attach(self._contents, 0, 1, 1, 1)
         self._grid.set_row_spacing(0)
 
-        self._overlay = Gtk.Overlay()
-        self._overlay.add(self._grid)
-
-        self._blur = Gtk.EventBox()
-        style = self._blur.get_style_context()
-        style.add_class('blur')
-
-        self.add(self._overlay)
+        self.set_main_widget(self._grid)
 
         self.show_apps_view()
-
-        #self.blur()
-        #self.unblur()
-
-    def blur(self):
-        self._overlay.add_overlay(self._blur)
-        self._blur.show()
-
-    def unblur(self):
-        self._overlay.remove(self._blur)
 
     def get_main_area(self):
         return self._contents
@@ -100,6 +75,6 @@ class MainWindow(Gtk.Window):
 
     # TODO: Remove.
     # Not in use any more. See AddDialog class for more info.
-    def show_add_dialog(self):
-        dialog = AddDialog(self)
-        self.get_main_area().set_contents(dialog)
+    #def show_add_dialog(self):
+    #    dialog = AddDialog(self)
+    #    self.get_main_area().set_contents(dialog)

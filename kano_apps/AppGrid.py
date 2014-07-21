@@ -218,14 +218,20 @@ class AppGridEntry(Gtk.EventBox):
 
         # The execvp should not return, so if we reach this point,
         # there was an error.
-        message = Gtk.MessageDialog(type=Gtk.MessageType.ERROR,
-                                    buttons=Gtk.ButtonsType.OK)
-        message.set_markup("Unable to start the application.")
+        message = kano_dialog.KanoDialog(
+            "Error",
+            "Unable to start the application.",
+            {
+                "OK": {
+                    "return_value": 0,
+                    "color": "red"
+                }
+            },
+            parent_window=self._window
+        )
         message.run()
-        message.destroy()
 
     def _show_more(self, widget):
-        self._window.blur()
         kdialog = kano_dialog.KanoDialog(
             self._app["name"],
             self._app['help'] if "help" in self._app else self._app['description'],
@@ -234,11 +240,11 @@ class AppGridEntry(Gtk.EventBox):
                     "return_value": 0,
                     "color": "green"
                 }
-            }
+            },
+            parent_window=self._window
         )
         kdialog.set_action_background("grey")
         response = kdialog.run()
-        self._window.unblur()
 
         return True
 
