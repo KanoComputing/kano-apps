@@ -27,6 +27,8 @@ class MainWindow(ApplicationWindow):
         # Destructor
         self.connect('delete-event', Gtk.main_quit)
 
+        self.set_icon_from_file("/usr/share/kano-desktop/icons/apps.png")
+
         # Styling
         screen = Gdk.Screen.get_default()
         specific_css_provider = Gtk.CssProvider()
