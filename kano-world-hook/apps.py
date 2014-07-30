@@ -42,7 +42,7 @@ def run(args):
 def launch(paths):
     data_path, icon_path = paths
 
-    run_cmd("pkill chromium kano-world-launcher")
+    run_cmd("pkill kano-world-launcher")
 
     cmd = "kano-apps"
     args = ["install", data_path, icon_path]
