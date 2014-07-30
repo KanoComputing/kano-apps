@@ -3,6 +3,7 @@
 import pprint
 import json
 import os
+import time
 
 from kano.utils import run_cmd, download_url, pkill
 from kano.logging import logger
@@ -31,6 +32,7 @@ def run(args):
     del data['icon_url']
     del data['likes']
     del data['comments_count']
+    data['time_installed'] = int(time.time())
 
     # write out the data
     data_path = '/tmp/{}.app'.format(app_id)
