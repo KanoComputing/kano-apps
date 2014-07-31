@@ -10,7 +10,7 @@ import random
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppData import parse_command
+from kano_apps.AppData import parse_command, install_app
 from kano_apps.Media import media_dir, get_app_icon
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
@@ -38,15 +38,16 @@ class Apps(Gtk.Notebook):
                 app["_install"] = True
 
             if "categories" in app:
-                if "tools" in app["categories"]:
+                categories = map(lambda c: c.lower(), app["categories"])
+                if "tools" in categories:
                     tools_apps.append(app)
-                if "others" in app["categories"]:
+                if "others" in categories:
                     others_apps.append(app)
-                if "games" in app["categories"]:
+                if "games" in categories:
                     games_apps.append(app)
-                if "code" in app["categories"]:
+                if "code" in categories:
                     code_apps.append(app)
-                if "media" in app["categories"]:
+                if "media" in categories:
                     media_apps.append(app)
 
         if len(games_apps) > 0:
@@ -123,7 +124,7 @@ class AppGridEntry(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
 
         self._app = app
-        self._cmd = app['exec']
+        self._cmd = app['launch_command']
 
         self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(app['colour']))
 
@@ -137,7 +138,7 @@ class AppGridEntry(Gtk.EventBox):
 
         texts = Gtk.VBox()
 
-        name = app["name"]
+        name = app["title"]
         if "_install" in app:
             name = "Install {}".format(name)
 
@@ -153,7 +154,7 @@ class AppGridEntry(Gtk.EventBox):
         texts.pack_start(app_name, False, False, 0)
 
         self._app_desc = app_desc = Gtk.Label(
-            app['description'],
+            app['tagline'],
             halign=Gtk.Align.START,
             valign=Gtk.Align.START,
             hexpand=True
@@ -165,7 +166,7 @@ class AppGridEntry(Gtk.EventBox):
 
         entry.pack_start(texts, True, True, 0)
 
-        if "help" in self._app:
+        if "description" in self._app:
             more_btn = Gtk.Button(hexpand=False)
             more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
             more_btn.set_image(more)
@@ -179,7 +180,7 @@ class AppGridEntry(Gtk.EventBox):
 
 
         kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        file_name = re.sub(' ', '-', self._app["name"]) + ".lnk"
+        file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
         on_desktop = os.path.exists(kdesk_dir + file_name)
 
         desktop_btn = Gtk.Button(hexpand=False)
@@ -233,8 +234,8 @@ class AppGridEntry(Gtk.EventBox):
 
     def _show_more(self, widget):
         kdialog = kano_dialog.KanoDialog(
-            self._app["name"],
-            self._app['help'] if "help" in self._app else self._app['description'],
+            self._app["title"],
+            self._app['description'] if "description" in self._app else self._app['tagline'],
             {
                 "OK, GOT IT": {
                     "return_value": 0,
@@ -256,27 +257,18 @@ class AppGridEntry(Gtk.EventBox):
 
         return True
 
-    # TODO: This should be a part of the updater
     def _install(self):
-        pkgs = " ".join(self._app["packages"] + self._app["dependencies"])
-        rv = os.system("rxvt -title 'Installing {}' -e bash -c 'sudo apt-get install -y {}'".format(self._app["name"], pkgs))
-
-        done = True
-        installed_packages = get_dpkg_dict()[0]
-        for pkg in self._app["packages"] + self._app["dependencies"]:
-            if pkg not in installed_packages:
-                done = False
-                break
+        done = install_app(self._app)
 
         head = "Installation failed"
-        message = "{} cannot be installed at the moment.".format(self._app["name"]) + \
+        message = "{} cannot be installed at the moment.".format(app["title"]) + \
                   "Please make sure your kit is connected to the internet and there " + \
                   "is enough space left on your card."
         if done:
             head = "Done!"
-            message = "{} installed succesfully!".format(self._app["name"])
+            message = "{} installed succesfully!".format(app["title"])
 
-            self._app_name.set_text(self._app["name"])
+            self._app_name.set_text(self._app["title"])
             del self._app["_install"]
 
         kdialog = kano_dialog.KanoDialog(
@@ -286,13 +278,12 @@ class AppGridEntry(Gtk.EventBox):
                     "return_value": 0,
                     "color": "green"
                 }
-            }
+            },
+            parent_window = self._window
         )
         kdialog.set_action_background("grey")
 
-        self._window.blur()
         response = kdialog.run()
-        self._window.unblur()
 
     def _desktop_add(self, event):
         display_name = Gdk.Display.get_default().get_name()
@@ -319,7 +310,7 @@ class AppGridEntry(Gtk.EventBox):
 
     def _get_kdesk_icon_path(self):
         kdesk_dir = os.path.expanduser(self._KDESK_DIR)
-        return kdesk_dir + re.sub(' ', '-', self._app["name"]) + ".lnk"
+        return kdesk_dir + re.sub(' ', '-', self._app["title"]) + ".lnk"
 
     def _create_kdesk_icon(self):
         icon_theme = Gtk.IconTheme.get_default()
@@ -329,8 +320,8 @@ class AppGridEntry(Gtk.EventBox):
         if icon_info != None:
             icon = icon_info.get_filename()
 
-        args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["exec"]["args"])
-        cmd = self._app["exec"]["cmd"]
+        args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["launch_command"]["args"])
+        cmd = self._app["launch_command"]["cmd"]
         if len(args) > 0:
             cmd += " " + " ".join(args)
 
@@ -354,42 +345,6 @@ class AppGridEntry(Gtk.EventBox):
         f = open(self._get_kdesk_icon_path(), 'w')
         f.write(kdesk_entry)
         f.close()
-
-#class UserApp(SystemApp):
-#    def __init__(self, app, window):
-#        SystemApp.__init__(self, app, window)
-#
-#        self._icon_source = app['icon_source']
-#
-#        self._add_link("Remove", self._remove_mouse_click)
-#
-#    def _remove_mouse_click(self, widget, event):
-#        os.unlink(self._icon_source)
-#
-#        kdesk_dir = os.path.expanduser("~/.kdesktop")
-#        kdesk_icon = kdesk_dir + "/" + re.sub(' ', '-', self._app["name"]) + ".lnk"
-#
-#        if os.path.exists(kdesk_icon):
-#            os.unlink(kdesk_icon)
-#            os.system("kdesk -r")
-#
-#        self._window.show_apps_view()
-#        return True
-
-
-#class UninstallableApp(SystemApp):
-#    def __init__(self, app, window):
-#        SystemApp.__init__(self, app, window)
-#
-#        # Deal with the params placeholder
-#        uninstall_cmd = re.sub(r'\%[pP]', 'uninstall', app['Uninstall'])
-#        self._uninstall_cmd = parse_command(uninstall_cmd)
-#
-#        self._add_link("Uninstall", self._remove_mouse_click)
-#
-#    def _remove_mouse_click(self, widget, event):
-#        self._launch_app(self._uninstall_cmd['cmd'], self._uninstall_cmd['args'])
-
 
 #class AddButton(AppGridEntry):
 #    def __init__(self, window):

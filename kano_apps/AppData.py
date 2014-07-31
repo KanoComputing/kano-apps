@@ -8,6 +8,7 @@
 import os
 import re
 import json
+from kano_updater.utils import get_dpkg_dict, install
 
 _SYSTEM_ICONS_LOC = '/usr/share/kano-applications/'
 _INSTALLED_ICONS_LOC = '/usr/local/share/kano-applications/'
@@ -51,10 +52,29 @@ def get_applications():
     apps += _load_apps_from_dir(_INSTALLED_ICONS_LOC)
 
     for app in apps:
-        if 'exec' in app:
-            app['exec'] = parse_command(app['exec'])
+        if 'launch_command' in app:
+            app['launch_command'] = parse_command(app['launch_command'])
 
-    return sorted(apps, key=lambda a: a['name'].lower())
+    return sorted(apps, key=lambda a: a['title'].lower())
+
+def install_app(app, sudo_pwd=None):
+    pkgs = " ".join(app["packages"] + app["dependencies"])
+
+    cmd =  "rxvt -title 'Installing {}' -e bash -c ".format(app["title"])
+    if sudo_pwd:
+        cmd += "'echo {} | sudo -S apt-get install -y {}'".format(sudo_pwd, pkgs)
+    else:
+        cmd += "'sudo apt-get install -y {}'".format(pkgs, sudo_pwd)
+    rv = os.system(cmd)
+
+    done = True
+    installed_packages = get_dpkg_dict()[0]
+    for pkg in app["packages"] + app["dependencies"]:
+        if pkg not in installed_packages:
+            done = False
+            break
+
+    return done
 
 def parse_command(cmd_line):
     cmd_line = re.sub(r'\%[fFuUpP]', '', cmd_line)

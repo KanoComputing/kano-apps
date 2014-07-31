@@ -27,3 +27,7 @@ class Contents(Gtk.EventBox):
 
         self.add(obj)
         obj.show_all()
+
+    def remove_contents(self):
+        for w in self.get_children():
+            self.remove(w)
