@@ -1,7 +1,7 @@
 {
     "title": "Kano Book 1",
     "tagline": "Book 1: Make a computer",
-    "slug": "kano-book-1"
+    "slug": "kano-book-1",
 
     "icon": "book1",
     "colour": "#F4A15D",
