@@ -61,7 +61,7 @@ def main():
 
     # Regenerate all others
     for app in apps:
-        logger.info("Generating a desktop entry for {}".format(app["name"]))
+        logger.info("Generating a desktop entry for {}".format(app["title"]))
 
         de = create_desktop_entry(app)
         file_name = _get_dentry_filename(app)
