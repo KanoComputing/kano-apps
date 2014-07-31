@@ -166,7 +166,10 @@ class MainWindow(ApplicationWindow):
                 with open(app_data_file, "w") as f:
                     f.write(json.dumps(app_data))
 
-                system_app_data_file = "/usr/share/kano-applications/{}.app".format(app_data["slug"])
+                local_app_dir = "/usr/local/share/kano-applications"
+                run_cmd("echo {} | sudo mkdir -p {}".format(pw, local_app_dir))
+
+                system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
                 run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_data_file, system_app_data_file))
                 run_cmd("echo {} | sudo update-app-dir".format(pw))
 
