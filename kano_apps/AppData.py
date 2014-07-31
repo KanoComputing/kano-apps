@@ -49,7 +49,12 @@ def _load_apps_from_dir(loc):
 
 def get_applications():
     apps = _load_apps_from_dir(_SYSTEM_ICONS_LOC)
-    apps += _load_apps_from_dir(_INSTALLED_ICONS_LOC)
+
+    user_apps = _load_apps_from_dir(_INSTALLED_ICONS_LOC)
+    for app in user_apps:
+        app["user"] = True
+
+    apps += user_apps
 
     for app in apps:
         if 'launch_command' in app:
@@ -71,6 +76,28 @@ def install_app(app, sudo_pwd=None):
     installed_packages = get_dpkg_dict()[0]
     for pkg in app["packages"] + app["dependencies"]:
         if pkg not in installed_packages:
+            done = False
+            break
+
+    return done
+
+def uninstall_app(app, sudo_pwd=None):
+    if len(app["packages"]) == 0:
+        return True
+
+    pkgs = " ".join(app["packages"])
+
+    cmd =  "rxvt -title 'Uninstalling {}' -e bash -c ".format(app["title"])
+    if sudo_pwd:
+        cmd += "'echo {} | sudo -S apt-get remove -y {}'".format(sudo_pwd, pkgs)
+    else:
+        cmd += "'sudo apt-get remove -y {}'".format(pkgs, sudo_pwd)
+    rv = os.system(cmd)
+
+    done = True
+    installed_packages = get_dpkg_dict()[0]
+    for pkg in app["packages"]:
+        if pkg in installed_packages:
             done = False
             break
 

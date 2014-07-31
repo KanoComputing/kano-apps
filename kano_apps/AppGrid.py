@@ -10,13 +10,15 @@ import random
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppData import parse_command, install_app
+from kano_apps.AppData import parse_command, install_app, uninstall_app
 from kano_apps.Media import media_dir, get_app_icon
+from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
-import kano.gtk3.kano_dialog as kano_dialog
+from kano.gtk3.kano_dialog import KanoDialog
 from kano_updater.utils import get_dpkg_dict, install
+from kano.utils import run_cmd
 
 class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
@@ -178,6 +180,20 @@ class AppGridEntry(Gtk.EventBox):
             more_btn.connect("realize", self._set_cursor_to_hand)
             entry.pack_start(more_btn, False, False, 0)
 
+        if "user" in self._app:
+            remove_btn = Gtk.Button(hexpand=False)
+            self._res_bin_open = Gtk.Image.new_from_file("{}/icons/trashbin-open.png".format(media_dir()))
+            self._res_bin_closed = Gtk.Image.new_from_file("{}/icons/trashbin-closed.png".format(media_dir()))
+            remove_btn.set_image(self._res_bin_closed)
+            remove_btn.props.margin_right = 21
+            #remove_btn.props.valign = Gtk.Align.CENTER
+            remove_btn.get_style_context().add_class('more-button')
+            remove_btn.connect("clicked", self._uninstall_app)
+            remove_btn.set_tooltip_text("Remove")
+            remove_btn.connect("realize", self._set_cursor_to_hand)
+            remove_btn.connect("enter-notify-event", self._open_bin)
+            remove_btn.connect("leave-notify-event", self._close_bin)
+            entry.pack_start(remove_btn, False, False, 0)
 
         kdesk_dir = os.path.expanduser('~/.kdesktop/')
         file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
@@ -211,6 +227,12 @@ class AppGridEntry(Gtk.EventBox):
     def _set_cursor_to_hand(self, widget, data=None):
         widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
+    def _open_bin(self, widget, event):
+        widget.set_image(self._res_bin_open)
+
+    def _close_bin(self, widget, event):
+        widget.set_image(self._res_bin_closed)
+
     def _launch_app(self, cmd, args):
         try:
             os.execvp(cmd, [cmd] + args)
@@ -219,7 +241,7 @@ class AppGridEntry(Gtk.EventBox):
 
         # The execvp should not return, so if we reach this point,
         # there was an error.
-        message = kano_dialog.KanoDialog(
+        message = KanoDialog(
             "Error",
             "Unable to start the application.",
             {
@@ -233,7 +255,7 @@ class AppGridEntry(Gtk.EventBox):
         message.run()
 
     def _show_more(self, widget):
-        kdialog = kano_dialog.KanoDialog(
+        kdialog = KanoDialog(
             self._app["title"],
             self._app['description'] if "description" in self._app else self._app['tagline'],
             {
@@ -257,21 +279,65 @@ class AppGridEntry(Gtk.EventBox):
 
         return True
 
+    def _uninstall_app(self, event):
+        confirmation = KanoDialog(
+            title_text="Removing {}".format(self._app["title"]),
+            description_text="This application will be uninstalled and removed from apps. Do you wish to proceed?",
+            button_dict={
+                "YES": {
+                    "return_value": 0
+                },
+                "NO": {
+                    "return_value": -1,
+                    "color": "red"
+                }
+            },
+            parent_window=self._window
+        )
+
+        rv = confirmation.run()
+        del confirmation
+        if rv < 0:
+            return
+
+        pw = get_sudo_password("Uninstalling {}".format(self._app["title"]), self._window)
+        if pw is None:
+            return
+
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
+        success = uninstall_app(self._app, pw)
+        if success:
+            if os.path.exists(self._get_kdesk_icon_path()):
+                self._desktop_rm()
+
+            local_app_dir = "/usr/local/share/kano-applications"
+            system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
+            run_cmd("echo {} | sudo -S rm {}".format(pw, system_app_data_file))
+            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+
+            system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(self._app["slug"])
+            run_cmd("echo {} | sudo -S rm {}".format(pw, system_app_icon_file))
+            run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
+
+        self._window.refresh()
+
     def _install(self):
         done = install_app(self._app)
 
         head = "Installation failed"
-        message = "{} cannot be installed at the moment.".format(app["title"]) + \
+        message = "{} cannot be installed at the moment.".format(self._app["title"]) + \
                   "Please make sure your kit is connected to the internet and there " + \
                   "is enough space left on your card."
         if done:
             head = "Done!"
-            message = "{} installed succesfully!".format(app["title"])
+            message = "{} installed succesfully!".format(self._app["title"])
 
             self._app_name.set_text(self._app["title"])
             del self._app["_install"]
 
-        kdialog = kano_dialog.KanoDialog(
+        kdialog = KanoDialog(
             head, message,
             {
                 "OK": {
@@ -284,6 +350,7 @@ class AppGridEntry(Gtk.EventBox):
         kdialog.set_action_background("grey")
 
         response = kdialog.run()
+        self._window.refresh()
 
     def _desktop_add(self, event):
         display_name = Gdk.Display.get_default().get_name()
@@ -300,13 +367,13 @@ class AppGridEntry(Gtk.EventBox):
             self._create_kdesk_icon()
 
             os.system('kdesk -r')
-            self._window.show_apps_view()
+            self._window.refresh()
 
-    def _desktop_rm(self, event):
+    def _desktop_rm(self, event=None):
         os.unlink(self._get_kdesk_icon_path())
 
         os.system('kdesk -r')
-        self._window.show_apps_view()
+        self._window.refresh()
 
     def _get_kdesk_icon_path(self):
         kdesk_dir = os.path.expanduser(self._KDESK_DIR)

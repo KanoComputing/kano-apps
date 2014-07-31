@@ -54,10 +54,12 @@ def main():
 
     # Remove unused ones
     apps_dentries = map(lambda a: _get_dentry_filename(a), apps)
+    print apps_dentries
     for de in os.listdir(_DENTRIES_LOC):
-        if de[0:5] == de and de not in apps_dentries:
+        print de, de[0:5] == "auto_", de not in apps_dentries
+        if de[0:5] == "auto_" and de not in apps_dentries:
             logger.info("Removing desktop entry {}".format(de))
-            os.unlink(os.join(_DENTRIES_LOC, de))
+            os.unlink(os.path.join(_DENTRIES_LOC, de))
 
     # Regenerate all others
     for app in apps:

@@ -7,6 +7,11 @@
 
 from gi.repository import Gtk
 
+import pam
+import getpass
+
+from kano.gtk3.kano_dialog import KanoDialog
+
 
 class Contents(Gtk.EventBox):
     def __init__(self, win):
@@ -31,3 +36,58 @@ class Contents(Gtk.EventBox):
     def remove_contents(self):
         for w in self.get_children():
             self.remove(w)
+
+
+def get_sudo_password(heading, parent=None):
+    entry = Gtk.Entry()
+    entry.set_visibility(False)
+    kdialog = KanoDialog(
+        title_text=heading,
+        description_text="Enter your sudo password:",
+        widget=entry,
+        has_entry=True,
+        global_style=True,
+        parent_window=parent
+    )
+
+    pw = kdialog.run()
+    del kdialog
+    del entry
+
+    while not pam.authenticate(getpass.getuser(), pw):
+        fail = KanoDialog(
+            title_text=heading,
+            description_text="The password was incorrect. Try again?",
+            button_dict={
+                "YES": {
+                    "return_value": 0
+                },
+                "CANCEL": {
+                    "return_value": -1,
+                    "color": "red"
+                }
+            },
+            parent_window=parent
+        )
+
+        rv = fail.run()
+        del fail
+        if rv < 0:
+            return
+
+        entry = Gtk.Entry()
+        entry.set_visibility(False)
+        kdialog = KanoDialog(
+            title_text=heading,
+            description_text="Re-enter your sudo password:",
+            widget=entry,
+            has_entry=True,
+            global_style=True,
+            parent_window=parent
+        )
+
+        pw = kdialog.run()
+        del kdialog
+        del entry
+
+    return pw

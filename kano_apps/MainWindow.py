@@ -7,13 +7,11 @@
 
 import sys
 import json
-import pam
-import getpass
 
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
-from kano_apps.UIElements import Contents
+from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
 #from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
@@ -99,56 +97,9 @@ class MainWindow(ApplicationWindow):
             with open(app_data_file) as f:
                 app_data = json.load(f)
 
-            entry = Gtk.Entry()
-            entry.set_visibility(False)
-            kdialog = KanoDialog(
-                title_text="Installing {}".format(app_data["title"]),
-                description_text="Enter your sudo password:",
-                widget=entry,
-                has_entry=True,
-                global_style=True,
-                parent_window=self
-            )
-
-            pw = kdialog.run()
-            del kdialog
-            del entry
-
-            while not pam.authenticate(getpass.getuser(), pw):
-                fail = KanoDialog(
-                    title_text="Installing {}".format(app_data["title"]),
-                    description_text="The password was incorrect. Try again?",
-                    button_dict={
-                        "YES": {
-                            "return_value": 0
-                        },
-                        "CANCEL INSTALLATION": {
-                            "return_value": -1,
-                            "color": "red"
-                        }
-                    },
-                    parent_window=self
-                )
-
-                rv = fail.run()
-                del fail
-                if rv < 0:
-                    return
-
-                entry = Gtk.Entry()
-                entry.set_visibility(False)
-                kdialog = KanoDialog(
-                    title_text="Installing {}".format(app_data["title"]),
-                    description_text="Re-enter your sudo password:",
-                    widget=entry,
-                    has_entry=True,
-                    global_style=True,
-                    parent_window=self
-                )
-
-                pw = kdialog.run()
-                del kdialog
-                del entry
+            pw = get_sudo_password("Installing {}".format(app_data["title"]), self)
+            if pw is None:
+                return
 
             self.blur()
 
@@ -167,15 +118,15 @@ class MainWindow(ApplicationWindow):
                     f.write(json.dumps(app_data))
 
                 local_app_dir = "/usr/local/share/kano-applications"
-                run_cmd("echo {} | sudo mkdir -p {}".format(pw, local_app_dir))
+                run_cmd("echo {} | sudo -S mkdir -p {}".format(pw, local_app_dir))
 
                 system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
                 run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_data_file, system_app_data_file))
-                run_cmd("echo {} | sudo update-app-dir".format(pw))
+                run_cmd("echo {} | sudo -S update-app-dir".format(pw))
 
                 system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
-                run_cmd("echo {} | sudo mv {} {}".format(pw, app_icon_file, system_app_icon_file))
-                run_cmd("echo {} | sudo update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
+                run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
+                run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
 
                 head = "Done!"
                 message = "{} installed succesfully!".format(app_data["title"])
