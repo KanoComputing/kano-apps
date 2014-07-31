@@ -1,7 +1,8 @@
 {
-    "name": "Codecademy",
-    "description": "Shortcut to a variety of programming courses",
-    "help": "Codecademy is a cool way to learn how to code, through fun lessons and simple steps.",
+    "title": "Codecademy",
+    "tagline": "Shortcut to a variety of programming courses",
+    "description": "Codecademy is a cool way to learn how to code, through fun lessons and simple steps.",
+    "slug": "codecademy",
 
     "icon": "codecademy",
     "colour": "#204255",
@@ -10,5 +11,5 @@
 
     "packages": [],
     "dependencies": ["chromium"],
-    "exec": "chromium --app=http://www.codecademy.com/"
+    "launch_command": "chromium --app=http://www.codecademy.com/"
 }

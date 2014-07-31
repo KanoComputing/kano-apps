@@ -1,7 +1,8 @@
 {
-    "name": "LibreOffice",
-    "description": "The office productivity suite",
-    "help": "LibreOffice has everything you need to create amazing documents. You can write, calculate, draw, make spreadsheets and presentations, and more.",
+    "title": "LibreOffice",
+    "tagline": "The office productivity suite",
+    "description": "LibreOffice has everything you need to create amazing documents. You can write, calculate, draw, make spreadsheets and presentations, and more.",
+    "slug": "libreoffice",
 
     "icon": "libreoffice-app",
     "colour": "#84B34D",
@@ -10,5 +11,5 @@
 
     "packages": ["libreoffice"],
     "dependencies": [],
-    "exec": "libreoffice"
+    "launch_command": "libreoffice"
 }

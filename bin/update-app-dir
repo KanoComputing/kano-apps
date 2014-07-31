@@ -42,12 +42,12 @@ def create_desktop_entry(app):
         "Name={}\n" +
         "Comment={}\n" +
         "Categories={}\n"
-    ).format(cmd, icon, app["name"], app["description"], categories)
+    ).format(cmd, icon, app["title"], app["tagline"], categories)
 
     return de
 
 def _get_dentry_filename(app):
-    return "auto_" + app["name"].lower().replace(" ", "_") + ".desktop"
+    return "auto_" + app["slug"] + ".desktop"
 
 def main():
     apps = get_applications()

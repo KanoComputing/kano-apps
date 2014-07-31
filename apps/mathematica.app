@@ -1,6 +1,7 @@
 {
-    "name": "Mathematica",
-    "description": "Technical Computing System",
+    "title": "Mathematica",
+    "tagline": "Technical Computing System",
+    "slug": "mathematica",
 
     "icon": "mathematica-app",
     "colour": "#C43B2A",
@@ -9,5 +10,5 @@
 
     "packages": [],
     "dependencies": ["wolfram-engine"],
-    "exec": "/opt/Wolfram/WolframEngine/10.0/Executables/mathematica"
+    "launch_command": "/opt/Wolfram/WolframEngine/10.0/Executables/mathematica"
 }

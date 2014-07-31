@@ -1,6 +1,7 @@
 {
-    "name": "Painter",
-    "description": "Create and Edit Drawings or Images",
+    "title": "Painter",
+    "tagline": "Create and Edit Drawings or Images",
+    "slug": "painter",
 
     "icon": "painter-app",
     "colour": "#B09366",
@@ -9,5 +10,5 @@
 
     "packages": ["gnome-paint"],
     "dependencies": [],
-    "exec": "gnome-paint"
+    "launch_command": "gnome-paint"
 }

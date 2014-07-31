@@ -1,7 +1,8 @@
 {
-    "name": "Scratch",
-    "description": "Scratch development environment",
-    "help": "A different type of visual programming language that uses blocks to create cool programs.",
+    "title": "Scratch",
+    "tagline": "Scratch development environment",
+    "description": "A different type of visual programming language that uses blocks to create cool programs.",
+    "slug": "scratch",
 
     "icon": "scratch",
     "colour": "#F4A15D",
@@ -10,5 +11,5 @@
 
     "packages": [],
     "dependencies": ["scratch"],
-    "exec": "scratch"
+    "launch_command": "scratch"
 }

@@ -1,6 +1,7 @@
 {
-    "name": "Kano Book 1",
-    "description": "Book 1: Make a computer",
+    "title": "Kano Book 1",
+    "tagline": "Book 1: Make a computer",
+    "slug": "kano-book-1"
 
     "icon": "book1",
     "colour": "#F4A15D",
@@ -9,5 +10,5 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "exec": "epdfview '/usr/share/kano-apps/books/Book 1 - Make a Computer.pdf'"
+    "launch_command": "epdfview '/usr/share/kano-apps/books/Book 1 - Make a Computer.pdf'"
 }

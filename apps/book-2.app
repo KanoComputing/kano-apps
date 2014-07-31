@@ -1,6 +1,7 @@
 {
-    "name": "Kano Book 2",
-    "description": "Book 2: Levels",
+    "title": "Kano Book 2",
+    "tagline": "Book 2: Levels",
+    "slug": "kano-book-2",
 
     "icon": "book2",
     "colour": "#6B7678",
@@ -9,5 +10,5 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "exec": "epdfview '/usr/share/kano-apps/books/Book 2 - Levels.pdf'"
+    "launch_command": "epdfview '/usr/share/kano-apps/books/Book 2 - Levels.pdf'"
 }

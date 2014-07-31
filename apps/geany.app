@@ -1,7 +1,8 @@
 {
-    "name": "Geany",
-    "description": "A small and lightweight IDE ",
-    "help": "Geany is a small and fast editor with basic features of an integrated development environment.",
+    "title": "Geany",
+    "tagline": "A small and lightweight IDE ",
+    "description": "Geany is a small and fast editor with basic features of an integrated development environment.",
+    "slug": "geany",
 
     "icon": "geany-app",
     "colour": "#dfda53",
@@ -10,5 +11,5 @@
 
     "packages": [],
     "dependencies": ["geany"],
-    "exec": "geany"
+    "launch_command": "geany"
 }

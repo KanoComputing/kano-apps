@@ -1,7 +1,8 @@
 {
-    "name": "Wolfram",
-    "description": "Technical Programming Environment",
-    "help": "Measure the world around you with Mathematica and Wolfram - the amazing computational knowledge engine that lets you make amazing graphs and dive into data!",
+    "title": "Wolfram",
+    "tagline": "Technical Programming Environment",
+    "description": "Measure the world around you with Mathematica and Wolfram - the amazing computational knowledge engine that lets you make amazing graphs and dive into data!",
+    "slug": "wolfram",
 
     "icon": "wolfram-app",
     "colour": "#E16455",
@@ -10,5 +11,5 @@
 
     "packages": [],
     "dependencies": ["wolfram-engine"],
-    "exec": "rxvt -title 'Wolfram Language' -e wolfram"
+    "launch_command": "rxvt -title 'Wolfram Language' -e wolfram"
 }

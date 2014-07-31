@@ -1,6 +1,7 @@
 {
-    "name": "Calculator",
-    "description": "Perform simple and scientific calculations",
+    "title": "Calculator",
+    "tagline": "Perform simple and scientific calculations",
+    "slug": "calculator",
 
     "icon": "calculator",
     "colour": "#647072",
@@ -9,5 +10,5 @@
 
     "packages": [],
     "dependencies": ["galculator"],
-    "exec": "galculator"
+    "launch_command": "galculator"
 }
