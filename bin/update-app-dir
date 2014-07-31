@@ -24,8 +24,8 @@ _DENTRIES_LOC = "/usr/share/applications/"
 _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
 
 def create_desktop_entry(app):
-    args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, app["exec"]["args"])
-    cmd = "{} {}".format(app["exec"]["cmd"], " ".join(args))
+    args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, app["launch_command"]["args"])
+    cmd = "{} {}".format(app["launch_command"]["cmd"], " ".join(args))
 
     icon = app["icon"]
 
