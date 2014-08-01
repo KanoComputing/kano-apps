@@ -5,7 +5,7 @@ import json
 import os
 import time
 
-from kano.utils import run_cmd, download_url, pkill
+from kano.utils import run_cmd, download_url
 from kano.logging import logger
 from kano_world.connection import request_wrapper, content_type_json
 from kano_profile.apps import launch_project
@@ -43,8 +43,6 @@ def run(args):
 
 def launch(paths):
     data_path, icon_path = paths
-
-    pkill("chromium")
 
     cmd = "kano-apps"
     args = ["install", data_path, icon_path]
