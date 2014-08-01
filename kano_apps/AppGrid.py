@@ -36,6 +36,7 @@ class Apps(Gtk.Notebook):
         games_apps = []
         code_apps = []
         media_apps = []
+
         for app in apps:
             if app["type"] == "app":
                 if not self.is_app_installed(app):
@@ -59,7 +60,6 @@ class Apps(Gtk.Notebook):
                 else:
                     others_apps.append(app)
             elif app["type"] == "dentry":
-                app["colour"] = "#000000"
                 others_apps.append(app)
 
         if len(latest_apps) > 0:
@@ -126,7 +126,14 @@ class AppGrid(Gtk.EventBox):
         self._number_of_entries = 0
         self._entries = []
 
+        i = 0
         for app in apps:
+            if "colour" not in app:
+                if (i % 2) == 0:
+                    app["colour"] = "#f2914a"
+                else:
+                    app["colour"] = "#f5a269"
+            i += 1
             self.add_entry(AppGridEntry(app, main_win))
 
         self._sw.add_with_viewport(self._box)

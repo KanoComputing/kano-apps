@@ -64,7 +64,7 @@ def get_applications():
 
         filtered_apps.append(app)
 
-    return filtered_apps
+    return sorted(filtered_apps, key=lambda a: a["title"])
 
 def _load_from_app_file(app_path):
     with open(app_path, "r") as f:
