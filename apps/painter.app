@@ -10,5 +10,6 @@
 
     "packages": ["gnome-paint"],
     "dependencies": [],
-    "launch_command": "gnome-paint"
+    "launch_command": "gnome-paint",
+    "overrides": ["gnome-paint.desktop"]
 }

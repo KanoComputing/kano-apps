@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["chromium"],
-    "launch_command": "chromium"
+    "launch_command": "chromium",
+    "overrides": ["chromium.desktop"]
 }

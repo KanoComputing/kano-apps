@@ -10,5 +10,6 @@
 
     "packages": [],
     "dependencies": ["galculator"],
-    "launch_command": "galculator"
+    "launch_command": "galculator",
+    "overrides": ["galculator.desktop"]
 }

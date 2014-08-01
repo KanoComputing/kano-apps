@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["lxterminal"],
-    "launch_command": "lxterminal"
+    "launch_command": "lxterminal",
+    "overrides": ["lxterminal.desktop"]
 }

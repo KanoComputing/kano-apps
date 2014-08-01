@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "launch_command": "epdfview"
+    "launch_command": "epdfview",
+    "overrides": ["epdfview.desktop"]
 }

@@ -10,10 +10,7 @@ import re
 import json
 from kano_updater.utils import get_dpkg_dict, install
 
-_SYSTEM_ICONS_LOC = '/usr/share/kano-applications/'
-_INSTALLED_ICONS_LOC = '/usr/local/share/kano-applications/'
-#_USER_ICONS_LOC = '~/.apps'
-#_INSTALLERS_LOC = '/usr/share/kano-apps/installers'
+_SYSTEM_ICONS_LOC = '/usr/share/applications/'
 
 def try_exec(app):
     path = None
@@ -30,37 +27,112 @@ def try_exec(app):
 
     return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
 
-def _load_apps_from_dir(loc):
-    apps = []
-    loc = os.path.expanduser(loc)
-    if os.path.exists(loc):
-        for app_file in os.listdir(loc):
-            if app_file[-3:] != "app":
-                continue
-
-            app_file_path = loc + '/' + app_file
-            if os.path.isdir(app_file_path):
-                continue
-
-            with open(app_file_path, "r") as f:
-                apps.append(json.load(f))
-
-    return apps
-
 def get_applications():
-    apps = _load_apps_from_dir(_SYSTEM_ICONS_LOC)
+    loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
+    blacklist = [
+        "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
+        "idle-python3.2.desktop", "xarchiver.desktop", "make-minecraft.desktop",
+        "make-music.desktop", "make-pong.desktop", "make-snake.desktop",
+        "make-video.desktop", "lxsession-edit.desktop", "lxrandr.desktop",
+        "lxinput.desktop", "obconf.desktop", "openbox.desktop",
+        "libfm-pref-apps.desktop", "lxappearance.desktop"
+    ]
+    apps = []
+    if os.path.exists(loc):
+        for f in os.listdir(_SYSTEM_ICONS_LOC):
+            fp = os.path.join(loc, f)
 
-    user_apps = _load_apps_from_dir(_INSTALLED_ICONS_LOC)
-    for app in user_apps:
-        app["user"] = True
+            if os.path.isdir(fp):
+                continue
 
-    apps += user_apps
+            if f[-4:] == ".app":
+                data = _load_from_app_file(fp)
+                if data is not None:
+                    apps.append(data)
+                    if "override" in data:
+                        blacklist += data["override"]
 
+            if f[-8:] == ".desktop" and f[0:5] != "auto_":
+                data = _load_from_dentry(fp)
+                if data is not None:
+                    apps.append(data)
+
+    filtered_apps = []
     for app in apps:
-        if 'launch_command' in app:
-            app['launch_command'] = parse_command(app['launch_command'])
+        if os.path.basename(app["origin"]) in blacklist:
+            continue
 
-    return sorted(apps, key=lambda a: a['title'].lower())
+        filtered_apps.append(app)
+
+    return filtered_apps
+
+def _load_from_app_file(app_path):
+    with open(app_path, "r") as f:
+        app = json.load(f)
+
+    app["origin"] = app_path
+    app["type"] = "app"
+    app["launch_command"] = parse_command(app["launch_command"])
+
+    return app
+
+def _load_from_dentry(de_path):
+    de = _parse_dentry(de_path)
+
+    if "NoDisplay" in de and de["NoDisplay"] == "true":
+        return
+
+    app = {
+        "type": "dentry",
+        "origin": de_path,
+
+        "title": de["Name"],
+        "tagline": "",
+        "launch_command": parse_command(de["Exec"]),
+
+        "icon": de["Icon"],
+
+        "packages": [],
+        "dependencies": [],
+
+        "removable": False,
+    }
+
+    if "Comment[en_GB]" in de:
+        app["tagline"] = de["Comment[en_GB]"]
+    elif "Comment" in de:
+        app["tagline"] = de["Comment"]
+
+    return app
+
+def _parse_dentry(dentry_path):
+    dentry_data = {}
+    continuation = False
+    cont_key = None
+    with open(dentry_path, 'r') as dentry_file:
+        for line in dentry_file.readlines():
+            line = line.strip()
+            if len(line) <= 0 or line == '[Desktop Entry]':
+                continue
+
+            if not continuation:
+                split = line.split('=')
+
+                key = split[0]
+                value = '='.join(split[1:])
+                dentry_data[key] = value
+            else:
+                dentry_data[cont_key] += "\n" + line
+
+            if line[-1] == '\\':
+                continuation = True
+                cont_key = key
+                dentry_data[key] = dentry_data[key][:-1]
+            else:
+                continuation = False
+                cont_key = None
+
+    return dentry_data
 
 def install_app(app, sudo_pwd=None):
     pkgs = " ".join(app["packages"] + app["dependencies"])
@@ -145,32 +217,3 @@ def parse_command(cmd_line):
         tokens.append(token)
 
     return {'cmd': cmd, 'args': tokens}
-
-def _parse_dentry(dentry_path):
-    dentry_data = {}
-    continuation = False
-    cont_key = None
-    with open(dentry_path, 'r') as dentry_file:
-        for line in dentry_file.readlines():
-            line = line.strip()
-            if len(line) <= 0 or line == '[Desktop Entry]':
-                continue
-
-            if not continuation:
-                split = line.split('=')
-
-                key = split[0]
-                value = '='.join(split[1:])
-                dentry_data[key] = value
-            else:
-                dentry_data[cont_key] += "\n" + line
-
-            if line[-1] == '\\':
-                continuation = True
-                cont_key = key
-                dentry_data[key] = dentry_data[key][:-1]
-            else:
-                continuation = False
-                cont_key = None
-
-    return dentry_data

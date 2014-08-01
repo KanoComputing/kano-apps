@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["leafpad"],
-    "launch_command": "leafpad"
+    "launch_command": "leafpad",
+    "overrides": ["leafpad.desktop"]
 }

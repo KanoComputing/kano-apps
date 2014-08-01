@@ -29,28 +29,45 @@ class Apps(Gtk.Notebook):
 
         self._installed_packages = get_dpkg_dict()[0]
 
-        # split apps to 5 arrays
+        # split apps to 6 arrays
+        latest_apps = []
         tools_apps = []
         others_apps = []
         games_apps = []
         code_apps = []
         media_apps = []
         for app in apps:
-            if not self.is_app_installed(app):
-                app["_install"] = True
+            if app["type"] == "app":
+                if not self.is_app_installed(app):
+                    app["_install"] = True
 
-            if "categories" in app:
-                categories = map(lambda c: c.lower(), app["categories"])
-                if "tools" in categories:
-                    tools_apps.append(app)
-                if "others" in categories:
+                if "time_installed" in app:
+                    latest_apps.append(app)
+
+                if "categories" in app:
+                    categories = map(lambda c: c.lower(), app["categories"])
+                    if "tools" in categories:
+                        tools_apps.append(app)
+                    if "others" in categories:
+                        others_apps.append(app)
+                    if "games" in categories:
+                        games_apps.append(app)
+                    if "code" in categories:
+                        code_apps.append(app)
+                    if "media" in categories:
+                        media_apps.append(app)
+                else:
                     others_apps.append(app)
-                if "games" in categories:
-                    games_apps.append(app)
-                if "code" in categories:
-                    code_apps.append(app)
-                if "media" in categories:
-                    media_apps.append(app)
+            elif app["type"] == "dentry":
+                app["colour"] = "#000000"
+                others_apps.append(app)
+
+        if len(latest_apps) > 0:
+            latest_apps = sorted(latest_apps,
+                lambda a1, a2: a1["time_installed"] > a2["time_installed"])
+            latest = AppGrid(latest_apps[0:5], main_win)
+            latest_label = Gtk.Label("LATEST")
+            self.append_page(latest, latest_label)
 
         if len(games_apps) > 0:
             games = AppGrid(games_apps, main_win)
@@ -65,7 +82,7 @@ class Apps(Gtk.Notebook):
         if len(code_apps) > 0:
             code = AppGrid(code_apps, main_win)
             code_label = Gtk.Label("CODE")
-            self.append_page(code, code_label)
+            last_page = self.append_page(code, code_label)
 
         if len(tools_apps) > 0:
             tools = AppGrid(tools_apps, main_win)
@@ -76,6 +93,8 @@ class Apps(Gtk.Notebook):
             others = AppGrid(others_apps, main_win)
             others_label = Gtk.Label("OTHERS")
             self.append_page(others, others_label)
+
+            self._window.set_last_page(last_page)
 
     def is_app_installed(self, app):
         for pkg in app["packages"] + app["dependencies"]:
@@ -155,8 +174,12 @@ class AppGridEntry(Gtk.EventBox):
 
         texts.pack_start(app_name, False, False, 0)
 
+        tagline = app['tagline']
+        if tagline > 50:
+            tagline = tagline[0:50]
+
         self._app_desc = app_desc = Gtk.Label(
-            app['tagline'],
+            tagline,
             halign=Gtk.Align.START,
             valign=Gtk.Align.START,
             hexpand=True
@@ -180,7 +203,7 @@ class AppGridEntry(Gtk.EventBox):
             more_btn.connect("realize", self._set_cursor_to_hand)
             entry.pack_start(more_btn, False, False, 0)
 
-        if "user" in self._app:
+        if "removable" in self._app and self._app["removable"] == True:
             remove_btn = Gtk.Button(hexpand=False)
             self._res_bin_open = Gtk.Image.new_from_file("{}/icons/trashbin-open.png".format(media_dir()))
             self._res_bin_closed = Gtk.Image.new_from_file("{}/icons/trashbin-closed.png".format(media_dir()))
@@ -312,7 +335,7 @@ class AppGridEntry(Gtk.EventBox):
             if os.path.exists(self._get_kdesk_icon_path()):
                 self._desktop_rm()
 
-            local_app_dir = "/usr/local/share/kano-applications"
+            local_app_dir = "/usr/share/applications"
             system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
             run_cmd("echo {} | sudo -S rm {}".format(pw, system_app_data_file))
             run_cmd("echo {} | sudo -S update-app-dir".format(pw))

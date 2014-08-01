@@ -70,10 +70,9 @@ class MainWindow(ApplicationWindow):
 
     def show_apps_view(self, button=None, event=None):
         self._top_bar.disable_prev()
-        last_page = self.get_last_page()
         self._apps = apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(apps)
-        apps.set_current_page(last_page)
+        apps.set_current_page(self.get_last_page())
 
     def refresh(self, category=None):
         last_page = self._apps.get_current_page()
@@ -83,10 +82,7 @@ class MainWindow(ApplicationWindow):
         self._apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(self._apps)
 
-        if category:
-            self._apps.set_current_page(self._apps.get_category_page(category))
-        else:
-            self._apps.set_current_page(last_page)
+        self._apps.set_current_page(last_page)
 
     def _app_loaded(self, widget):
         if len(sys.argv) >= 4 and sys.argv[1] == "install":
@@ -117,7 +113,7 @@ class MainWindow(ApplicationWindow):
                 with open(app_data_file, "w") as f:
                     f.write(json.dumps(app_data))
 
-                local_app_dir = "/usr/local/share/kano-applications"
+                local_app_dir = "/usr/share/applications"
                 run_cmd("echo {} | sudo -S mkdir -p {}".format(pw, local_app_dir))
 
                 system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
