@@ -12,5 +12,5 @@
     "packages": [],
     "dependencies": ["chromium"],
     "launch_command": "chromium",
-    "overrides": ["chromium.desktop"]
+    "overrides": ["chromium.desktop", "lxde-x-www-browser.desktop"]
 }

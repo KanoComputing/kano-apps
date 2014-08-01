@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["geany"],
-    "launch_command": "geany"
+    "launch_command": "geany",
+    "overrides": ["geany.desktop"]
 }

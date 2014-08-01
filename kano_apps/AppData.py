@@ -33,7 +33,7 @@ def get_applications():
         "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
         "idle-python3.2.desktop", "xarchiver.desktop", "make-minecraft.desktop",
         "make-music.desktop", "make-pong.desktop", "make-snake.desktop",
-        "make-video.desktop", "lxsession-edit.desktop", "lxrandr.desktop",
+        "kano-video.desktop", "lxsession-edit.desktop", "lxrandr.desktop",
         "lxinput.desktop", "obconf.desktop", "openbox.desktop",
         "libfm-pref-apps.desktop", "lxappearance.desktop"
     ]
@@ -49,8 +49,8 @@ def get_applications():
                 data = _load_from_app_file(fp)
                 if data is not None:
                     apps.append(data)
-                    if "override" in data:
-                        blacklist += data["override"]
+                    if "overrides" in data:
+                        blacklist += data["overrides"]
 
             if f[-8:] == ".desktop" and f[0:5] != "auto_":
                 data = _load_from_dentry(fp)

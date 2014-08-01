@@ -104,6 +104,8 @@ class MainWindow(ApplicationWindow):
 
             success = install_app(app_data, pw)
 
+            app_data["removable"] = True
+
             head = "Installation failed"
             message = "{} cannot be installed at the moment.".format(app_data["title"]) + \
                       "Please make sure your kit is connected to the internet and there " + \
