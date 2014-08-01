@@ -50,13 +50,18 @@ def _get_dentry_filename(app):
     return "auto_" + app["slug"] + ".desktop"
 
 def main():
-    apps = get_applications()
+    entries = get_applications()
+    apps = []
+    for e in entries:
+        if e["type"] == "app":
+            apps.append(e)
 
     # Remove unused ones
     apps_dentries = map(lambda a: _get_dentry_filename(a), apps)
-    print apps_dentries
     for de in os.listdir(_DENTRIES_LOC):
-        print de, de[0:5] == "auto_", de not in apps_dentries
+        if de[-8:0] != ".desktop":
+            continue
+
         if de[0:5] == "auto_" and de not in apps_dentries:
             logger.info("Removing desktop entry {}".format(de))
             os.unlink(os.path.join(_DENTRIES_LOC, de))
