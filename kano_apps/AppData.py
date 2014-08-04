@@ -258,7 +258,7 @@ def download_app(app_id_or_slug):
     del data['likes']
     del data['comments_count']
     data['time_installed'] = int(time.time())
-    data['categories'] = map(data['categories'], lambda c: c.lower())
+    data['categories'] = map(lambda c: c.lower(), data['categories'])
 
     # write out the data
     data_path = '/tmp/{}.app'.format(app_id_or_slug)
