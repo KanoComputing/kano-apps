@@ -12,5 +12,5 @@
     "packages": [],
     "dependencies": ["scratch"],
     "launch_command": "scratch",
-    "overrides": ["scratch.desktop"]
+    "overrides": ["scratch.desktop", "squeak.desktop"]
 }
