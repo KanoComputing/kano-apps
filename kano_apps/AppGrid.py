@@ -63,8 +63,8 @@ class Apps(Gtk.Notebook):
                 others_apps.append(app)
 
         if len(latest_apps) > 0:
-            latest_apps = sorted(latest_apps,
-                lambda a1, a2: a1["time_installed"] > a2["time_installed"])
+            latest_apps = sorted(latest_apps, key=lambda a: a["time_installed"],
+                                reverse=True)
             latest = AppGrid(latest_apps[0:5], main_win)
             latest_label = Gtk.Label("LATEST")
             self.append_page(latest, latest_label)
