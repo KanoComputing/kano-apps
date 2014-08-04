@@ -344,11 +344,11 @@ class AppGridEntry(Gtk.EventBox):
 
             local_app_dir = "/usr/share/applications"
             system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
-            run_cmd("echo {} | sudo -S rm {}".format(pw, system_app_data_file))
+            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_data_file))
             run_cmd("echo {} | sudo -S update-app-dir".format(pw))
 
             system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(self._app["slug"])
-            run_cmd("echo {} | sudo -S rm {}".format(pw, system_app_icon_file))
+            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_icon_file))
             run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
 
         self._window.refresh()

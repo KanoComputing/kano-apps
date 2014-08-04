@@ -15,7 +15,7 @@ from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
 #from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
-from kano_apps.AppData import get_applications, install_app
+from kano_apps.AppData import get_applications, install_app, download_app
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
 from kano.gtk3.application_window import ApplicationWindow
@@ -24,9 +24,10 @@ from kano.utils import run_cmd
 
 
 class MainWindow(ApplicationWindow):
-    def __init__(self):
+    def __init__(self, install=None):
         ApplicationWindow.__init__(self, 'Apps', 600, 488)
 
+        self._install = install
         self._last_page = 0
 
         self.connect("show", self._app_loaded)
@@ -85,62 +86,62 @@ class MainWindow(ApplicationWindow):
         self._apps.set_current_page(last_page)
 
     def _app_loaded(self, widget):
-        if len(sys.argv) >= 4 and sys.argv[1] == "install":
-            app_data_file = sys.argv[2]
-            app_icon_file = sys.argv[3]
-            app_icon_file_type = app_icon_file.split(".")[-1]
+        if self._install is not None:
+            for app in self._install:
+                app_data_file, app_icon_file = download_app(app)
+                app_icon_file_type = app_icon_file.split(".")[-1]
 
-            with open(app_data_file) as f:
-                app_data = json.load(f)
+                with open(app_data_file) as f:
+                    app_data = json.load(f)
 
-            pw = get_sudo_password("Installing {}".format(app_data["title"]), self)
-            if pw is None:
-                return
+                pw = get_sudo_password("Installing {}".format(app_data["title"]), self)
+                if pw is None:
+                    return
 
-            self.blur()
+                self.blur()
 
-            while Gtk.events_pending():
-                Gtk.main_iteration()
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
 
-            success = install_app(app_data, pw)
+                success = install_app(app_data, pw)
 
-            app_data["removable"] = True
+                app_data["removable"] = True
 
-            head = "Installation failed"
-            message = "{} cannot be installed at the moment.".format(app_data["title"]) + \
-                      "Please make sure your kit is connected to the internet and there " + \
-                      "is enough space left on your card."
-            if success:
-                # write out the tmp json
-                with open(app_data_file, "w") as f:
-                    f.write(json.dumps(app_data))
+                head = "Installation failed"
+                message = "{} cannot be installed at the moment.".format(app_data["title"]) + \
+                          "Please make sure your kit is connected to the internet and there " + \
+                          "is enough space left on your card."
+                if success:
+                    # write out the tmp json
+                    with open(app_data_file, "w") as f:
+                        f.write(json.dumps(app_data))
 
-                local_app_dir = "/usr/share/applications"
-                run_cmd("echo {} | sudo -S mkdir -p {}".format(pw, local_app_dir))
+                    local_app_dir = "/usr/share/applications"
+                    run_cmd("echo {} | sudo -S mkdir -p {}".format(pw, local_app_dir))
 
-                system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
-                run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_data_file, system_app_data_file))
-                run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+                    system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
+                    run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_data_file, system_app_data_file))
+                    run_cmd("echo {} | sudo -S update-app-dir".format(pw))
 
-                system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
-                run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
-                run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
+                    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
+                    run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
+                    run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
 
-                head = "Done!"
-                message = "{} installed succesfully!".format(app_data["title"])
+                    head = "Done!"
+                    message = "{} installed succesfully!".format(app_data["title"])
 
-            dialog = KanoDialog(
-                head,
-                message,
-                {
-                    "OK": {
-                        "return_value": 0
+                dialog = KanoDialog(
+                    head,
+                    message,
+                    {
+                        "OK": {
+                            "return_value": 0
+                        },
                     },
-                },
-            )
-            dialog.run()
-            del dialog
+                )
+                dialog.run()
+                del dialog
 
-            self.unblur()
+                self.unblur()
 
             self.refresh()

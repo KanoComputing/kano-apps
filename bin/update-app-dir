@@ -29,7 +29,7 @@ def create_desktop_entry(app):
 
     icon = app["icon"]
 
-    categories = ";".join(app["categories"] + [""])
+    categories = ";".join(app["categories"] + [""]).lower()
 
     de = (
         "[Desktop Entry]\n" +

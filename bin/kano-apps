@@ -8,24 +8,81 @@
 
 import os
 import sys
-from gi.repository import Gtk
-
-from kano_profile.tracker import Tracker
-kanotracker = Tracker()
-
+import argparse
+import json
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
         sys.path = [dir_path] + sys.path
 
-from kano_apps.MainWindow import MainWindow
+from kano_apps.AppData import download_app, install_app
+from kano.utils import run_cmd
+from kano_profile.tracker import Tracker
+kanotracker = Tracker()
+
+def batch_install(apps):
+    for app in apps:
+        app_data_file, app_icon_file = download_app(app)
+        app_icon_file_type = app_icon_file.split(".")[-1]
+
+        with open(app_data_file) as f:
+            app_data = json.load(f)
+
+        success = install_app(app_data, gui=False)
+
+        app_data["removable"] = True
+
+        if success:
+            # write out the tmp json
+            with open(app_data_file, "w") as f:
+                f.write(json.dumps(app_data))
+
+            local_app_dir = "/usr/share/applications"
+            run_cmd("sudo -S mkdir -p {}".format(local_app_dir))
+
+            system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
+            run_cmd("sudo -S mv {} {}".format(app_data_file, system_app_data_file))
+            run_cmd("sudo -S update-app-dir")
+
+            system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
+            run_cmd("sudo -S mv {} {}".format(app_icon_file, system_app_icon_file))
+            run_cmd("sudo -S update-icon-caches {}".format("/usr/share/icons/Kano"))
 
 def main():
-    win = MainWindow()
+    args = None
+    if len(sys.argv) >= 2:
+        parser = argparse.ArgumentParser(description='An application hub for Kano OS.')
+        parser.set_defaults(cmd=None)
+        subparsers = parser.add_subparsers(dest="cmd")
 
-    win.show_all()
-    Gtk.main()
+        install = subparsers.add_parser('install', help='Use this to install applications')
+        install.add_argument('--no-gui', dest='gui', action='store_const',
+                             const=False, default=True, help='Run without the GUI')
+        install.add_argument('apps', metavar='APP', type=str, nargs='+',
+                             help='A list of applications to install')
+
+        args = parser.parse_args()
+
+    if args is not None and args.cmd == "install":
+        if args.gui:
+            from gi.repository import Gtk
+            from kano_apps.MainWindow import MainWindow
+
+            win = MainWindow(install=args.apps)
+
+            win.show_all()
+            Gtk.main()
+        else:
+            batch_install(args.apps)
+    else:
+        from gi.repository import Gtk
+        from kano_apps.MainWindow import MainWindow
+
+        win = MainWindow()
+
+        win.show_all()
+        Gtk.main()
 
     return 0
 
