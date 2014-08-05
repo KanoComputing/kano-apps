@@ -70,6 +70,11 @@ class Apps(Gtk.Notebook):
             latest_label = Gtk.Label("LATEST")
             self.append_page(latest, latest_label)
 
+        if len(code_apps) > 0:
+            code = AppGrid(code_apps, main_win)
+            code_label = Gtk.Label("CODE")
+            last_page = self.append_page(code, code_label)
+
         if len(games_apps) > 0:
             games = AppGrid(games_apps, main_win)
             games_label = Gtk.Label("GAMES")
@@ -79,11 +84,6 @@ class Apps(Gtk.Notebook):
             media = AppGrid(media_apps, main_win)
             media_label = Gtk.Label("MEDIA")
             self.append_page(media, media_label)
-
-        if len(code_apps) > 0:
-            code = AppGrid(code_apps, main_win)
-            code_label = Gtk.Label("CODE")
-            last_page = self.append_page(code, code_label)
 
         if len(tools_apps) > 0:
             tools = AppGrid(tools_apps, main_win)

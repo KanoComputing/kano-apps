@@ -148,4 +148,5 @@ class MainWindow(ApplicationWindow):
 
                 self.unblur()
 
+            self.set_last_page(0)
             self.refresh()
