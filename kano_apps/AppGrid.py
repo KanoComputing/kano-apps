@@ -10,7 +10,8 @@ import random
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppData import parse_command, install_app, uninstall_app
+from kano_apps.AppData import parse_command
+from kano_apps.AppManage import install_app, uninstall_app
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.buttons import OrangeButton

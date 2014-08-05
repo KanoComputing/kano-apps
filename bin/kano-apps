@@ -16,10 +16,8 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path = [dir_path] + sys.path
 
-from kano_apps.AppData import download_app, install_app
+from kano_apps.AppManage import download_app, install_app
 from kano.utils import run_cmd
-from kano_profile.tracker import Tracker
-kanotracker = Tracker()
 
 def batch_install(apps):
     for app in apps:
@@ -48,6 +46,7 @@ def batch_install(apps):
             system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
             run_cmd("sudo -S mv {} {}".format(app_icon_file, system_app_icon_file))
             run_cmd("sudo -S update-icon-caches {}".format("/usr/share/icons/Kano"))
+
 
 def main():
     args = None

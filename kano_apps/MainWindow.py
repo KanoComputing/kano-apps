@@ -15,13 +15,15 @@ from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
 #from kano_apps.AddDialog import AddDialog
 from kano_apps.MoreView import MoreView
-from kano_apps.AppData import get_applications, install_app, download_app
+from kano_apps.AppData import get_applications
+from kano_apps.AppManage import install_app, download_app
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.utils import run_cmd
 
+from kano_profile.tracker import Tracker
 
 class MainWindow(ApplicationWindow):
     def __init__(self, install=None):
@@ -59,6 +61,8 @@ class MainWindow(ApplicationWindow):
         self.set_main_widget(self._grid)
 
         self.show_apps_view()
+
+        kanotracker = Tracker()
 
     def get_main_area(self):
         return self._contents
