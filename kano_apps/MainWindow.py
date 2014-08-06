@@ -104,10 +104,15 @@ class MainWindow(ApplicationWindow):
 
                 self.blur()
 
+                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
                 while Gtk.events_pending():
                     Gtk.main_iteration()
 
                 success = install_app(app_data, pw)
+
+                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
 
                 app_data["removable"] = True
 

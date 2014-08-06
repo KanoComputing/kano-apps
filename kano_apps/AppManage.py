@@ -35,7 +35,9 @@ def install_app(app, sudo_pwd=None, gui=True):
         run = "'{}'".format(run)
     cmd += run
 
-    run_cmd(cleanup_cmd) # make sure there are no broken packages on the system
+    # make sure there are no broken packages on the system
+    run_cmd(cleanup_cmd)
+
     run_cmd(update_cmd)
     rv = os.system(cmd)
 

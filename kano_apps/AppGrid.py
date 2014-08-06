@@ -234,7 +234,7 @@ class AppGridEntry(Gtk.EventBox):
         desktop_btn.props.margin_right = 21
         #desktop_btn.props.valign = Gtk.Align.CENTER
 
-        if "_install" not in self._app:
+        if "_install" not in self._app and ("desktop" not in self._app or self._app["desktop"]):
             if os.path.exists(self._KDESK_EXEC):
                 if on_desktop:
                     rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
