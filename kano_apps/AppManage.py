@@ -23,20 +23,17 @@ def install_app(app, sudo_pwd=None, gui=True):
         cmd = "rxvt -title 'Installing {}' -e bash -c ".format(app["title"])
 
     if sudo_pwd:
-        cleanup_cmd = "echo {} | sudo -S dpkg --configure -a".format(pw)
-        update_cmd = "echo {} | sudo -S apt-get update".format(pw)
+        cleanup_cmd = "echo {} | sudo -S dpkg --configure -a".format(sudo_pwd)
+        update_cmd = "echo {} | sudo -S apt-get update".format(sudo_pwd)
         run = "echo {} | sudo -S apt-get install -y {}".format(sudo_pwd, pkgs)
-        if gui:
-            run = "'{}'".format(run)
-        cmd += run
     else:
-        cleanup_cmd = "sudo dpkg --configure -a".format(pw)
-        update_cmd = "sudo apt-get update".format(pw)
+        cleanup_cmd = "sudo dpkg --configure -a".format(sudo_pwd)
+        update_cmd = "sudo apt-get update".format(sudo_pwd)
         run = "sudo apt-get install -y {}".format(pkgs)
-        if gui:
-            run = "'{}'".format(run)
-        cmd += run
-
+    
+    if gui:
+        run = "'{}'".format(run)
+    cmd += run
 
     run_cmd(cleanup_cmd) # make sure there are no broken packages on the system
     run_cmd(update_cmd)
