@@ -91,8 +91,27 @@ class MainWindow(ApplicationWindow):
 
     def _app_loaded(self, widget):
         if self._install is not None:
+            self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
             for app in self._install:
-                app_data_file, app_icon_file = download_app(app)
+                try:
+                    app_data_file, app_icon_file = download_app(app)
+                except:
+                    head = "Application not found"
+                    message = "There were problems with downloading the '{}' app.\nPlease try again later.".format(app)
+                    dialog = KanoDialog(
+                        head,
+                        message,
+                        {
+                            "OK": {
+                                "return_value": 0
+                            },
+                        },
+                        parent_window=self
+                    )
+                    dialog.run()
+                    del dialog
+                    sys.exit("{}: {}".format(head, message))
+
                 app_icon_file_type = app_icon_file.split(".")[-1]
 
                 with open(app_data_file) as f:
@@ -104,13 +123,11 @@ class MainWindow(ApplicationWindow):
 
                 self.blur()
 
-                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
                 while Gtk.events_pending():
                     Gtk.main_iteration()
 
                 success = install_app(app_data, pw)
 
-                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
                 while Gtk.events_pending():
                     Gtk.main_iteration()
 
@@ -155,3 +172,4 @@ class MainWindow(ApplicationWindow):
 
             self.set_last_page(0)
             self.refresh()
+            self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
