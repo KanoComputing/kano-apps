@@ -1,7 +1,7 @@
 {
     "title": "Kano Book 1",
-    "tagline": "Book 1: Make a computer",
-    "slug": "kano-book-1",
+    "tagline": "Make a computer",
+    "slug": "This is your little computer, and it looks a bit complicated. But you can make it yourself, and use all its powers. Read the story of how your Kano came to be, and what each of its bits can do.",
 
     "icon": "book1",
     "colour": "#F4A15D",
