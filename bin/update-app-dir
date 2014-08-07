@@ -59,7 +59,7 @@ def main():
     # Remove unused ones
     apps_dentries = map(lambda a: _get_dentry_filename(a), apps)
     for de in os.listdir(_DENTRIES_LOC):
-        if de[-8:0] != ".desktop":
+        if de[-8:] != ".desktop":
             continue
 
         if de[0:5] == "auto_" and de not in apps_dentries:
