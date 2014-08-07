@@ -23,7 +23,6 @@ from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.utils import run_cmd
 
-from kano_profile.tracker import Tracker
 
 class MainWindow(ApplicationWindow):
     def __init__(self, install=None):
@@ -62,7 +61,11 @@ class MainWindow(ApplicationWindow):
 
         self.show_apps_view()
 
-        kanotracker = Tracker()
+        try:
+            from kano_profile.tracker import Tracker
+            kanotracker = Tracker()
+        except:
+            pass
 
     def get_main_area(self):
         return self._contents
