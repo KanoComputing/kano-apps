@@ -58,9 +58,9 @@ def uninstall_app(app, sudo_pwd=None):
 
     cmd =  "rxvt -title 'Uninstalling {}' -e bash -c ".format(app["title"])
     if sudo_pwd:
-        cmd += "'echo {} | sudo -S apt-get remove -y {}'".format(sudo_pwd, pkgs)
+        cmd += "'echo {} | sudo -S apt-get purge -y {}'".format(sudo_pwd, pkgs)
     else:
-        cmd += "'sudo apt-get remove -y {}'".format(pkgs, sudo_pwd)
+        cmd += "'sudo apt-get purge -y {}'".format(pkgs, sudo_pwd)
     rv = os.system(cmd)
 
     done = True
