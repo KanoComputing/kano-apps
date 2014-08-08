@@ -30,6 +30,25 @@ class Apps(Gtk.Notebook):
 
         self._installed_packages = get_dpkg_dict()[0]
 
+        want_more_app = {
+            "type": "app",
+            "title": "Want more apps?",
+            "tagline": "Go to Kano World to install more",
+            "slug": "want-more",
+
+            "icon": "want-more-apps",
+            "colour": "#fda96f",
+
+            "categories": ["code", "media", "games", "others", "tools"],
+
+            "packages": [],
+            "dependencies": ["chromium"],
+            "launch_command": {"cmd": "kdesk-blur", "args": ["kano-world-launcher"]},
+            "overrides": [],
+            "desktop": False
+        }
+        apps.append(want_more_app)
+
         # split apps to 6 arrays
         latest_apps = []
         tools_apps = []
