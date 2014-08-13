@@ -8,13 +8,9 @@
 import os
 import re
 import json
-import time
-
-from kano_updater.utils import get_dpkg_dict, install
-from kano.utils import run_cmd
-from kano.logging import logger
 
 _SYSTEM_ICONS_LOC = '/usr/share/applications/'
+
 
 def try_exec(app):
     path = None
@@ -29,7 +25,8 @@ def try_exec(app):
                 path = possible_path
                 break
 
-    return path != None and os.path.isfile(path) and os.access(path, os.X_OK)
+    return path is not None and os.path.isfile(path) and os.access(path, os.X_OK)
+
 
 def get_applications():
     loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
@@ -70,6 +67,7 @@ def get_applications():
 
     return sorted(filtered_apps, key=lambda a: a["title"])
 
+
 def _load_from_app_file(app_path):
     with open(app_path, "r") as f:
         app = json.load(f)
@@ -79,6 +77,7 @@ def _load_from_app_file(app_path):
     app["launch_command"] = parse_command(app["launch_command"])
 
     return app
+
 
 def _load_from_dentry(de_path):
     de = _parse_dentry(de_path)
@@ -109,6 +108,7 @@ def _load_from_dentry(de_path):
 
     return app
 
+
 def _parse_dentry(dentry_path):
     dentry_data = {}
     continuation = False
@@ -137,6 +137,7 @@ def _parse_dentry(dentry_path):
                 cont_key = None
 
     return dentry_data
+
 
 def parse_command(cmd_line):
     cmd_line = re.sub(r'\%[fFuUpP]', '', cmd_line)

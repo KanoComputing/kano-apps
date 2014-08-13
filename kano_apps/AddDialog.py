@@ -166,4 +166,3 @@ class AddDialog(Gtk.EventBox):
             pass
 
         dialog.destroy()
-

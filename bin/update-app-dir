@@ -23,6 +23,7 @@ from kano.logging import logger
 _DENTRIES_LOC = "/usr/share/applications/"
 _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
 
+
 def create_desktop_entry(app):
     args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, app["launch_command"]["args"])
     cmd = "{} {}".format(app["launch_command"]["cmd"], " ".join(args))
@@ -46,8 +47,10 @@ def create_desktop_entry(app):
 
     return de
 
+
 def _get_dentry_filename(app):
     return "auto_" + app["slug"] + ".desktop"
+
 
 def main():
     entries = get_applications()

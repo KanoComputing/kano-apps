@@ -6,20 +6,18 @@
 
 import os
 import re
-import random
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppData import parse_command
 from kano_apps.AppManage import install_app, uninstall_app
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
-from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 from kano.gtk3.kano_dialog import KanoDialog
-from kano_updater.utils import get_dpkg_dict, install
+from kano_updater.utils import get_dpkg_dict
 from kano.utils import run_cmd
+
 
 class Apps(Gtk.Notebook):
     def __init__(self, apps, main_win):
@@ -64,8 +62,7 @@ class Apps(Gtk.Notebook):
                 others_apps.append(app)
 
         if len(latest_apps) > 0:
-            latest_apps = sorted(latest_apps, key=lambda a: a["time_installed"],
-                                reverse=True)
+            latest_apps = sorted(latest_apps, key=lambda a: a["time_installed"], reverse=True)
             latest = AppGrid(latest_apps[0:5], main_win)
             latest_label = Gtk.Label("LATEST")
             self.append_page(latest, latest_label)
@@ -105,6 +102,7 @@ class Apps(Gtk.Notebook):
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
+
 
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
@@ -211,7 +209,7 @@ class AppGridEntry(Gtk.EventBox):
             more_btn.connect("realize", self._set_cursor_to_hand)
             entry.pack_start(more_btn, False, False, 0)
 
-        if "removable" in self._app and self._app["removable"] == True:
+        if "removable" in self._app and self._app["removable"] is True:
             remove_btn = Gtk.Button(hexpand=False)
             self._res_bin_open = Gtk.Image.new_from_file("{}/icons/trashbin-open.png".format(media_dir()))
             self._res_bin_closed = Gtk.Image.new_from_file("{}/icons/trashbin-closed.png".format(media_dir()))
@@ -298,7 +296,7 @@ class AppGridEntry(Gtk.EventBox):
             parent_window=self._window
         )
         kdialog.set_action_background("grey")
-        response = kdialog.run()
+        kdialog.run()
 
         return True
 
@@ -376,11 +374,11 @@ class AppGridEntry(Gtk.EventBox):
                     "color": "green"
                 }
             },
-            parent_window = self._window
+            parent_window=self._window
         )
         kdialog.set_action_background("grey")
 
-        response = kdialog.run()
+        kdialog.run()
         self._window.refresh()
 
     def _desktop_add(self, event):
@@ -394,7 +392,7 @@ class AppGridEntry(Gtk.EventBox):
                 if "grid_full" in kdesk_data:
                     desktop_full = kdesk_data["grid-full"]
 
-        if desktop_full != True:
+        if desktop_full is not True:
             self._create_kdesk_icon()
 
             os.system('kdesk -r')
@@ -415,7 +413,7 @@ class AppGridEntry(Gtk.EventBox):
         icon_info = icon_theme.lookup_icon(self._app["icon"], 66, 0)
 
         icon = self._app["icon"]
-        if icon_info != None:
+        if icon_info is not None:
             icon = icon_info.get_filename()
 
         args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["launch_command"]["args"])
@@ -443,18 +441,3 @@ class AppGridEntry(Gtk.EventBox):
         f = open(self._get_kdesk_icon_path(), 'w')
         f.write(kdesk_entry)
         f.close()
-
-#class AddButton(AppGridEntry):
-#    def __init__(self, window):
-#        self._window = window
-#        app = {
-#            'name': 'Add application',
-#            'description': 'Want to access more apps?',
-#            'icon': media_dir() + 'icons/add.png',
-#            'exec': '',
-#            'colour': '#F4A15D'
-#        }
-#        AppGridEntry.__init__(self, app, window)
-#
-#    def _mouse_click(self, ebox, event):
-#        self._window.show_add_dialog()

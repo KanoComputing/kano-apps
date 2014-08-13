@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 
 # apps.py
-# 
+#
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# 
 
-import pprint
-import json
 import os
-import time
 
-from kano.utils import run_cmd, download_url, is_running
+from kano.utils import is_running
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.logging import logger
-from kano_world.connection import request_wrapper, content_type_json
+
 
 def run(args):
     app_id = args[0]
@@ -25,13 +21,14 @@ def run(args):
             "Apps is already running",
             "You need to close it, before you can install an application.",
             {
-                "OK": { "return_value": 0} ,
+                "OK": {"return_value": 0},
             },
         )
         dialog.run()
         raise Exception("kano-apps is already running.")
 
     return app_id
+
 
 def launch(app_id):
     cmd = "kano-apps"

@@ -6,14 +6,13 @@
 # Download, install and remove apps
 
 import os
-import re
 import json
 import time
 
-from kano_updater.utils import get_dpkg_dict, install
+from kano_updater.utils import get_dpkg_dict
 from kano.utils import run_cmd, download_url
-from kano.logging import logger
 from kano_world.connection import request_wrapper, content_type_json
+
 
 def install_app(app, sudo_pwd=None, gui=True):
     pkgs = " ".join(app["packages"] + app["dependencies"])
@@ -30,7 +29,7 @@ def install_app(app, sudo_pwd=None, gui=True):
         cleanup_cmd = "sudo dpkg --configure -a".format(sudo_pwd)
         update_cmd = "sudo apt-get update".format(sudo_pwd)
         run = "sudo apt-get install -y {}".format(pkgs)
-    
+
     if gui:
         run = "'{}'".format(run)
     cmd += run
@@ -39,7 +38,7 @@ def install_app(app, sudo_pwd=None, gui=True):
     run_cmd(cleanup_cmd)
 
     run_cmd(update_cmd)
-    rv = os.system(cmd)
+    os.system(cmd)
 
     done = True
     installed_packages = get_dpkg_dict()[0]
@@ -50,18 +49,19 @@ def install_app(app, sudo_pwd=None, gui=True):
 
     return done
 
+
 def uninstall_app(app, sudo_pwd=None):
     if len(app["packages"]) == 0:
         return True
 
     pkgs = " ".join(app["packages"])
 
-    cmd =  "rxvt -title 'Uninstalling {}' -e bash -c ".format(app["title"])
+    cmd = "rxvt -title 'Uninstalling {}' -e bash -c ".format(app["title"])
     if sudo_pwd:
         cmd += "'echo {} | sudo -S apt-get purge -y {}'".format(sudo_pwd, pkgs)
     else:
         cmd += "'sudo apt-get purge -y {}'".format(pkgs, sudo_pwd)
-    rv = os.system(cmd)
+    os.system(cmd)
 
     done = True
     installed_packages = get_dpkg_dict()[0]
@@ -71,6 +71,7 @@ def uninstall_app(app, sudo_pwd=None):
             break
 
     return done
+
 
 def download_app(app_id_or_slug):
     endpoint = '/apps/{}'.format(app_id_or_slug)
