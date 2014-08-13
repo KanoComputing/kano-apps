@@ -358,7 +358,7 @@ class AppGridEntry(Gtk.EventBox):
         done = install_app(self._app)
 
         head = "Installation failed"
-        message = "{} cannot be installed at the moment.".format(self._app["title"]) + \
+        message = "{} cannot be installed at the moment. ".format(self._app["title"]) + \
                   "Please make sure your kit is connected to the internet and there " + \
                   "is enough space left on your card."
         if done:
