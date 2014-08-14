@@ -126,7 +126,7 @@ class AddDialog(Gtk.EventBox):
             os.makedirs(apps_dir)
 
         file_name = re.sub(' ', '-', name)
-        f = open(apps_dir + name, 'w')
+        f = open(apps_dir + file_name, 'w')
         f.write(dentry)
         f.close()
 
