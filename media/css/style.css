@@ -109,6 +109,7 @@ GtkScrolledWindow, GtkViewport {
 }
 
 .app-grid GtkViewport {
+    background: #fda96f;
     padding: 0px;
 }
 
