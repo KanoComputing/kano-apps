@@ -315,6 +315,7 @@ class AppGridEntry(Gtk.EventBox):
             parent_window=self._window
         )
         kdialog.set_action_background("grey")
+        kdialog.title.description.set_max_width_chars(40)
         kdialog.run()
 
         return True
@@ -342,6 +343,7 @@ class AppGridEntry(Gtk.EventBox):
             },
             parent_window=self._window
         )
+        confirmation.title.description.set_max_width_chars(40)
 
         rv = confirmation.run()
         del confirmation
@@ -396,6 +398,7 @@ class AppGridEntry(Gtk.EventBox):
             parent_window=self._window
         )
         kdialog.set_action_background("grey")
+        kdialog.title.description.set_max_width_chars(40)
 
         kdialog.run()
         self._window.refresh()
