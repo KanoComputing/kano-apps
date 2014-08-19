@@ -16,7 +16,7 @@ from kano.logging import logger
 def run(args):
     app_id = args[0]
 
-    if is_running("kano-apps"):
+    if is_running("/usr/bin/python /usr/bin/kano-apps"):
         dialog = KanoDialog(
             "Apps is already running",
             "You need to close it, before you can install an application.",
