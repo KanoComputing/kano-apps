@@ -417,13 +417,13 @@ class AppGridEntry(Gtk.EventBox):
         if desktop_full is not True:
             self._create_kdesk_icon()
 
-            os.system('kdesk -r')
+            os.system('kdesk -i')
             self._window.refresh()
 
     def _desktop_rm(self, event=None):
         os.unlink(self._get_kdesk_icon_path())
 
-        os.system('kdesk -r')
+        os.system('kdesk -i')
         self._window.refresh()
 
     def _get_kdesk_icon_path(self):
