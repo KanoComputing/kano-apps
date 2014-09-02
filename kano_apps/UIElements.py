@@ -43,7 +43,7 @@ def get_sudo_password(heading, parent=None):
     entry.set_visibility(False)
     kdialog = KanoDialog(
         title_text=heading,
-        description_text="Enter your system password:",
+        description_text="Enter your system password - default is kano:",
         widget=entry,
         has_entry=True,
         global_style=True,
@@ -79,7 +79,7 @@ def get_sudo_password(heading, parent=None):
         entry.set_visibility(False)
         kdialog = KanoDialog(
             title_text=heading,
-            description_text="Re-enter your system password:",
+            description_text="Re-enter your system password - default is kano:",
             widget=entry,
             has_entry=True,
             global_style=True,
