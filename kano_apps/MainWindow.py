@@ -154,7 +154,7 @@ class MainWindow(ApplicationWindow):
                     run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
 
                     head = "Done!"
-                    message = "{} installed succesfully!".format(app_data["title"])
+                    message = "{} installed succesfully! Look for it in the Apps launcher".format(app_data["title"])
 
                 dialog = KanoDialog(
                     head,
