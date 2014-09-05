@@ -28,10 +28,11 @@ except:
 
 
 class MainWindow(ApplicationWindow):
-    def __init__(self, install=None):
-        ApplicationWindow.__init__(self, 'Apps', 600, 488)
+    def __init__(self, install=None, icon_only=False):
+        ApplicationWindow.__init__(self, 'Apps', 755, 588)
 
         self._install = install
+        self._icon_only = icon_only
         self._last_page = 0
 
         self.connect("show", self._app_loaded)
@@ -126,7 +127,9 @@ class MainWindow(ApplicationWindow):
                 while Gtk.events_pending():
                     Gtk.main_iteration()
 
-                success = install_app(app_data, pw)
+                success = True
+                if not self._icon_only:
+                    success = install_app(app_data, pw)
 
                 while Gtk.events_pending():
                     Gtk.main_iteration()

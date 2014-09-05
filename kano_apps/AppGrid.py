@@ -37,7 +37,7 @@ class Apps(Gtk.Notebook):
             "icon": "want-more-apps",
             "colour": "#fda96f",
 
-            "categories": ["code", "media", "games", "others", "tools"],
+            "categories": ["code", "media", "games", "others", "tools", "experimental"],
 
             "packages": [],
             "dependencies": ["chromium"],
@@ -54,6 +54,7 @@ class Apps(Gtk.Notebook):
         games_apps = []
         code_apps = []
         media_apps = []
+        experimental_apps = []
 
         for app in apps:
             if app["type"] == "app":
@@ -75,6 +76,8 @@ class Apps(Gtk.Notebook):
                         code_apps.append(app)
                     if "media" in categories:
                         media_apps.append(app)
+                    if "experimental" in categories:
+                        experimental_apps.append(app)
                 else:
                     others_apps.append(app)
             elif app["type"] == "dentry":
@@ -110,6 +113,11 @@ class Apps(Gtk.Notebook):
             others = AppGrid(others_apps, main_win)
             others_label = Gtk.Label("OTHERS")
             self.append_page(others, others_label)
+
+        if len(experimental_apps):
+            experimental = AppGrid(experimental_apps, main_win)
+            experimental_label = Gtk.Label("EXPERIMENTAL")
+            self.append_page(experimental, experimental_label)
 
             self._window.set_last_page(last_page)
 
