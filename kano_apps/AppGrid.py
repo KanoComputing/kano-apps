@@ -9,7 +9,8 @@ import re
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppManage import install_app, uninstall_app
+from kano_apps.AppManage import install_app, uninstall_app, KDESK_EXEC, \
+                                add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.scrolled_window import ScrolledWindow
@@ -169,11 +170,7 @@ class AppGrid(Gtk.EventBox):
         entry.props.valign = Gtk.Align.START
         self._box.pack_start(entry, False, False, 0)
 
-
 class AppGridEntry(Gtk.EventBox):
-    _KDESK_DIR = '~/.kdesktop/'
-    _KDESK_EXEC = '/usr/bin/kdesk'
-
     def __init__(self, app, window):
         Gtk.EventBox.__init__(self)
 
@@ -208,8 +205,8 @@ class AppGridEntry(Gtk.EventBox):
         texts.pack_start(app_name, False, False, 0)
 
         tagline = app['tagline']
-        if tagline > 50:
-            tagline = tagline[0:50]
+        if tagline > 70:
+            tagline = tagline[0:70]
 
         self._app_desc = app_desc = Gtk.Label(
             tagline,
@@ -260,7 +257,7 @@ class AppGridEntry(Gtk.EventBox):
         #desktop_btn.props.valign = Gtk.Align.CENTER
 
         if "_install" not in self._app and ("desktop" not in self._app or self._app["desktop"]):
-            if os.path.exists(self._KDESK_EXEC):
+            if os.path.exists(KDESK_EXEC):
                 if on_desktop:
                     rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
                     desktop_btn.set_image(rm)
@@ -367,8 +364,7 @@ class AppGridEntry(Gtk.EventBox):
 
         success = uninstall_app(self._app, pw)
         if success:
-            if os.path.exists(self._get_kdesk_icon_path()):
-                self._desktop_rm()
+            self._desktop_rm()
 
             local_app_dir = "/usr/share/applications"
             system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
@@ -412,62 +408,9 @@ class AppGridEntry(Gtk.EventBox):
         self._window.refresh()
 
     def _desktop_add(self, event):
-        display_name = Gdk.Display.get_default().get_name()
-        kdesk_data_file = "/tmp/kdesk-metrics{}.dump".format(display_name)
-
-        desktop_full = False
-        if os.path.exists(kdesk_data_file):
-            with open(kdesk_data_file, "r") as f:
-                kdesk_data = json.load(f)
-                if "grid_full" in kdesk_data:
-                    desktop_full = kdesk_data["grid-full"]
-
-        if desktop_full is not True:
-            self._create_kdesk_icon()
-
-            os.system('kdesk -i')
+        if add_to_desktop(self._app):
             self._window.refresh()
 
     def _desktop_rm(self, event=None):
-        os.unlink(self._get_kdesk_icon_path())
-
-        os.system('kdesk -i')
-        self._window.refresh()
-
-    def _get_kdesk_icon_path(self):
-        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
-        return kdesk_dir + re.sub(' ', '-', self._app["title"]) + ".lnk"
-
-    def _create_kdesk_icon(self):
-        icon_theme = Gtk.IconTheme.get_default()
-        icon_info = icon_theme.lookup_icon(self._app["icon"], 66, 0)
-
-        icon = self._app["icon"]
-        if icon_info is not None:
-            icon = icon_info.get_filename()
-
-        args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, self._app["launch_command"]["args"])
-        cmd = self._app["launch_command"]["cmd"]
-        if len(args) > 0:
-            cmd += " " + " ".join(args)
-
-        kdesk_entry = 'table Icon\n'
-        kdesk_entry += '  Caption:\n'
-        kdesk_entry += '  AppID:\n'
-        kdesk_entry += '  Command: {}\n'.format(cmd)
-        kdesk_entry += '  Singleton: true\n'
-        kdesk_entry += '  Icon: {}\n'.format(icon)
-        kdesk_entry += '  IconHover: {}\n'.format(media_dir() + "icons/generic-hover.png")
-        kdesk_entry += '  HoverXOffset: 0\n'
-        kdesk_entry += '  Relative-To: grid\n'
-        kdesk_entry += '  X: auto\n'
-        kdesk_entry += '  Y: auto\n'
-        kdesk_entry += 'end\n'
-
-        kdesk_dir = os.path.expanduser(self._KDESK_DIR)
-        if not os.path.exists(kdesk_dir):
-            os.makedirs(kdesk_dir)
-
-        f = open(self._get_kdesk_icon_path(), 'w')
-        f.write(kdesk_entry)
-        f.close()
+        if remove_from_desktop(self._app):
+            self._window.refresh()

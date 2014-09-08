@@ -129,7 +129,7 @@ class MainWindow(ApplicationWindow):
 
                 success = True
                 if not self._icon_only:
-                    success = install_app(app_data, pw)
+                    success = install_app(app_data, pw, desktop=True)
 
                 while Gtk.events_pending():
                     Gtk.main_iteration()
