@@ -49,6 +49,7 @@ def batch_install(apps, icon_only=False):
             system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
             run_cmd("sudo -S mv {} {}".format(app_icon_file, system_app_icon_file))
             run_cmd("sudo -S update-icon-caches {}".format("/usr/share/icons/Kano"))
+            run_cmd("sudo -S gtk-update-icon-cache-3.0")
 
 
 def main():

@@ -155,6 +155,7 @@ class MainWindow(ApplicationWindow):
                     system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
                     run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
                     run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
+                    run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
 
                     head = "Done!"
                     message = "{} installed succesfully! Look for it in the Apps launcher".format(app_data["title"])

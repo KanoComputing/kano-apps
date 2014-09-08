@@ -374,6 +374,7 @@ class AppGridEntry(Gtk.EventBox):
             system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(self._app["slug"])
             run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_icon_file))
             run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
+            run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
 
         self._window.refresh()
 
