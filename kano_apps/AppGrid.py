@@ -378,7 +378,19 @@ class AppGridEntry(Gtk.EventBox):
         self._window.refresh()
 
     def _install(self):
-        done = install_app(self._app)
+        pw = get_sudo_password("Installing {}".format(self._app["title"]),
+                               self._window)
+
+        self._window.blur()
+        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
+
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
+        done = install_app(self._app, sudo_pwd=pw)
+
+        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
+        self._window.unblur()
 
         head = "Installation failed"
         message = "{} cannot be installed at the moment. ".format(self._app["title"]) + \
