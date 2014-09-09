@@ -88,7 +88,10 @@ class MainWindow(ApplicationWindow):
         self._apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(self._apps)
 
-        self._apps.set_current_page(last_page)
+        # FIXME: Momentarily disabling the tab switch
+        # effectively fixes the bug where the scrollbars disappear,
+        # but focus goes back to the first tab pane.
+        #self._apps.set_current_page(last_page)
 
     def _app_loaded(self, widget):
         if self._install is not None:
