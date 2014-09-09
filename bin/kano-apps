@@ -30,7 +30,7 @@ def batch_install(apps, icon_only=False):
 
         success = True
         if not icon_only:
-            success = install_app(app_data, gui=False, desktop=False)
+            success = install_app(app_data, gui=False)
 
         app_data["removable"] = True
 

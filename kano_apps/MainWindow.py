@@ -15,6 +15,7 @@ from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
 from kano_apps.AppData import get_applications
 from kano_apps.AppManage import install_app, download_app
+from kano_apps.DesktopManage import add_to_desktop
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
@@ -129,7 +130,7 @@ class MainWindow(ApplicationWindow):
 
                 success = True
                 if not self._icon_only:
-                    success = install_app(app_data, pw, desktop=True)
+                    success = install_app(app_data, pw)
 
                 while Gtk.events_pending():
                     Gtk.main_iteration()
@@ -156,6 +157,8 @@ class MainWindow(ApplicationWindow):
                     run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
                     run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
                     run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
+
+                    add_to_desktop(app_data)
 
                     head = "Done!"
                     message = "{} installed succesfully! Look for it in the Apps launcher".format(app_data["title"])

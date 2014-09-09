@@ -9,8 +9,8 @@ import re
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppManage import install_app, uninstall_app, KDESK_EXEC, \
-                                add_to_desktop, remove_from_desktop
+from kano_apps.AppManage import install_app, uninstall_app, KDESK_EXEC
+from kano_apps.DesktopManage import add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.scrolled_window import ScrolledWindow
