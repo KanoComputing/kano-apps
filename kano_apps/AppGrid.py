@@ -381,6 +381,8 @@ class AppGridEntry(Gtk.EventBox):
     def _install(self):
         pw = get_sudo_password("Installing {}".format(self._app["title"]),
                                self._window)
+        if pw is None:
+            return
 
         self._window.blur()
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
