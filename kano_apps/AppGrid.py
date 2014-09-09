@@ -57,6 +57,8 @@ class Apps(Gtk.Notebook):
         media_apps = []
         experimental_apps = []
 
+        last_page = 0
+
         for app in apps:
             if app["type"] == "app":
                 if not self.is_app_installed(app):
@@ -120,7 +122,7 @@ class Apps(Gtk.Notebook):
             experimental_label = Gtk.Label("EXPERIMENTAL")
             self.append_page(experimental, experimental_label)
 
-            self._window.set_last_page(last_page)
+        self._window.set_last_page(last_page)
 
     def is_app_installed(self, app):
         for pkg in app["packages"] + app["dependencies"]:
@@ -130,7 +132,6 @@ class Apps(Gtk.Notebook):
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
-
 
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
