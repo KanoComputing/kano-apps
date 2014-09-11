@@ -76,11 +76,11 @@ def main():
         # Remove if the packages are not installed
         if de[0:5] == 'auto_':
             app_name = ".".join(de[5:].split('.')[:-1])
-            for apps in apps:
+            for app in apps:
                 if app['slug'] == app_name:
                     pkgs = app['packages'] + app['dependencies']
                     for pkg in pkgs:
-                        if pkg is not in installed_packages:
+                        if pkg not in installed_packages:
                             logger.info("Removing desktop entry {} (packages not installed)".format(de))
                             os.unlink(os.path.join(_DENTRIES_LOC, de))
                             
@@ -88,10 +88,13 @@ def main():
     # Regenerate all others
     for app in apps:
         pkgs = app['packages'] + app['dependencies']
+        skip = False
         for pkg in pkgs:
-            if pkg is not in installed_packages:
+            if pkg not in installed_packages:
+                skip = True
+        if skip:
             logger.info("Skipping {}, packages not installed".format(app["title"]))
-                continue
+            continue
 
         logger.info("Generating a desktop entry for {}".format(app["title"]))
 
