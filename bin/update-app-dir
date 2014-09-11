@@ -19,6 +19,7 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano_apps.AppData import get_applications
 from kano.logging import logger
+from kano_updater.utils import get_dpkg_dict
 
 _DENTRIES_LOC = "/usr/share/applications/"
 _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
@@ -53,6 +54,8 @@ def _get_dentry_filename(app):
 
 
 def main():
+    installed_packages = get_dpkg_dict()[0]
+    
     entries = get_applications()
     apps = []
     for e in entries:
@@ -68,9 +71,28 @@ def main():
         if de[0:5] == "auto_" and de not in apps_dentries:
             logger.info("Removing desktop entry {}".format(de))
             os.unlink(os.path.join(_DENTRIES_LOC, de))
+            continue
+        
+        # Remove if the packages are not installed
+        if de[0:5] == 'auto_':
+            app_name = ".".join(de[5:].split('.')[:-1])
+            for apps in apps:
+                if app['slug'] == app_name:
+                    pkgs = app['packages'] + app['dependencies']
+                    for pkg in pkgs:
+                        if pkg is not in installed_packages:
+                            logger.info("Removing desktop entry {} (packages not installed)".format(de))
+                            os.unlink(os.path.join(_DENTRIES_LOC, de))
+                            
 
     # Regenerate all others
     for app in apps:
+        pkgs = app['packages'] + app['dependencies']
+        for pkg in pkgs:
+            if pkg is not in installed_packages:
+            logger.info("Skipping {}, packages not installed".format(app["title"]))
+                continue
+
         logger.info("Generating a desktop entry for {}".format(app["title"]))
 
         de = create_desktop_entry(app)
