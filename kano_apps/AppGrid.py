@@ -401,6 +401,8 @@ class AppGridEntry(Gtk.EventBox):
                   "Please make sure your kit is connected to the internet and there " + \
                   "is enough space left on your card."
         if done:
+            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+
             head = "Done!"
             message = "{} installed succesfully!".format(self._app["title"])
 
