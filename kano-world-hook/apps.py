@@ -35,6 +35,17 @@ def launch(app_id):
     args = ["install", app_id]
 
     try:
+        try:
+            from kano_profile.apps import load_app_state_variable, save_app_state_variable
+            installed_apps = load_app_state_variable('kano-tracker', 'installed_apps')
+            if not installed_apps:
+                installed_apps = list()
+            installed_apps.append(app_id)
+            installed_apps = list(set(installed_apps))
+            save_app_state_variable('kano-tracker', 'installed_apps', installed_apps)
+        except Exception:
+            pass
+
         os.execvp(cmd, [cmd] + args)
     except:
         logger.error("Unable to launch kano-apps")
