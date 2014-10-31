@@ -48,90 +48,21 @@ class Apps(Gtk.Notebook):
         }
         apps.append(want_more_app)
 
-        # split apps to 6 arrays
-        latest_apps = []
-        tools_apps = []
-        others_apps = []
-        games_apps = []
-        code_apps = []
-        media_apps = []
-        experimental_apps = []
-
         last_page = 0
 
+        self._cat_names = ["latest", "code", "games", "media", "tools",
+            "others", "experimental"]
+        self._categories = {}
+
+        for cat in self._cat_names:
+            self._categories[cat] = AppGrid(main_win, self)
+            label = Gtk.Label(cat.upper())
+            self.append_page(self._categories[cat], label)
+
         for app in apps:
-            if app["type"] == "app":
-                if not self.is_app_installed(app):
-                    app["_install"] = True
-
-                if "time_installed" in app:
-                    latest_apps.append(app)
-
-                if "categories" in app:
-                    categories = map(lambda c: c.lower(), app["categories"])
-                    if "tools" in categories:
-                        tools_apps.append(app)
-                    if "others" in categories:
-                        others_apps.append(app)
-                    if "games" in categories:
-                        games_apps.append(app)
-                    if "code" in categories:
-                        code_apps.append(app)
-                    if "media" in categories:
-                        media_apps.append(app)
-                    if "experimental" in categories:
-                        experimental_apps.append(app)
-                else:
-                    others_apps.append(app)
-            elif app["type"] == "dentry":
-                others_apps.append(app)
-
-        if len(latest_apps) > 0:
-            latest_apps = sorted(latest_apps, key=lambda a: a["time_installed"], reverse=True)
-            latest = AppGrid(latest_apps[0:5], main_win)
-            latest_label = Gtk.Label("LATEST")
-            self.append_page(latest, latest_label)
-
-        if len(code_apps) > 0:
-            code = AppGrid(code_apps, main_win)
-            code_label = Gtk.Label("CODE")
-            last_page = self.append_page(code, code_label)
-
-        if len(games_apps) > 0:
-            games = AppGrid(games_apps, main_win)
-            games_label = Gtk.Label("GAMES")
-            self.append_page(games, games_label)
-
-        if len(media_apps) > 0:
-            media = AppGrid(media_apps, main_win)
-            media_label = Gtk.Label("MEDIA")
-            self.append_page(media, media_label)
-
-        if len(tools_apps) > 0:
-            tools = AppGrid(tools_apps, main_win)
-            tools_label = Gtk.Label("TOOLS")
-            self.append_page(tools, tools_label)
-
-        if len(others_apps) > 0:
-            others = AppGrid(others_apps, main_win)
-            others_label = Gtk.Label("OTHERS")
-            self.append_page(others, others_label)
-
-        if len(experimental_apps):
-            experimental = AppGrid(experimental_apps, main_win)
-            experimental_label = Gtk.Label("EXPERIMENTAL")
-            self.append_page(experimental, experimental_label)
+            self.add_app(app)
 
         self._window.set_last_page(last_page)
-
-        self._categories = {
-            "tools": tools,
-            "others": others,
-            "games": games,
-            "code": code,
-            "media": media,
-            "experimental": experimental
-        }
 
     def is_app_installed(self, app):
         for pkg in app["packages"] + app["dependencies"]:
@@ -142,12 +73,34 @@ class Apps(Gtk.Notebook):
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
+    def add_app(self, app):
+        if not self.is_app_installed(app):
+            app["_install"] = True
+
+        self._apps[app["origin"]] = {"data": app, "entries": []}
+
+        if app["type"] == "app":
+            if "categories" in app:
+                categories = map(lambda c: c.lower(), app["categories"])
+                for cat in categories:
+                    if cat in self._categories:
+                        self._categories[cat].add_app(app)
+        elif app["type"] == "dentry":
+            self._categories["others"].add_app(app)
+
+    def remove_app(self):
+        pass
+
+    def update_app(self):
 
 class AppGrid(Gtk.EventBox):
-    def __init__(self, apps, main_win):
+    def __init__(self, main_win, app_objects):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
         style = self.get_style_context()
         style.add_class('app-grid')
+
+        self._win = main_win
+        self._num_apps = 0
 
         self._sw = ScrolledWindow(hexpand=True, vexpand=True,
                                   wide_scrollbar=True)
@@ -161,28 +114,36 @@ class AppGrid(Gtk.EventBox):
 
         self._box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        self._entries = {}
-
-        i = 0
-        for app in apps:
-            if "colour" not in app:
-                if (i % 2) == 0:
-                    app["colour"] = "#f2914a"
-                else:
-                    app["colour"] = "#f5a269"
-            i += 1
-            self.add_entry(AppGridEntry(app, main_win))
-
         self._sw.add_with_viewport(self._box)
         self.add(self._sw)
 
-    def add_entry(self, entry):
+    def add_app(self, app):
+        if "colour" not in app:
+            if (self._num_apps % 2) == 0:
+                app["colour"] = "#f2914a"
+            else:
+                app["colour"] = "#f5a269"
+            self._num_apps += 1
+
+        entry = AppGridEntry(app, self._win)
+        self._add_entry(entry)
+        return entry
+
+    def remove_app(self, app):
+        pass
+
+    def _add_entry(self, entry):
         entry.props.valign = Gtk.Align.START
         self._box.pack_start(entry, False, False, 0)
 
-        #print entry.get_app()
-        #self._entries[entry.get_app()["slug"]] = entry
+        entry_id = entry.get_app_id()
+        if entry_id not in self._app_objects:
+            self._app_objects[entry_id] = []
 
+        self._app_objects[entry_id] = entry
+
+    def get_num(self):
+        return self._num_apps
 
 class DesktopButton(Gtk.Button):
     _ADD_IMG_PATH = "{}/icons/desktop-add.png".format(media_dir())
@@ -197,6 +158,7 @@ class DesktopButton(Gtk.Button):
         self.props.margin_right = 21
         self.connect("clicked", self._desktop_cb)
         self.refresh()
+        self.show_all()
 
     def refresh(self):
         img = self.get_image()
@@ -285,8 +247,11 @@ class AppGridEntry(Gtk.EventBox):
         attach_cursor_events(self)
         self.connect("button-release-event", self._entry_click_cb)
 
-    def get_app(self):
-        return self._app
+    def get_app_id(self):
+        if "slug" in self._app:
+            return self._app["slug"]
+        else:
+            return self._app["origin"]
 
     def _launch_app(self, cmd, args):
         try:
@@ -338,12 +303,13 @@ class AppGridEntry(Gtk.EventBox):
 
     def _setup_desktop_button(self):
         self._desktop_btn = None
+        print "PARTIAL YES"
         if "_install" not in self._app and \
            ("desktop" not in self._app or self._app["desktop"]):
             if os.path.exists(KDESK_EXEC):
+                print "YES"
                 self._desktop_btn = DesktopButton(self._app)
                 self._entry.pack_start(self._desktop_btn, False, False, 0)
-
 
     def _set_cursor_to_hand_cb(self, widget, data=None):
         widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
@@ -413,10 +379,10 @@ class AppGridEntry(Gtk.EventBox):
 
         success = uninstall_packages(self._app, pw)
         if success:
-            self._desktop_rm()
-            uninstall_link_and_icon()
+            remove_from_desktop(self._app)
+            uninstall_link_and_icon(self._app["slug"])
 
-        self._window.refresh()
+        self.destroy()
 
     def _install_cb(self):
         pw = get_sudo_password("Installing {}".format(self._app["title"]),
@@ -445,8 +411,10 @@ class AppGridEntry(Gtk.EventBox):
             head = "Done!"
             message = "{} installed succesfully!".format(self._app["title"])
 
-            self._app_name.set_text(self._app["title"])
             del self._app["_install"]
+            self._app_name.set_text(self._app["title"])
+            add_to_desktop(self._app)
+            self._setup_desktop_button()
 
         kdialog = KanoDialog(
             head, message,
@@ -461,8 +429,4 @@ class AppGridEntry(Gtk.EventBox):
         kdialog.set_action_background("grey")
         kdialog.title.description.set_max_width_chars(40)
 
-        if add_to_desktop(self._app):
-            self._window.refresh()
-
         kdialog.run()
-        self._window.refresh()

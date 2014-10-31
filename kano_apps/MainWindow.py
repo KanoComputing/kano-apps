@@ -150,7 +150,9 @@ class MainWindow(ApplicationWindow):
 
                 install_link_and_icon(app_data['slug'], app_data_file,
                                       app_icon_file, pw)
-                add_to_desktop(app_data)
+
+                if not self._icon_only:
+                    add_to_desktop(app_data)
 
                 head = "Done!"
                 message = app_data["title"] + " installed succesfully! " + \
