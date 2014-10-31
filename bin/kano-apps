@@ -16,14 +16,13 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path = [dir_path] + sys.path
 
-from kano_apps.AppManage import download_app, install_app
-from kano.utils import run_cmd
+from kano_apps.AppManage import download_app, install_app, \
+    install_link_and_icon
 
 
 def batch_install(apps, icon_only=False):
     for app in apps:
         app_data_file, app_icon_file = download_app(app)
-        app_icon_file_type = app_icon_file.split(".")[-1]
 
         with open(app_data_file) as f:
             app_data = json.load(f)
@@ -32,43 +31,39 @@ def batch_install(apps, icon_only=False):
         if not icon_only:
             success = install_app(app_data, gui=False)
 
-        app_data["removable"] = True
-
         if success:
             # write out the tmp json
             with open(app_data_file, "w") as f:
                 f.write(json.dumps(app_data))
 
-            local_app_dir = "/usr/share/applications"
-            run_cmd("sudo -S mkdir -p {}".format(local_app_dir))
-
-            system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
-            run_cmd("sudo -S mv {} {}".format(app_data_file, system_app_data_file))
-            run_cmd("sudo -S update-app-dir")
-
-            system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
-            run_cmd("sudo -S mv {} {}".format(app_icon_file, system_app_icon_file))
-            run_cmd("sudo -S update-icon-caches {}".format("/usr/share/icons/Kano"))
-            run_cmd("sudo -S gtk-update-icon-cache-3.0")
+            install_link_and_icon(app_data["slug"], app_data_file,
+                                  app_icon_file)
 
 
-def main():
-    args = None
+def args_parse():
     if len(sys.argv) >= 2:
-        parser = argparse.ArgumentParser(description='An application hub for Kano OS.')
+        desc = "An application hub for Kano OS."
+        parser = argparse.ArgumentParser(description=desc)
         parser.set_defaults(cmd=None)
         subparsers = parser.add_subparsers(dest="cmd")
 
-        install = subparsers.add_parser('install', help='Use this to install applications')
-        install.add_argument('--no-gui', dest='gui', action='store_const',
-                             const=False, default=True, help='Run without the GUI')
-        install.add_argument('--icon-only', dest='icon_only', action='store_const',
-                             const=True, default=False, help='Install just the app icon')
-        install.add_argument('apps', metavar='APP', type=str, nargs='+',
-                             help='A list of applications to install')
+        install_help = "Use this to install applications"
+        install = subparsers.add_parser("install", help=install_help)
 
-        args = parser.parse_args()
+        install.add_argument("--no-gui", dest="gui", action="store_const",
+                             const=False, default=True,
+                             help="Run without the GUI")
+        install.add_argument("--icon-only", dest="icon_only",
+                             action="store_const", const=True, default=False,
+                             help="Install just the app icon")
+        install.add_argument("apps", metavar="APP", type=str, nargs="+",
+                             help="A list of applications to install")
 
+        return parser.parse_args()
+
+
+def main():
+    args = args_parse()
     if args is not None and args.cmd == "install":
         if args.gui:
             from gi.repository import Gtk
@@ -81,6 +76,7 @@ def main():
         else:
             batch_install(args.apps, icon_only=args.icon_only)
     else:
+        # GTK is imported only if we're running in GUI mode
         from gi.repository import Gtk
         from kano_apps.MainWindow import MainWindow
 
