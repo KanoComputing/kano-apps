@@ -9,7 +9,8 @@ import re
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppManage import install_app, uninstall_app, KDESK_EXEC
+from kano_apps.AppManage import install_app, uninstall_packages, KDESK_EXEC, \
+    uninstall_link_and_icon, run_sudo_cmd
 from kano_apps.DesktopManage import add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
@@ -17,7 +18,6 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 from kano.gtk3.kano_dialog import KanoDialog
 from kano_updater.utils import get_dpkg_dict
-from kano.utils import run_cmd
 
 
 class Apps(Gtk.Notebook):
@@ -124,6 +124,15 @@ class Apps(Gtk.Notebook):
 
         self._window.set_last_page(last_page)
 
+        self._categories = {
+            "tools": tools,
+            "others": others,
+            "games": games,
+            "code": code,
+            "media": media,
+            "experimental": experimental
+        }
+
     def is_app_installed(self, app):
         for pkg in app["packages"] + app["dependencies"]:
             if pkg not in self._installed_packages:
@@ -132,6 +141,7 @@ class Apps(Gtk.Notebook):
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
+
 
 class AppGrid(Gtk.EventBox):
     def __init__(self, apps, main_win):
@@ -151,8 +161,7 @@ class AppGrid(Gtk.EventBox):
 
         self._box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        self._number_of_entries = 0
-        self._entries = []
+        self._entries = {}
 
         i = 0
         for app in apps:
@@ -170,6 +179,49 @@ class AppGrid(Gtk.EventBox):
     def add_entry(self, entry):
         entry.props.valign = Gtk.Align.START
         self._box.pack_start(entry, False, False, 0)
+
+        #print entry.get_app()
+        #self._entries[entry.get_app()["slug"]] = entry
+
+
+class DesktopButton(Gtk.Button):
+    _ADD_IMG_PATH = "{}/icons/desktop-add.png".format(media_dir())
+    _RM_IMG_PATH = "{}/icons/desktop-rm.png".format(media_dir())
+
+    def __init__(self, app):
+        Gtk.Button.__init__(self, hexpand=False)
+
+        self._app = app
+
+        self.get_style_context().add_class('desktop-button')
+        self.props.margin_right = 21
+        self.connect("clicked", self._desktop_cb)
+        self.refresh()
+
+    def refresh(self):
+        img = self.get_image()
+        if img:
+            img.destroy()
+
+        if self._is_on_desktop():
+            self.set_image(Gtk.Image.new_from_file(self._RM_IMG_PATH))
+            self.set_tooltip_text("Remove from desktop")
+        else:
+            self.set_image(Gtk.Image.new_from_file(self._ADD_IMG_PATH))
+            self.set_tooltip_text("Add to desktop")
+
+    def _is_on_desktop(self):
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
+        return os.path.exists(kdesk_dir + file_name)
+
+    def _desktop_cb(self, event):
+        if not self._is_on_desktop():
+            if add_to_desktop(self._app):
+                self.refresh()
+        else:
+            if remove_from_desktop(self._app):
+                self.refresh()
 
 class AppGridEntry(Gtk.EventBox):
     def __init__(self, app, window):
@@ -219,73 +271,22 @@ class AppGridEntry(Gtk.EventBox):
         app_desc.props.margin_bottom = 25
 
         texts.pack_start(app_desc, False, False, 0)
-
         entry.pack_start(texts, True, True, 0)
 
         if "description" in self._app:
-            more_btn = Gtk.Button(hexpand=False)
-            more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
-            more_btn.set_image(more)
-            more_btn.props.margin_right = 21
-            #more_btn.props.valign = Gtk.Align.CENTER
-            more_btn.get_style_context().add_class('more-button')
-            more_btn.connect("clicked", self._show_more)
-            more_btn.set_tooltip_text("More information")
-            more_btn.connect("realize", self._set_cursor_to_hand)
-            entry.pack_start(more_btn, False, False, 0)
+            self._setup_desc_button()
 
         if "removable" in self._app and self._app["removable"] is True:
-            remove_btn = Gtk.Button(hexpand=False)
-            self._res_bin_open = Gtk.Image.new_from_file("{}/icons/trashbin-open.png".format(media_dir()))
-            self._res_bin_closed = Gtk.Image.new_from_file("{}/icons/trashbin-closed.png".format(media_dir()))
-            remove_btn.set_image(self._res_bin_closed)
-            remove_btn.props.margin_right = 21
-            #remove_btn.props.valign = Gtk.Align.CENTER
-            remove_btn.get_style_context().add_class('more-button')
-            remove_btn.connect("clicked", self._uninstall_app)
-            remove_btn.set_tooltip_text("Remove")
-            remove_btn.connect("realize", self._set_cursor_to_hand)
-            remove_btn.connect("enter-notify-event", self._open_bin)
-            remove_btn.connect("leave-notify-event", self._close_bin)
-            entry.pack_start(remove_btn, False, False, 0)
+            self._setup_bin_button()
 
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
-        on_desktop = os.path.exists(kdesk_dir + file_name)
-
-        desktop_btn = Gtk.Button(hexpand=False)
-        desktop_btn.props.margin_right = 21
-        #desktop_btn.props.valign = Gtk.Align.CENTER
-
-        if "_install" not in self._app and ("desktop" not in self._app or self._app["desktop"]):
-            if os.path.exists(KDESK_EXEC):
-                if on_desktop:
-                    rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
-                    desktop_btn.set_image(rm)
-                    desktop_btn.get_style_context().add_class('desktop-button')
-                    desktop_btn.connect("clicked", self._desktop_rm)
-                    desktop_btn.set_tooltip_text("Remove from desktop")
-                else:
-                    add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
-                    desktop_btn.set_image(add)
-                    desktop_btn.get_style_context().add_class('desktop-button')
-                    desktop_btn.connect("clicked", self._desktop_add)
-                    desktop_btn.set_tooltip_text("Add to desktop")
-
-            entry.pack_start(desktop_btn, False, False, 0)
+        self._setup_desktop_button()
 
         self.add(entry)
         attach_cursor_events(self)
-        self.connect("button-release-event", self._mouse_click)
+        self.connect("button-release-event", self._entry_click_cb)
 
-    def _set_cursor_to_hand(self, widget, data=None):
-        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-
-    def _open_bin(self, widget, event):
-        widget.set_image(self._res_bin_open)
-
-    def _close_bin(self, widget, event):
-        widget.set_image(self._res_bin_closed)
+    def get_app(self):
+        return self._app
 
     def _launch_app(self, cmd, args):
         try:
@@ -308,7 +309,52 @@ class AppGridEntry(Gtk.EventBox):
         )
         message.run()
 
-    def _show_more(self, widget):
+    def _setup_desc_button(self):
+        more_btn = Gtk.Button(hexpand=False)
+        more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
+        more_btn.set_image(more)
+        more_btn.props.margin_right = 21
+        more_btn.get_style_context().add_class('more-button')
+        more_btn.connect("clicked", self._show_more_cb)
+        more_btn.set_tooltip_text("More information")
+        more_btn.connect("realize", self._set_cursor_to_hand_cb)
+        self._entry.pack_start(more_btn, False, False, 0)
+
+    def _setup_bin_button(self):
+        remove_btn = Gtk.Button(hexpand=False)
+        bin_open_img = "{}/icons/trashbin-open.png".format(media_dir())
+        self._res_bin_open = Gtk.Image.new_from_file(bin_open_img)
+        bin_closed_img = "{}/icons/trashbin-closed.png".format(media_dir())
+        self._res_bin_closed = Gtk.Image.new_from_file(bin_closed_img)
+        remove_btn.set_image(self._res_bin_closed)
+        remove_btn.props.margin_right = 21
+        remove_btn.get_style_context().add_class('more-button')
+        remove_btn.connect("clicked", self._uninstall_cb)
+        remove_btn.set_tooltip_text("Remove")
+        remove_btn.connect("realize", self._set_cursor_to_hand_cb)
+        remove_btn.connect("enter-notify-event", self._open_bin_cb)
+        remove_btn.connect("leave-notify-event", self._close_bin_cb)
+        self._entry.pack_start(remove_btn, False, False, 0)
+
+    def _setup_desktop_button(self):
+        self._desktop_btn = None
+        if "_install" not in self._app and \
+           ("desktop" not in self._app or self._app["desktop"]):
+            if os.path.exists(KDESK_EXEC):
+                self._desktop_btn = DesktopButton(self._app)
+                self._entry.pack_start(self._desktop_btn, False, False, 0)
+
+
+    def _set_cursor_to_hand_cb(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    def _open_bin_cb(self, widget, event):
+        widget.set_image(self._res_bin_open)
+
+    def _close_bin_cb(self, widget, event):
+        widget.set_image(self._res_bin_closed)
+
+    def _show_more_cb(self, widget):
         kdialog = KanoDialog(
             self._app["title"],
             self._app['description'] if "description" in self._app else self._app['tagline'],
@@ -326,18 +372,19 @@ class AppGridEntry(Gtk.EventBox):
 
         return True
 
-    def _mouse_click(self, ebox, event):
+    def _entry_click_cb(self, ebox, event):
         if "_install" in self._app:
-            self._install()
+            self._install_cb()
         else:
             self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
         return True
 
-    def _uninstall_app(self, event):
+    def _uninstall_cb(self, event):
         confirmation = KanoDialog(
             title_text="Removing {}".format(self._app["title"]),
-            description_text="This application will be uninstalled and removed from apps. Do you wish to proceed?",
+            description_text="This application will be uninstalled and " +
+                             "removed from apps. Do you wish to proceed?",
             button_dict={
                 "YES": {
                     "return_value": 0
@@ -356,30 +403,22 @@ class AppGridEntry(Gtk.EventBox):
         if rv < 0:
             return
 
-        pw = get_sudo_password("Uninstalling {}".format(self._app["title"]), self._window)
+        prompt = "Uninstalling {}".format(self._app["title"])
+        pw = get_sudo_password(prompt, self._window)
         if pw is None:
             return
 
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-        success = uninstall_app(self._app, pw)
+        success = uninstall_packages(self._app, pw)
         if success:
             self._desktop_rm()
-
-            local_app_dir = "/usr/share/applications"
-            system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
-            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_data_file))
-            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
-
-            system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(self._app["slug"])
-            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_icon_file))
-            run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
-            run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
+            uninstall_link_and_icon()
 
         self._window.refresh()
 
-    def _install(self):
+    def _install_cb(self):
         pw = get_sudo_password("Installing {}".format(self._app["title"]),
                                self._window)
         if pw is None:
@@ -397,11 +436,11 @@ class AppGridEntry(Gtk.EventBox):
         self._window.unblur()
 
         head = "Installation failed"
-        message = "{} cannot be installed at the moment. ".format(self._app["title"]) + \
-                  "Please make sure your kit is connected to the internet and there " + \
-                  "is enough space left on your card."
+        message = self._app["title"] + " cannot be installed at the " + \
+            "moment. Please make sure your kit is connected to the " + \
+            "internet and there is enough space left on your card."
         if done:
-            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+            run_sudo_cmd("update-app-dir", pw)
 
             head = "Done!"
             message = "{} installed succesfully!".format(self._app["title"])
@@ -422,13 +461,8 @@ class AppGridEntry(Gtk.EventBox):
         kdialog.set_action_background("grey")
         kdialog.title.description.set_max_width_chars(40)
 
-        kdialog.run()
-        self._window.refresh()
-
-    def _desktop_add(self, event):
         if add_to_desktop(self._app):
             self._window.refresh()
 
-    def _desktop_rm(self, event=None):
-        if remove_from_desktop(self._app):
-            self._window.refresh()
+        kdialog.run()
+        self._window.refresh()

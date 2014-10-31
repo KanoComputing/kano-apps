@@ -60,7 +60,7 @@ def install_app(app, sudo_pwd=None, gui=True):
     return done
 
 
-def uninstall_app(app, sudo_pwd=None):
+def uninstall_packages(app, sudo_pwd=None):
     if len(app["packages"]) == 0:
         return True
 
@@ -150,4 +150,16 @@ def install_link_and_icon(app_name, app_data_file, app_icon_file, pw=None):
                  pw)
     run_sudo_cmd("update-icon-caches {}".format("/usr/share/icons/Kano"),
                  pw)
+    run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
+
+
+def uninstall_link_and_icon(app_name, pw=None):
+    local_app_dir = "/usr/share/applications"
+    system_app_data_file = "{}/{}.app".format(local_app_dir, app_name)
+    run_sudo_cmd("rm -f {}".format(system_app_data_file), pw)
+    run_sudo_cmd("update-app-dir", pw)
+
+    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(app_name)
+    run_sudo_cmd("rm -f {}".format(system_app_icon_file), pw)
+    run_sudo_cmd("update-icon-caches /usr/share/icons/Kano", pw)
     run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
