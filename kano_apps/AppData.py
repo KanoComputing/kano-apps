@@ -8,9 +8,11 @@
 import os
 import re
 import json
+from kano_updater.utils import get_dpkg_dict
 
 _SYSTEM_ICONS_LOC = '/usr/share/applications/'
 
+_INSTALLED_PKGS = get_dpkg_dict()[0]
 
 def try_exec(app):
     path = None
@@ -26,6 +28,13 @@ def try_exec(app):
                 break
 
     return path is not None and os.path.isfile(path) and os.access(path, os.X_OK)
+
+
+def is_app_installed(app):
+    for pkg in app["packages"] + app["dependencies"]:
+        if pkg not in _INSTALLED_PKGS:
+            return False
+    return True
 
 
 def get_applications():
@@ -49,6 +58,9 @@ def get_applications():
             if f[-4:] == ".app":
                 data = _load_from_app_file(fp)
                 if data is not None:
+                    if not is_app_installed(data):
+                        data["_install"] = True
+
                     apps.append(data)
                     if "overrides" in data:
                         blacklist += data["overrides"]

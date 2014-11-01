@@ -88,11 +88,16 @@ class MainWindow(ApplicationWindow):
 
     def refresh(self, category=None):
         last_page = self._apps.get_current_page()
-        self.get_main_area().remove_contents()
-        del self._apps
+        #self.get_main_area().remove_contents()
+        #del self._apps
 
-        self._apps = Apps(get_applications(), self)
-        self.get_main_area().set_contents(self._apps)
+        #self._apps = Apps(get_applications(), self)
+        #self.get_main_area().set_contents(self._apps)
+        for app in get_applications():
+            if self._apps.has_app(app):
+                self._apps.update_app(app)
+            else:
+                self._apps.add_app(app)
 
         # FIXME: Momentarily disabling the tab switch
         # effectively fixes the bug where the scrollbars disappear,
@@ -105,6 +110,7 @@ class MainWindow(ApplicationWindow):
 
     def _install_apps(self):
         self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
+        pw = None
         for app in self._install:
             try:
                 app_data_file, app_icon_file = download_app(app)
@@ -126,9 +132,14 @@ class MainWindow(ApplicationWindow):
             with open(app_data_file) as f:
                 app_data = json.load(f)
 
-            pw = get_sudo_password("Installing {}".format(app_data["title"]),
-                                   self)
-            if pw is None:
+            if not pw:
+                pw = get_sudo_password("Installing {}".format(
+                    app_data["title"]),
+                    self
+                )
+            # Canceled password entry
+            if not pw:
+                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
                 return
 
             self.blur()
