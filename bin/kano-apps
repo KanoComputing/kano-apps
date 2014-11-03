@@ -18,6 +18,7 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano_apps.AppManage import download_app, install_app, \
     install_link_and_icon
+from kano.gtk3.scrolled_window import ScrolledWindow
 
 
 def batch_install(apps, icon_only=False):
@@ -81,7 +82,7 @@ def main():
         from kano_apps.MainWindow import MainWindow
 
         win = MainWindow()
-
+        ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
         Gtk.main()
 
