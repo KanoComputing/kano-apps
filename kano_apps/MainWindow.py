@@ -84,25 +84,13 @@ class MainWindow(ApplicationWindow):
         self._top_bar.disable_prev()
         self._apps = apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(apps)
-        apps.set_current_page(self.get_last_page())
 
     def refresh(self, category=None):
-        last_page = self._apps.get_current_page()
-        #self.get_main_area().remove_contents()
-        #del self._apps
-
-        #self._apps = Apps(get_applications(), self)
-        #self.get_main_area().set_contents(self._apps)
         for app in get_applications():
             if self._apps.has_app(app):
                 self._apps.update_app(app)
             else:
                 self._apps.add_app(app)
-
-        # FIXME: Momentarily disabling the tab switch
-        # effectively fixes the bug where the scrollbars disappear,
-        # but focus goes back to the first tab pane.
-        #self._apps.set_current_page(last_page)
 
     def _app_loaded(self, widget):
         if self._install is not None:
@@ -131,6 +119,29 @@ class MainWindow(ApplicationWindow):
 
             with open(app_data_file) as f:
                 app_data = json.load(f)
+
+            # In case the app already exists, we need to ask whether
+            # the user would like to update it
+            if self._apps.has_app(app_data):
+                head = "{} is already installed".format(app_data["title"])
+                desc = "Would you like to make sure it's up to date?"
+                dialog = KanoDialog(
+                    head, desc,
+                    {
+                        "YES": {
+                            "return_value": 0
+                        },
+                        "NO": {
+                            "return_value": -1
+                        }
+                    },
+                    parent_window=self
+                )
+                rv = dialog.run()
+                del dialog
+
+                if rv != 0:
+                    sys.exit(0)
 
             if not pw:
                 pw = get_sudo_password("Installing {}".format(
