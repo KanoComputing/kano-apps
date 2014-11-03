@@ -8,7 +8,7 @@ Build-Depends: debhelper (>=9.0.0)
 Package: kano-apps
 Architecture: all
 Depends: ${misc:Depends}, python, python-gi, kano-themes,
- kano-toolset (>= 1.1-6), kano-updater
+ kano-toolset (>= 1.2-5), kano-updater
 Replaces: kano-desktop (<< 1.0-60)
 Breaks: kano-desktop (<< 1.0-60)
 Conflicts: kano-extras
