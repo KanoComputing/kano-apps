@@ -57,7 +57,11 @@ class Apps(Gtk.Notebook):
         for cat in self._cat_names:
             self._categories[cat] = AppGrid(main_win, self)
             label = Gtk.Label(cat.upper())
-            self.append_page(self._categories[cat], label)
+            ebox = Gtk.EventBox()
+            ebox.add(label)
+            ebox.connect("realize", self._set_cursor_to_hand_cb)
+            ebox.show_all()
+            self.append_page(self._categories[cat], ebox)
             self._categories[cat].new_entry(want_more_app)
 
         for app in apps:
@@ -68,6 +72,11 @@ class Apps(Gtk.Notebook):
     def has_app(self, app):
         if "origin" in app:
             return app["origin"] in self._apps
+        elif "slug" in app:
+            for origin, app_obj in self._apps.iteritems():
+                if "slug" in app_obj["data"] and \
+                   app_obj["data"]["slug"] == app["slug"]:
+                    return True
 
         return False
 
@@ -111,6 +120,9 @@ class Apps(Gtk.Notebook):
         self._apps[origin]["data"] = app_data
         for entry in self._apps[origin]["entries"]:
             entry.refresh(app_data)
+
+    def _set_cursor_to_hand_cb(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
 
 class AppGrid(Gtk.EventBox):
