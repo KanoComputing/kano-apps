@@ -9,15 +9,14 @@ import re
 import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppManage import install_app, uninstall_app, KDESK_EXEC
+from kano_apps.AppManage import install_app, uninstall_packages, KDESK_EXEC, \
+    uninstall_link_and_icon, run_sudo_cmd
 from kano_apps.DesktopManage import add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 from kano.gtk3.kano_dialog import KanoDialog
-from kano_updater.utils import get_dpkg_dict
-from kano.utils import run_cmd
 
 
 class Apps(Gtk.Notebook):
@@ -27,13 +26,13 @@ class Apps(Gtk.Notebook):
         self._window = main_win
         self.connect("switch-page", self._switch_page)
 
-        self._installed_packages = get_dpkg_dict()[0]
-
         want_more_app = {
             "type": "app",
             "title": "Want more apps?",
             "tagline": "Go to Kano World to install more",
             "slug": "want-more",
+
+            "origin": "-",
 
             "icon": "want-more-apps",
             "colour": "#fda96f",
@@ -46,98 +45,95 @@ class Apps(Gtk.Notebook):
             "overrides": [],
             "desktop": False
         }
-        apps.append(want_more_app)
-
-        # split apps to 6 arrays
-        latest_apps = []
-        tools_apps = []
-        others_apps = []
-        games_apps = []
-        code_apps = []
-        media_apps = []
-        experimental_apps = []
 
         last_page = 0
 
+        self._cat_names = ["latest", "code", "games", "media", "tools",
+                           "others", "experimental"]
+        self._categories = {}
+
+        self._apps = {}
+
+        for cat in self._cat_names:
+            self._categories[cat] = AppGrid(main_win, self)
+            label = Gtk.Label(cat.upper())
+            ebox = Gtk.EventBox()
+            ebox.add(label)
+            ebox.connect("realize", self._set_cursor_to_hand_cb)
+            ebox.show_all()
+            self.append_page(self._categories[cat], ebox)
+            self._categories[cat].new_entry(want_more_app)
+
         for app in apps:
-            if app["type"] == "app":
-                if not self.is_app_installed(app):
-                    app["_install"] = True
-
-                if "time_installed" in app:
-                    latest_apps.append(app)
-
-                if "categories" in app:
-                    categories = map(lambda c: c.lower(), app["categories"])
-                    if "tools" in categories:
-                        tools_apps.append(app)
-                    if "others" in categories:
-                        others_apps.append(app)
-                    if "games" in categories:
-                        games_apps.append(app)
-                    if "code" in categories:
-                        code_apps.append(app)
-                    if "media" in categories:
-                        media_apps.append(app)
-                    if "experimental" in categories:
-                        experimental_apps.append(app)
-                else:
-                    others_apps.append(app)
-            elif app["type"] == "dentry":
-                others_apps.append(app)
-
-        if len(latest_apps) > 0:
-            latest_apps = sorted(latest_apps, key=lambda a: a["time_installed"], reverse=True)
-            latest = AppGrid(latest_apps[0:5], main_win)
-            latest_label = Gtk.Label("LATEST")
-            self.append_page(latest, latest_label)
-
-        if len(code_apps) > 0:
-            code = AppGrid(code_apps, main_win)
-            code_label = Gtk.Label("CODE")
-            last_page = self.append_page(code, code_label)
-
-        if len(games_apps) > 0:
-            games = AppGrid(games_apps, main_win)
-            games_label = Gtk.Label("GAMES")
-            self.append_page(games, games_label)
-
-        if len(media_apps) > 0:
-            media = AppGrid(media_apps, main_win)
-            media_label = Gtk.Label("MEDIA")
-            self.append_page(media, media_label)
-
-        if len(tools_apps) > 0:
-            tools = AppGrid(tools_apps, main_win)
-            tools_label = Gtk.Label("TOOLS")
-            self.append_page(tools, tools_label)
-
-        if len(others_apps) > 0:
-            others = AppGrid(others_apps, main_win)
-            others_label = Gtk.Label("OTHERS")
-            self.append_page(others, others_label)
-
-        if len(experimental_apps):
-            experimental = AppGrid(experimental_apps, main_win)
-            experimental_label = Gtk.Label("EXPERIMENTAL")
-            self.append_page(experimental, experimental_label)
+            self.add_app(app)
 
         self._window.set_last_page(last_page)
 
-    def is_app_installed(self, app):
-        for pkg in app["packages"] + app["dependencies"]:
-            if pkg not in self._installed_packages:
-                return False
-        return True
+    def has_app(self, app):
+        if "origin" in app:
+            return app["origin"] in self._apps
+        elif "slug" in app:
+            for origin, app_obj in self._apps.iteritems():
+                if "slug" in app_obj["data"] and \
+                   app_obj["data"]["slug"] == app["slug"]:
+                    return True
+
+        return False
 
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
+    def add_app(self, app_data):
+        if app_data["origin"] in self._apps:
+            return
+
+        self._apps[app_data["origin"]] = {"data": app_data, "entries": []}
+        app_entries = self._apps[app_data["origin"]]["entries"]
+
+        if app_data["type"] == "app":
+            if "categories" in app_data:
+                categories = map(lambda c: c.lower(), app_data["categories"])
+                for cat in categories:
+                    if cat in self._categories:
+                        cat_obj = self._categories[cat]
+                        entry = cat_obj.new_entry(app_data)
+                        app_entries.append(entry)
+        elif app_data["type"] == "dentry":
+            entry = self._categories["others"].new_entry(app_data)
+            app_entries.append(entry)
+
+        if "time_installed" in app_data:
+            entry = self._categories["latest"].new_entry(
+                app_data, "time_installed", True)
+            app_entries.append(entry)
+
+    def remove_app(self, app_data):
+        origin = app_data["origin"]
+
+        for entry in self._apps[origin]["entries"]:
+            entry.destroy()
+
+        del self._apps[origin]
+
+    def update_app(self, app_data):
+        origin = app_data["origin"]
+        self._apps[origin]["data"] = app_data
+        for entry in self._apps[origin]["entries"]:
+            entry.refresh(app_data)
+
+    def _set_cursor_to_hand_cb(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+
 class AppGrid(Gtk.EventBox):
-    def __init__(self, apps, main_win):
+    def __init__(self, main_win, apps_obj):
         Gtk.EventBox.__init__(self, hexpand=True, vexpand=True)
         style = self.get_style_context()
         style.add_class('app-grid')
+
+        self._win = main_win
+        self._apps = apps_obj
+        self._num_apps = 0
 
         self._sw = ScrolledWindow(hexpand=True, vexpand=True,
                                   wide_scrollbar=True)
@@ -151,141 +147,216 @@ class AppGrid(Gtk.EventBox):
 
         self._box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        self._number_of_entries = 0
-        self._entries = []
-
-        i = 0
-        for app in apps:
-            if "colour" not in app:
-                if (i % 2) == 0:
-                    app["colour"] = "#f2914a"
-                else:
-                    app["colour"] = "#f5a269"
-            i += 1
-            self.add_entry(AppGridEntry(app, main_win))
-
         self._sw.add_with_viewport(self._box)
         self.add(self._sw)
 
-    def add_entry(self, entry):
-        entry.props.valign = Gtk.Align.START
+    def new_entry(self, app, sort_by="title", reverse=False):
+        if "colour" not in app:
+            if (self._num_apps % 2) == 0:
+                app["colour"] = "#f2914a"
+            else:
+                app["colour"] = "#f5a269"
+            self._num_apps += 1
+
+        entry = AppGridEntry(app, self._win, self._apps)
         self._box.pack_start(entry, False, False, 0)
 
+        pos = 0
+        for child in self._box:
+            child_app_data = child.get_app_data()
+
+            # keep the special "want-more" entry at the bottom of the list
+            if "slug" in child_app_data and \
+               child_app_data["slug"] == "want-more":
+                break
+
+            if reverse:
+                if app[sort_by] > child_app_data[sort_by]:
+                    break
+            else:
+                if app[sort_by] < child_app_data[sort_by]:
+                    break
+
+            pos += 1
+
+        self._box.reorder_child(entry, pos)
+
+        entry.show_all()
+        return entry
+
+    def get_num(self):
+        return self._num_apps
+
+class DesktopButton(Gtk.Button):
+    _ADD_IMG_PATH = "{}/icons/desktop-add.png".format(media_dir())
+    _RM_IMG_PATH = "{}/icons/desktop-rm.png".format(media_dir())
+
+    def __init__(self, app, apps_obj):
+        Gtk.Button.__init__(self, hexpand=False)
+
+        self._app = app
+        self._apps = apps_obj
+
+        self.get_style_context().add_class('desktop-button')
+        self.props.margin_right = 21
+        self.connect("clicked", self._desktop_cb)
+        self.refresh()
+        self.show_all()
+
+    def refresh(self):
+        img = self.get_image()
+        if img:
+            img.destroy()
+
+        if self._is_on_desktop():
+            self.set_image(Gtk.Image.new_from_file(self._RM_IMG_PATH))
+            self.set_tooltip_text("Remove from desktop")
+        else:
+            self.set_image(Gtk.Image.new_from_file(self._ADD_IMG_PATH))
+            self.set_tooltip_text("Add to desktop")
+
+        self.show_all()
+
+    def _is_on_desktop(self):
+        kdesk_dir = os.path.expanduser('~/.kdesktop/')
+        file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
+        return os.path.exists(kdesk_dir + file_name)
+
+    def _desktop_cb(self, event):
+        if not self._is_on_desktop():
+            if add_to_desktop(self._app):
+                self._apps.update_app(self._app)
+        else:
+            if remove_from_desktop(self._app):
+                self._apps.update_app(self._app)
+
 class AppGridEntry(Gtk.EventBox):
-    def __init__(self, app, window):
+    def __init__(self, app, window, apps_obj):
         Gtk.EventBox.__init__(self)
+
+        self.props.valign = Gtk.Align.START
+
+        self._apps = apps_obj
 
         self._app = app
         self._cmd = app['launch_command']
 
-        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(app['colour']))
-
         self._window = window
         self._entry = entry = Gtk.HBox()
 
+        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(app['colour']))
+
         self._icon = get_app_icon(app['icon'])
         self._icon.props.margin = 21
-
         entry.pack_start(self._icon, False, False, 0)
 
         texts = Gtk.VBox()
 
-        name = app["title"]
-        if "_install" in app:
-            name = "Install {}".format(name)
-
+        # Initialise the app title label
         self._app_name = app_name = Gtk.Label(
-            name,
+            "",
             halign=Gtk.Align.START,
             valign=Gtk.Align.CENTER,
             hexpand=True
         )
         app_name.get_style_context().add_class('app_name')
         app_name.props.margin_top = 28
-
         texts.pack_start(app_name, False, False, 0)
+        self._set_title(app)
 
-        tagline = app['tagline']
-        if tagline > 70:
-            tagline = tagline[0:70]
-
+        # Initialise the app desc label
         self._app_desc = app_desc = Gtk.Label(
-            tagline,
+            "",
             halign=Gtk.Align.START,
             valign=Gtk.Align.START,
             hexpand=True
         )
         app_desc.get_style_context().add_class('app_desc')
         app_desc.props.margin_bottom = 25
-
         texts.pack_start(app_desc, False, False, 0)
+        self._set_tagline(app)
 
         entry.pack_start(texts, True, True, 0)
 
+        self._more_btn = None
         if "description" in self._app:
-            more_btn = Gtk.Button(hexpand=False)
-            more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
-            more_btn.set_image(more)
-            more_btn.props.margin_right = 21
-            #more_btn.props.valign = Gtk.Align.CENTER
-            more_btn.get_style_context().add_class('more-button')
-            more_btn.connect("clicked", self._show_more)
-            more_btn.set_tooltip_text("More information")
-            more_btn.connect("realize", self._set_cursor_to_hand)
-            entry.pack_start(more_btn, False, False, 0)
+            self._setup_desc_button()
 
+        self._remove_btn = None
         if "removable" in self._app and self._app["removable"] is True:
-            remove_btn = Gtk.Button(hexpand=False)
-            self._res_bin_open = Gtk.Image.new_from_file("{}/icons/trashbin-open.png".format(media_dir()))
-            self._res_bin_closed = Gtk.Image.new_from_file("{}/icons/trashbin-closed.png".format(media_dir()))
-            remove_btn.set_image(self._res_bin_closed)
-            remove_btn.props.margin_right = 21
-            #remove_btn.props.valign = Gtk.Align.CENTER
-            remove_btn.get_style_context().add_class('more-button')
-            remove_btn.connect("clicked", self._uninstall_app)
-            remove_btn.set_tooltip_text("Remove")
-            remove_btn.connect("realize", self._set_cursor_to_hand)
-            remove_btn.connect("enter-notify-event", self._open_bin)
-            remove_btn.connect("leave-notify-event", self._close_bin)
-            entry.pack_start(remove_btn, False, False, 0)
+            self._setup_remove_button()
 
-        kdesk_dir = os.path.expanduser('~/.kdesktop/')
-        file_name = re.sub(' ', '-', self._app["title"]) + ".lnk"
-        on_desktop = os.path.exists(kdesk_dir + file_name)
-
-        desktop_btn = Gtk.Button(hexpand=False)
-        desktop_btn.props.margin_right = 21
-        #desktop_btn.props.valign = Gtk.Align.CENTER
-
-        if "_install" not in self._app and ("desktop" not in self._app or self._app["desktop"]):
-            if os.path.exists(KDESK_EXEC):
-                if on_desktop:
-                    rm = Gtk.Image.new_from_file("{}/icons/desktop-rm.png".format(media_dir()))
-                    desktop_btn.set_image(rm)
-                    desktop_btn.get_style_context().add_class('desktop-button')
-                    desktop_btn.connect("clicked", self._desktop_rm)
-                    desktop_btn.set_tooltip_text("Remove from desktop")
-                else:
-                    add = Gtk.Image.new_from_file("{}/icons/desktop-add.png".format(media_dir()))
-                    desktop_btn.set_image(add)
-                    desktop_btn.get_style_context().add_class('desktop-button')
-                    desktop_btn.connect("clicked", self._desktop_add)
-                    desktop_btn.set_tooltip_text("Add to desktop")
-
-            entry.pack_start(desktop_btn, False, False, 0)
+        self._setup_desktop_button()
 
         self.add(entry)
         attach_cursor_events(self)
-        self.connect("button-release-event", self._mouse_click)
+        self.connect("button-release-event", self._entry_click_cb)
 
-    def _set_cursor_to_hand(self, widget, data=None):
-        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+    def get_app_data(self):
+        return self._app
 
-    def _open_bin(self, widget, event):
-        widget.set_image(self._res_bin_open)
+    def refresh(self, new_app_data):
+        old_app_data = self._app
+        self._app = new_app_data
 
-    def _close_bin(self, widget, event):
-        widget.set_image(self._res_bin_closed)
+        if old_app_data["icon"] != new_app_data["icon"]:
+            self._icon.set_from_pixbuf(get_app_icon(new_app_data['icon']).get_pixbuf())
+
+        if "colour" in new_app_data and old_app_data["colour"] != new_app_data["colour"]:
+            self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(new_app_data["colour"]))
+
+        self._set_title(new_app_data)
+        self._set_tagline(new_app_data)
+
+        # Refresh description button
+        if "description" in old_app_data and "description" not in new_app_data:
+            # remove button
+            self._more_btn.destroy()
+            self._more_btn = None
+        if "description" not in old_app_data and "description" in new_app_data:
+            # add button
+            self._setup_desc_button()
+
+        # Refresh remove button
+        if "removable" in old_app_data and "removable" not in new_app_data:
+            # remove button
+            self._remove_btn.destroy()
+            self._remove_btn = None
+        if "removable" not in old_app_data and "removable" in new_app_data:
+            # add button
+            self._setup_remove_button()
+
+        # Refresh desktop button
+        if (("_install" in old_app_data and "_install" in new_app_data and
+            old_app_data["_install"] == new_app_data["_install"]) or
+            "_install" not in old_app_data and "_install" not in new_app_data) and \
+            (("desktop" in old_app_data and "desktop" in new_app_data and
+             old_app_data["desktop"] == new_app_data["desktop"]) or
+             "desktop" not in old_app_data and "desktop" not in new_app_data):
+            if self._desktop_btn:
+                self._desktop_btn.refresh()
+            else:
+                self._setup_desktop_button()
+        else:
+            if self._desktop_btn:
+                self._desktop_btn.destroy()
+            self._setup_desktop_button()
+
+        self.show_all()
+
+    def _set_title(self, app):
+        name = app["title"]
+        if "_install" in app:
+            name = "Install {}".format(name)
+
+        self._app_name.set_text(name)
+
+    def _set_tagline(self, app):
+        tagline = app['tagline']
+        if tagline > 70:
+            tagline = tagline[0:70]
+
+        self._app_desc.set_text(tagline)
 
     def _launch_app(self, cmd, args):
         try:
@@ -308,7 +379,63 @@ class AppGridEntry(Gtk.EventBox):
         )
         message.run()
 
-    def _show_more(self, widget):
+    def _setup_desc_button(self):
+        if self._more_btn:
+            return
+
+        self._more_btn = more_btn = Gtk.Button(hexpand=False)
+        more = Gtk.Image.new_from_file("{}/icons/more.png".format(media_dir()))
+        more_btn.set_image(more)
+        more_btn.props.margin_right = 21
+        more_btn.get_style_context().add_class('more-button')
+        more_btn.connect("clicked", self._show_more_cb)
+        more_btn.set_tooltip_text("More information")
+        more_btn.connect("realize", self._set_cursor_to_hand_cb)
+        self._entry.pack_start(more_btn, False, False, 0)
+        self._entry.reorder_child(more_btn, 2)
+
+    def _setup_remove_button(self):
+        if self._remove_btn:
+            return
+
+        self._remove_btn = remove_btn = Gtk.Button(hexpand=False)
+        bin_open_img = "{}/icons/trashbin-open.png".format(media_dir())
+        self._res_bin_open = Gtk.Image.new_from_file(bin_open_img)
+        bin_closed_img = "{}/icons/trashbin-closed.png".format(media_dir())
+        self._res_bin_closed = Gtk.Image.new_from_file(bin_closed_img)
+        remove_btn.set_image(self._res_bin_closed)
+        remove_btn.props.margin_right = 21
+        remove_btn.get_style_context().add_class('more-button')
+        remove_btn.connect("clicked", self._uninstall_cb)
+        remove_btn.set_tooltip_text("Remove")
+        remove_btn.connect("realize", self._set_cursor_to_hand_cb)
+        remove_btn.connect("enter-notify-event", self._open_bin_cb)
+        remove_btn.connect("leave-notify-event", self._close_bin_cb)
+        self._entry.pack_start(remove_btn, False, False, 0)
+
+        if self._more_btn:
+            self._entry.reorder_child(remove_btn, 3)
+        else:
+            self._entry.reorder_child(remove_btn, 2)
+
+    def _setup_desktop_button(self):
+        self._desktop_btn = None
+        if "_install" not in self._app and \
+           ("desktop" not in self._app or self._app["desktop"]):
+            if os.path.exists(KDESK_EXEC):
+                self._desktop_btn = DesktopButton(self._app, self._apps)
+                self._entry.pack_start(self._desktop_btn, False, False, 0)
+
+    def _set_cursor_to_hand_cb(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    def _open_bin_cb(self, widget, event):
+        widget.set_image(self._res_bin_open)
+
+    def _close_bin_cb(self, widget, event):
+        widget.set_image(self._res_bin_closed)
+
+    def _show_more_cb(self, widget):
         kdialog = KanoDialog(
             self._app["title"],
             self._app['description'] if "description" in self._app else self._app['tagline'],
@@ -326,18 +453,19 @@ class AppGridEntry(Gtk.EventBox):
 
         return True
 
-    def _mouse_click(self, ebox, event):
+    def _entry_click_cb(self, ebox, event):
         if "_install" in self._app:
-            self._install()
+            self._install_cb()
         else:
             self._launch_app(self._cmd['cmd'], self._cmd['args'])
 
         return True
 
-    def _uninstall_app(self, event):
+    def _uninstall_cb(self, event):
         confirmation = KanoDialog(
             title_text="Removing {}".format(self._app["title"]),
-            description_text="This application will be uninstalled and removed from apps. Do you wish to proceed?",
+            description_text="This application will be uninstalled and " +
+                             "removed from apps. Do you wish to proceed?",
             button_dict={
                 "YES": {
                     "return_value": 0
@@ -356,30 +484,28 @@ class AppGridEntry(Gtk.EventBox):
         if rv < 0:
             return
 
-        pw = get_sudo_password("Uninstalling {}".format(self._app["title"]), self._window)
+        prompt = "Uninstalling {}".format(self._app["title"])
+        pw = get_sudo_password(prompt, self._window)
         if pw is None:
             return
 
+        self._window.blur()
+        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-        success = uninstall_app(self._app, pw)
+        success = uninstall_packages(self._app, pw)
         if success:
-            self._desktop_rm()
+            remove_from_desktop(self._app)
+            uninstall_link_and_icon(self._app["slug"], pw)
 
-            local_app_dir = "/usr/share/applications"
-            system_app_data_file = "{}/{}.app".format(local_app_dir, self._app["slug"])
-            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_data_file))
-            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+        self._apps.remove_app(self._app)
 
-            system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(self._app["slug"])
-            run_cmd("echo {} | sudo -S rm -f {}".format(pw, system_app_icon_file))
-            run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
-            run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
+        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
+        self._window.unblur()
 
-        self._window.refresh()
 
-    def _install(self):
+    def _install_cb(self):
         pw = get_sudo_password("Installing {}".format(self._app["title"]),
                                self._window)
         if pw is None:
@@ -387,7 +513,6 @@ class AppGridEntry(Gtk.EventBox):
 
         self._window.blur()
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
-
         while Gtk.events_pending():
             Gtk.main_iteration()
 
@@ -396,18 +521,20 @@ class AppGridEntry(Gtk.EventBox):
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
         self._window.unblur()
 
-        head = "Installation failed"
-        message = "{} cannot be installed at the moment. ".format(self._app["title"]) + \
-                  "Please make sure your kit is connected to the internet and there " + \
-                  "is enough space left on your card."
         if done:
-            run_cmd("echo {} | sudo -S update-app-dir".format(pw))
+            run_sudo_cmd("update-app-dir", pw)
 
             head = "Done!"
             message = "{} installed succesfully!".format(self._app["title"])
 
-            self._app_name.set_text(self._app["title"])
             del self._app["_install"]
+            add_to_desktop(self._app)
+            self._apps.update_app(self._app)
+        else:
+            head = "Installation failed"
+            message = self._app["title"] + " cannot be installed at the " + \
+                "moment. Please make sure your kit is connected to the " + \
+                "internet and there is enough space left on your card."
 
         kdialog = KanoDialog(
             head, message,
@@ -421,14 +548,4 @@ class AppGridEntry(Gtk.EventBox):
         )
         kdialog.set_action_background("grey")
         kdialog.title.description.set_max_width_chars(40)
-
         kdialog.run()
-        self._window.refresh()
-
-    def _desktop_add(self, event):
-        if add_to_desktop(self._app):
-            self._window.refresh()
-
-    def _desktop_rm(self, event=None):
-        if remove_from_desktop(self._app):
-            self._window.refresh()

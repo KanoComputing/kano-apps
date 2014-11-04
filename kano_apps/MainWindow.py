@@ -14,12 +14,12 @@ from kano_apps import Media
 from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
 from kano_apps.AppData import get_applications
-from kano_apps.AppManage import install_app, download_app
+from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
+    install_link_and_icon
 from kano_apps.DesktopManage import add_to_desktop
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
-from kano.utils import run_cmd
 
 try:
     from kano_profile.tracker import Tracker
@@ -46,9 +46,14 @@ class MainWindow(ApplicationWindow):
         # Styling
         screen = Gdk.Screen.get_default()
         specific_css_provider = Gtk.CssProvider()
-        specific_css_provider.load_from_path(Media.media_dir() + 'css/style.css')
+        specific_css_provider.load_from_path(Media.media_dir() +
+                                             'css/style.css')
         specific_style_context = Gtk.StyleContext()
-        specific_style_context.add_provider_for_screen(screen, specific_css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        specific_style_context.add_provider_for_screen(
+            screen,
+            specific_css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_USER
+        )
         style = self.get_style_context()
         style.add_class('main_window')
 
@@ -79,107 +84,122 @@ class MainWindow(ApplicationWindow):
         self._top_bar.disable_prev()
         self._apps = apps = Apps(get_applications(), self)
         self.get_main_area().set_contents(apps)
-        apps.set_current_page(self.get_last_page())
 
     def refresh(self, category=None):
-        last_page = self._apps.get_current_page()
-        self.get_main_area().remove_contents()
-        del self._apps
-
-        self._apps = Apps(get_applications(), self)
-        self.get_main_area().set_contents(self._apps)
-
-        # FIXME: Momentarily disabling the tab switch
-        # effectively fixes the bug where the scrollbars disappear,
-        # but focus goes back to the first tab pane.
-        #self._apps.set_current_page(last_page)
+        for app in get_applications():
+            if self._apps.has_app(app):
+                self._apps.update_app(app)
+            else:
+                self._apps.add_app(app)
 
     def _app_loaded(self, widget):
         if self._install is not None:
-            self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
-            for app in self._install:
-                try:
-                    app_data_file, app_icon_file = download_app(app)
-                except:
-                    head = "Application not found"
-                    message = "There were problems with downloading the '{}' app.\nPlease try again later.".format(app)
-                    dialog = KanoDialog(
-                        head,
-                        message,
-                        {
-                            "OK": {
-                                "return_value": 0
-                            },
-                        },
-                        parent_window=self
-                    )
-                    dialog.run()
-                    del dialog
-                    sys.exit("{}: {}".format(head, message))
+            self._install_apps()
 
-                app_icon_file_type = app_icon_file.split(".")[-1]
-
-                with open(app_data_file) as f:
-                    app_data = json.load(f)
-
-                pw = get_sudo_password("Installing {}".format(app_data["title"]), self)
-                if pw is None:
-                    return
-
-                self.blur()
-
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-
-                success = True
-                if not self._icon_only:
-                    success = install_app(app_data, pw)
-
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-
-                app_data["removable"] = True
-
-                head = "Installation failed"
-                message = "{} cannot be installed at the moment.".format(app_data["title"]) + \
-                          "Please make sure your kit is connected to the internet and there " + \
-                          "is enough space left on your card."
-                if success:
-                    # write out the tmp json
-                    with open(app_data_file, "w") as f:
-                        f.write(json.dumps(app_data))
-
-                    local_app_dir = "/usr/share/applications"
-                    run_cmd("echo {} | sudo -S mkdir -p {}".format(pw, local_app_dir))
-
-                    system_app_data_file = "{}/{}.app".format(local_app_dir, app_data["slug"])
-                    run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_data_file, system_app_data_file))
-                    run_cmd("echo {} | sudo -S update-app-dir".format(pw))
-
-                    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(app_data["slug"], app_icon_file_type)
-                    run_cmd("echo {} | sudo -S mv {} {}".format(pw, app_icon_file, system_app_icon_file))
-                    run_cmd("echo {} | sudo -S update-icon-caches {}".format(pw, "/usr/share/icons/Kano"))
-                    run_cmd("echo {} | sudo -S gtk-update-icon-cache-3.0".format(pw))
-
-                    add_to_desktop(app_data)
-
-                    head = "Done!"
-                    message = "{} installed succesfully! Look for it in the Apps launcher".format(app_data["title"])
-
+    def _install_apps(self):
+        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
+        pw = None
+        for app in self._install:
+            try:
+                app_data_file, app_icon_file = download_app(app)
+            except AppDownloadError as err:
+                head = "Unable to download the application"
                 dialog = KanoDialog(
-                    head,
-                    message,
+                    head, str(err),
                     {
                         "OK": {
                             "return_value": 0
                         },
                     },
+                    parent_window=self
                 )
                 dialog.run()
                 del dialog
+                sys.exit("{}: {}".format(head, str(err)))
 
-                self.unblur()
+            with open(app_data_file) as f:
+                app_data = json.load(f)
 
-            self.set_last_page(0)
-            self.refresh()
-            self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
+            # In case the app already exists, we need to ask whether
+            # the user would like to update it
+            if self._apps.has_app(app_data):
+                head = "{} is already installed".format(app_data["title"])
+                desc = "Would you like to make sure it's up to date?"
+                dialog = KanoDialog(
+                    head, desc,
+                    {
+                        "YES": {
+                            "return_value": 0
+                        },
+                        "NO": {
+                            "return_value": -1
+                        }
+                    },
+                    parent_window=self
+                )
+                rv = dialog.run()
+                del dialog
+
+                if rv != 0:
+                    sys.exit(0)
+
+            if not pw:
+                pw = get_sudo_password("Installing {}".format(
+                    app_data["title"]),
+                    self
+                )
+            # Canceled password entry
+            if not pw:
+                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
+                return
+
+            self.blur()
+
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
+            success = True
+            if not self._icon_only:
+                success = install_app(app_data, pw)
+
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
+            if success:
+                # write out the tmp json
+                with open(app_data_file, "w") as f:
+                    f.write(json.dumps(app_data))
+
+                install_link_and_icon(app_data['slug'], app_data_file,
+                                      app_icon_file, pw)
+
+                if not self._icon_only:
+                    add_to_desktop(app_data)
+
+                head = "Done!"
+                message = app_data["title"] + " installed succesfully! " + \
+                    "Look for it in the Apps launcher."
+            else:
+                head = "Installation failed"
+                message = app_data["title"] + " cannot be installed at " + \
+                    "the moment. Please make sure your kit is connected " + \
+                    "to the internet and there is enough space left on " + \
+                    "your card."
+
+            dialog = KanoDialog(
+                head,
+                message,
+                {
+                    "OK": {
+                        "return_value": 0
+                    },
+                },
+            )
+            dialog.run()
+            del dialog
+
+            self.unblur()
+
+        self.set_last_page(0)
+        self.refresh()
+        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))

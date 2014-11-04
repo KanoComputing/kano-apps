@@ -8,7 +8,6 @@
 import os
 import json
 import time
-import re
 
 from kano_updater.utils import get_dpkg_dict
 from kano.utils import run_cmd, download_url
@@ -16,6 +15,14 @@ from kano_world.connection import request_wrapper, content_type_json
 
 KDESK_DIR = '~/.kdesktop/'
 KDESK_EXEC = '/usr/bin/kdesk'
+
+
+def run_sudo_cmd(cmd, pw=None):
+    if pw:
+        return run_cmd("echo {} | sudo -S {}".format(pw, cmd))
+    else:
+        return run_cmd("sudo -S {}".format(cmd))
+
 
 def install_app(app, sudo_pwd=None, gui=True):
     pkgs = " ".join(app["packages"] + app["dependencies"])
@@ -53,7 +60,7 @@ def install_app(app, sudo_pwd=None, gui=True):
     return done
 
 
-def uninstall_app(app, sudo_pwd=None):
+def uninstall_packages(app, sudo_pwd=None):
     if len(app["packages"]) == 0:
         return True
 
@@ -76,6 +83,10 @@ def uninstall_app(app, sudo_pwd=None):
     return done
 
 
+class AppDownloadError(Exception):
+    pass
+
+
 def download_app(app_id_or_slug):
     endpoint = '/apps/{}'.format(app_id_or_slug)
     success, text, data = request_wrapper(
@@ -93,7 +104,7 @@ def download_app(app_id_or_slug):
         )
 
         if not success:
-            raise Exception(text)
+            raise AppDownloadError(text)
 
     data = data['app']
 
@@ -102,7 +113,8 @@ def download_app(app_id_or_slug):
     icon_path = '/tmp/{}.{}'.format(app_id_or_slug, icon_file_type)
     rv, err = download_url(data['icon_url'], icon_path)
     if not rv:
-        raise Exception("Unable to download the icon file ({})".format(err))
+        msg = "Unable to download the application ({})".format(err)
+        raise AppDownloadError(msg)
 
     # Cleanup the JSON file
     data['icon'] = data['slug']
@@ -111,6 +123,7 @@ def download_app(app_id_or_slug):
     del data['comments_count']
     data['time_installed'] = int(time.time())
     data['categories'] = map(lambda c: c.lower(), data['categories'])
+    data['removable'] = True
 
     # write out the data
     data_path = '/tmp/{}.app'.format(app_id_or_slug)
@@ -118,3 +131,35 @@ def download_app(app_id_or_slug):
         f.write(json.dumps(data))
 
     return [data_path, icon_path]
+
+
+def install_link_and_icon(app_name, app_data_file, app_icon_file, pw=None):
+    app_icon_file_type = app_icon_file.split(".")[-1]
+
+    local_app_dir = "/usr/share/applications"
+    run_sudo_cmd("mkdir -p {}".format(local_app_dir), pw)
+
+    system_app_data_file = "{}/{}.app".format(local_app_dir, app_name)
+    run_sudo_cmd("mv {} {}".format(app_data_file, system_app_data_file),
+                 pw)
+    run_sudo_cmd("update-app-dir", pw)
+
+    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(
+        app_name, app_icon_file_type)
+    run_sudo_cmd("mv {} {}".format(app_icon_file, system_app_icon_file),
+                 pw)
+    run_sudo_cmd("update-icon-caches {}".format("/usr/share/icons/Kano"),
+                 pw)
+    run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
+
+
+def uninstall_link_and_icon(app_name, pw=None):
+    local_app_dir = "/usr/share/applications"
+    system_app_data_file = "{}/{}.app".format(local_app_dir, app_name)
+    run_sudo_cmd("rm -f {}".format(system_app_data_file), pw)
+    run_sudo_cmd("update-app-dir", pw)
+
+    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.*".format(app_name)
+    run_sudo_cmd("rm -f {}".format(system_app_icon_file), pw)
+    run_sudo_cmd("update-icon-caches /usr/share/icons/Kano", pw)
+    run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
