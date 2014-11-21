@@ -37,7 +37,7 @@ def is_app_installed(app):
     return True
 
 
-def get_applications():
+def get_applications(parse_cmds=True):
     loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
     blacklist = [
         "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
@@ -56,7 +56,7 @@ def get_applications():
                 continue
 
             if f[-4:] == ".app":
-                data = _load_from_app_file(fp)
+                data = _load_from_app_file(fp, parse_cmds)
                 if data is not None:
                     if not is_app_installed(data):
                         data["_install"] = True
@@ -80,13 +80,15 @@ def get_applications():
     return sorted(filtered_apps, key=lambda a: a["title"])
 
 
-def _load_from_app_file(app_path):
+def _load_from_app_file(app_path, parse_cmds=True):
     with open(app_path, "r") as f:
         app = json.load(f)
 
     app["origin"] = app_path
     app["type"] = "app"
-    app["launch_command"] = parse_command(app["launch_command"])
+
+    if parse_cmds:
+        app["launch_command"] = parse_command(app["launch_command"])
 
     return app
 

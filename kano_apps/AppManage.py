@@ -87,7 +87,7 @@ class AppDownloadError(Exception):
     pass
 
 
-def download_app(app_id_or_slug):
+def query_for_app(app_id_or_slug):
     endpoint = '/apps/{}'.format(app_id_or_slug)
     success, text, data = request_wrapper(
         'get',
@@ -106,7 +106,11 @@ def download_app(app_id_or_slug):
         if not success:
             raise AppDownloadError(text)
 
-    data = data['app']
+    return data['app']
+
+
+def download_app(app_id_or_slug):
+    data = query_for_app(app_id_or_slug)
 
     # download the icon
     icon_file_type = data['icon_url'].split(".")[-1]

@@ -17,8 +17,9 @@ if __name__ == '__main__' and __package__ is None:
         sys.path = [dir_path] + sys.path
 
 from kano_apps.AppManage import download_app, install_app, \
-    install_link_and_icon
-from kano.gtk3.scrolled_window import ScrolledWindow
+    install_link_and_icon, query_for_app, AppDownloadError
+from kano_apps.AppData import get_applications
+from kano.logging import logger
 
 
 def batch_install(apps, icon_only=False):
@@ -60,6 +61,9 @@ def args_parse():
         install.add_argument("apps", metavar="APP", type=str, nargs="+",
                              help="A list of applications to install")
 
+        update_help = "Check for possible updates of all installed applications"
+        subparsers.add_parser("check-for-updates", help=update_help)
+
         return parser.parse_args()
 
 
@@ -76,10 +80,56 @@ def main():
             Gtk.main()
         else:
             batch_install(args.apps, icon_only=args.icon_only)
+    elif args is not None and args.cmd == "check-for-updates":
+        # Run batch update of all the apps
+        batch = []
+
+        if os.getuid() != 0:
+            logger.warn('Root permissions are required to mark apps for update')
+
+        for app_data in get_applications(parse_cmds=False):
+            if "id" in app_data and "_install" not in app_data:
+                batch.append(app_data)
+
+        n = 0
+        for old_app_data in batch:
+            try:
+                logger.info("Checking {}".format(old_app_data['slug']))
+                new_app_data = query_for_app(old_app_data['id'])
+
+                keys_to_check = ['colour', 'dependencies', 'packages',
+                                 'overrides', 'description', 'tagline',
+                                 'title', 'overrides']
+
+                for key in keys_to_check:
+                    if old_app_data[key] != new_app_data[key]:
+                        logger.info("Can be updated")
+                        old_app_data['_update'] = True
+                        n += 1
+
+                        try:
+                            with open(old_app_data['origin'], 'w') as f:
+                                del old_app_data['origin']
+                                del old_app_data['type']
+                                json.dump(old_app_data, f)
+                        except IOError as err:
+                            msg = 'The {} app '.format(old_app_data['slug']) + \
+                                  'couldn\'t be marked for update'
+                            logger.warn(msg)
+                            logger.warn(str(err))
+
+                        break
+
+            except AppDownloadError:
+                # Ignore apps that no longer exist
+                pass
+
+        logger.info('{} apps can be updated'.format(n))
     else:
         # GTK is imported only if we're running in GUI mode
         from gi.repository import Gtk
         from kano_apps.MainWindow import MainWindow
+        from kano.gtk3.scrolled_window import ScrolledWindow
 
         win = MainWindow()
         ScrolledWindow.apply_styling_to_screen(wide=True)

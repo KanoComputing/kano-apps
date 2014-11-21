@@ -10,7 +10,7 @@ import json
 from gi.repository import Gtk, Gdk
 
 from kano_apps.AppManage import install_app, uninstall_packages, KDESK_EXEC, \
-    uninstall_link_and_icon, run_sudo_cmd
+    uninstall_link_and_icon, run_sudo_cmd, download_app, AppDownloadError
 from kano_apps.DesktopManage import add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
@@ -278,6 +278,10 @@ class AppGridEntry(Gtk.EventBox):
 
         entry.pack_start(texts, True, True, 0)
 
+        self._update_btn = None
+        if "_update" in self._app and self._app["_update"] is True:
+            self._setup_update_button()
+
         self._more_btn = None
         if "description" in self._app:
             self._setup_desc_button()
@@ -307,6 +311,15 @@ class AppGridEntry(Gtk.EventBox):
 
         self._set_title(new_app_data)
         self._set_tagline(new_app_data)
+
+        # Refresh update button
+        if "_update" in old_app_data and "_update" not in new_app_data:
+            # remove button
+            self._update_btn.destroy()
+            self._update_btn = None
+        if "_update" not in old_app_data and "_update" in new_app_data:
+            # add button
+            self._setup_update_button()
 
         # Refresh description button
         if "description" in old_app_data and "description" not in new_app_data:
@@ -392,7 +405,11 @@ class AppGridEntry(Gtk.EventBox):
         more_btn.set_tooltip_text("More information")
         more_btn.connect("realize", self._set_cursor_to_hand_cb)
         self._entry.pack_start(more_btn, False, False, 0)
-        self._entry.reorder_child(more_btn, 2)
+
+        if self._update_btn:
+            self._entry.reorder_child(more_btn, 3)
+        else:
+            self._entry.reorder_child(more_btn, 2)
 
     def _setup_remove_button(self):
         if self._remove_btn:
@@ -413,7 +430,9 @@ class AppGridEntry(Gtk.EventBox):
         remove_btn.connect("leave-notify-event", self._close_bin_cb)
         self._entry.pack_start(remove_btn, False, False, 0)
 
-        if self._more_btn:
+        if self._update_btn and self._more_btn:
+            self._entry.reorder_child(remove_btn, 4)
+        elif self._update_btn or self._more_btn:
             self._entry.reorder_child(remove_btn, 3)
         else:
             self._entry.reorder_child(remove_btn, 2)
@@ -426,6 +445,21 @@ class AppGridEntry(Gtk.EventBox):
                 self._desktop_btn = DesktopButton(self._app, self._apps)
                 self._entry.pack_start(self._desktop_btn, False, False, 0)
 
+    def _setup_update_button(self):
+        if self._update_btn:
+            return
+
+        self._update_btn = update_btn = Gtk.Button(hexpand=False)
+        img = Gtk.Image.new_from_file("{}/icons/update.png".format(media_dir()))
+        update_btn.set_image(img)
+        update_btn.props.margin_right = 21
+        update_btn.get_style_context().add_class('more-button')
+        update_btn.connect("clicked", self._update_cb)
+        update_btn.set_tooltip_text("Update app")
+        update_btn.connect("realize", self._set_cursor_to_hand_cb)
+        self._entry.pack_start(update_btn, False, False, 0)
+        self._entry.reorder_child(update_btn, 2)
+
     def _set_cursor_to_hand_cb(self, widget, data=None):
         widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -434,6 +468,10 @@ class AppGridEntry(Gtk.EventBox):
 
     def _close_bin_cb(self, widget, event):
         widget.set_image(self._res_bin_closed)
+
+    def _update_cb(self, widget):
+        
+        pass
 
     def _show_more_cb(self, widget):
         kdialog = KanoDialog(
@@ -506,10 +544,37 @@ class AppGridEntry(Gtk.EventBox):
 
 
     def _install_cb(self):
-        pw = get_sudo_password("Installing {}".format(self._app["title"]),
-                               self._window)
+        self._install_app()
+
+    def _install_app(self, full=False, pw=None):
+        # TODO THIS NEEDS FINISHING
+        if full:
+            try:
+                app_data_file, app_icon_file = download_app(self._app['slug'])
+            except AppDownloadError as err:
+                head = "Unable to download the application"
+                dialog = KanoDialog(
+                    head, str(err),
+                    {
+                        "OK": {
+                            "return_value": 0
+                        },
+                    },
+                    parent_window=self
+                )
+                dialog.run()
+                del dialog
+                sys.exit("{}: {}".format(head, str(err)))
+
+            with open(app_data_file) as f:
+                app_data = json.load(f)
+
+
         if pw is None:
-            return
+            pw = get_sudo_password("Installing {}".format(self._app["title"]),
+                                   self._window)
+            if pw is None:
+                return
 
         self._window.blur()
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
