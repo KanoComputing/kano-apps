@@ -16,6 +16,7 @@ from kano_apps.AppGrid import Apps
 from kano_apps.AppData import get_applications
 from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
     install_link_and_icon
+from kano_apps.AppInstaller import AppInstaller
 from kano_apps.DesktopManage import add_to_desktop
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
@@ -97,109 +98,13 @@ class MainWindow(ApplicationWindow):
             self._install_apps()
 
     def _install_apps(self):
-        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
         pw = None
         for app in self._install:
-            try:
-                app_data_file, app_icon_file = download_app(app)
-            except AppDownloadError as err:
-                head = "Unable to download the application"
-                dialog = KanoDialog(
-                    head, str(err),
-                    {
-                        "OK": {
-                            "return_value": 0
-                        },
-                    },
-                    parent_window=self
-                )
-                dialog.run()
-                del dialog
-                sys.exit("{}: {}".format(head, str(err)))
-
-            with open(app_data_file) as f:
-                app_data = json.load(f)
-
-            # In case the app already exists, we need to ask whether
-            # the user would like to update it
-            if self._apps.has_app(app_data):
-                head = "{} is already installed".format(app_data["title"])
-                desc = "Would you like to make sure it's up to date?"
-                dialog = KanoDialog(
-                    head, desc,
-                    {
-                        "YES": {
-                            "return_value": 0
-                        },
-                        "NO": {
-                            "return_value": -1
-                        }
-                    },
-                    parent_window=self
-                )
-                rv = dialog.run()
-                del dialog
-
-                if rv != 0:
-                    sys.exit(0)
-
-            if not pw:
-                pw = get_sudo_password("Installing {}".format(
-                    app_data["title"]),
-                    self
-                )
-            # Canceled password entry
-            if not pw:
-                self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
-                return
-
-            self.blur()
-
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-
-            success = True
-            if not self._icon_only:
-                success = install_app(app_data, pw)
-
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-
-            if success:
-                # write out the tmp json
-                with open(app_data_file, "w") as f:
-                    f.write(json.dumps(app_data))
-
-                install_link_and_icon(app_data['slug'], app_data_file,
-                                      app_icon_file, pw)
-
-                if not self._icon_only:
-                    add_to_desktop(app_data)
-
-                head = "Done!"
-                message = app_data["title"] + " installed succesfully! " + \
-                    "Look for it in the Apps launcher."
-            else:
-                head = "Installation failed"
-                message = app_data["title"] + " cannot be installed at " + \
-                    "the moment. Please make sure your kit is connected " + \
-                    "to the internet and there is enough space left on " + \
-                    "your card."
-
-            dialog = KanoDialog(
-                head,
-                message,
-                {
-                    "OK": {
-                        "return_value": 0
-                    },
-                },
-            )
-            dialog.run()
-            del dialog
-
-            self.unblur()
+            inst = AppInstaller(app, self._apps, pw, self)
+            inst.set_check_if_installed(True)
+            inst.set_icon_only(self._icon_only)
+            inst.install()
+            pw = inst.get_sudo_pw()
 
         self.set_last_page(0)
         self.refresh()
-        self.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))

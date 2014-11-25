@@ -81,6 +81,14 @@ class Apps(Gtk.Notebook):
 
         return False
 
+    def has_slug(self, slug):
+        for origin, app_obj in self._apps.iteritems():
+            if "slug" in app_obj["data"] and \
+               app_obj["data"]["slug"] == slug:
+                return True
+
+        return False
+
     def _switch_page(self, notebook, page, page_num, data=None):
         self._window.set_last_page(page_num)
 
@@ -570,14 +578,14 @@ class AppGridEntry(Gtk.EventBox):
         self._install_app()
 
     def _install_app(self):
-        installer = AppInstaller(self._app['id'], self._window)
-        installer.install()
+        installer = AppInstaller(self._app['id'], self._apps, None,
+                                 self._window)
+        if not installer.install():
+            return
 
         # We need to reload the application information, readd it to
         # the desktop and send an update to the parent object.
-        print self._app
         new_app = load_from_app_file(installer.get_loc())
-        print new_app
         self._app['origin'] = new_app['origin']
         remove_from_desktop(self._app)
         self._apps.update_app(new_app)

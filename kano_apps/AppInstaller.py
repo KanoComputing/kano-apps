@@ -16,16 +16,19 @@ from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.kano_dialog import KanoDialog
 
 class AppInstaller:
-    def __init__(self, id_or_slug, parent_win=None):
+    def __init__(self, id_or_slug, apps, pw=None, parent_win=None):
         self._handle = id_or_slug
         self._win = parent_win
+        self._apps = apps
 
         self._tmp_data_file = None
         self._tmp_icon_file = None
         self._loc = None
+        self._pw = pw
 
         self._icon_only = False
         self._add_to_desktop = True
+        self._check_if_installed = False
 
     def install(self):
         if self._win is not None:
@@ -34,6 +37,10 @@ class AppInstaller:
 
         if not self._download_app():
             return self._end(False)
+
+        if self._check_if_installed:
+            if not self._installed_check():
+                return self._end(False)
 
         if not self._get_sudo_pw():
             return self._end(False)
@@ -52,8 +59,14 @@ class AppInstaller:
     def set_add_to_desktop(self, v):
         self._add_to_desktop = bool(v)
 
+    def set_check_if_installed(self, v):
+        self._check_if_installed = v
+
     def get_loc(self):
         return self._loc
+
+    def get_sudo_pw(self):
+        return self._pw
 
     # Private methods onwards
     def _end(self, rv=True):
@@ -87,9 +100,35 @@ class AppInstaller:
 
         return True
 
+    def _installed_check(self):
+        if self._apps.has_slug(self._app["slug"]):
+            head = "{} is already installed".format(self._app["title"])
+            desc = "Would you like to update it?"
+            dialog = KanoDialog(
+                head, desc,
+                {
+                    "YES": {
+                        "return_value": 0
+                    },
+                    "NO": {
+                        "return_value": -1
+                    }
+                },
+                parent_window=self
+            )
+            rv = dialog.run()
+            del dialog
+
+            return rv == 0
+
+        return True
+
     def _get_sudo_pw(self):
-        self._pw = get_sudo_password("Installing {}".format(self._app["title"]))
-        return self._pw is not None
+        if self._pw is None:
+            self._pw = get_sudo_password("Installing {}".format(self._app["title"]))
+            return self._pw is not None
+
+        return True
 
     def _install(self):
         success = True
