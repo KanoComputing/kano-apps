@@ -103,7 +103,7 @@ class AppInstaller:
 
             self._loc = install_link_and_icon(self._app['slug'],
                                               self._tmp_data_file,
-                                              self._tmp_data_file,
+                                              self._tmp_icon_file,
                                               self._pw)
 
             if not self._icon_only and self._add_to_desktop:

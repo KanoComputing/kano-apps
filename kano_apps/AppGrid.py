@@ -472,10 +472,6 @@ class AppGridEntry(Gtk.EventBox):
     def _close_bin_cb(self, widget, event):
         widget.set_image(self._res_bin_closed)
 
-    def _update_cb(self, widget):
-        
-        pass
-
     def _show_more_cb(self, widget):
         kdialog = KanoDialog(
             self._app["title"],
@@ -545,17 +541,44 @@ class AppGridEntry(Gtk.EventBox):
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
         self._window.unblur()
 
-
     def _install_cb(self):
+        self._install_app()
+
+    def _update_cb(self, widget):
+        confirmation = KanoDialog(
+            title_text="Updating {}".format(self._app["title"]),
+            description_text="This application will be updated " +
+                             "Do you wish to proceed?",
+            button_dict={
+                "YES": {
+                    "return_value": 0
+                },
+                "NO": {
+                    "return_value": -1,
+                    "color": "red"
+                }
+            },
+            parent_window=self._window
+        )
+        confirmation.title.description.set_max_width_chars(40)
+
+        rv = confirmation.run()
+        del confirmation
+        if rv < 0:
+            return
+
         self._install_app()
 
     def _install_app(self):
         installer = AppInstaller(self._app['id'], self._window)
         installer.install()
 
+        # We need to reload the application information, readd it to
+        # the desktop and send an update to the parent object.
+        print self._app
         new_app = load_from_app_file(installer.get_loc())
+        print new_app
         self._app['origin'] = new_app['origin']
-
         remove_from_desktop(self._app)
         self._apps.update_app(new_app)
         add_to_desktop(new_app)
