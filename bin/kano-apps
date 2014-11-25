@@ -83,7 +83,7 @@ def main():
         else:
             batch_install(args.apps, icon_only=args.icon_only)
     elif args is not None and args.cmd == "check-for-updates":
-        # Run batch update of all the apps
+        # Check all the apps for updates
         batch = []
 
         if os.getuid() != 0:
