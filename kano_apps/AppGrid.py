@@ -6,14 +6,15 @@
 
 import os
 import re
-import json
 from gi.repository import Gtk, Gdk
 
-from kano_apps.AppManage import install_app, uninstall_packages, KDESK_EXEC, \
-    uninstall_link_and_icon, run_sudo_cmd
+from kano_apps.AppManage import uninstall_packages, KDESK_EXEC, \
+    uninstall_link_and_icon
+from kano_apps.AppData import load_from_app_file
 from kano_apps.DesktopManage import add_to_desktop, remove_from_desktop
 from kano_apps.Media import media_dir, get_app_icon
 from kano_apps.UIElements import get_sudo_password
+from kano_apps.AppInstaller import AppInstaller
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 from kano.gtk3.kano_dialog import KanoDialog
@@ -77,6 +78,14 @@ class Apps(Gtk.Notebook):
                 if "slug" in app_obj["data"] and \
                    app_obj["data"]["slug"] == app["slug"]:
                     return True
+
+        return False
+
+    def has_slug(self, slug):
+        for origin, app_obj in self._apps.iteritems():
+            if "slug" in app_obj["data"] and \
+               app_obj["data"]["slug"] == slug:
+                return True
 
         return False
 
@@ -187,6 +196,7 @@ class AppGrid(Gtk.EventBox):
     def get_num(self):
         return self._num_apps
 
+
 class DesktopButton(Gtk.Button):
     _ADD_IMG_PATH = "{}/icons/desktop-add.png".format(media_dir())
     _RM_IMG_PATH = "{}/icons/desktop-rm.png".format(media_dir())
@@ -229,6 +239,7 @@ class DesktopButton(Gtk.Button):
         else:
             if remove_from_desktop(self._app):
                 self._apps.update_app(self._app)
+
 
 class AppGridEntry(Gtk.EventBox):
     def __init__(self, app, window, apps_obj):
@@ -278,6 +289,10 @@ class AppGridEntry(Gtk.EventBox):
 
         entry.pack_start(texts, True, True, 0)
 
+        self._update_btn = None
+        if "_update" in self._app and self._app["_update"] is True:
+            self._setup_update_button()
+
         self._more_btn = None
         if "description" in self._app:
             self._setup_desc_button()
@@ -307,6 +322,15 @@ class AppGridEntry(Gtk.EventBox):
 
         self._set_title(new_app_data)
         self._set_tagline(new_app_data)
+
+        # Refresh update button
+        if "_update" in old_app_data and "_update" not in new_app_data:
+            # remove button
+            self._update_btn.destroy()
+            self._update_btn = None
+        if "_update" not in old_app_data and "_update" in new_app_data:
+            # add button
+            self._setup_update_button()
 
         # Refresh description button
         if "description" in old_app_data and "description" not in new_app_data:
@@ -392,7 +416,11 @@ class AppGridEntry(Gtk.EventBox):
         more_btn.set_tooltip_text("More information")
         more_btn.connect("realize", self._set_cursor_to_hand_cb)
         self._entry.pack_start(more_btn, False, False, 0)
-        self._entry.reorder_child(more_btn, 2)
+
+        if self._update_btn:
+            self._entry.reorder_child(more_btn, 3)
+        else:
+            self._entry.reorder_child(more_btn, 2)
 
     def _setup_remove_button(self):
         if self._remove_btn:
@@ -413,7 +441,9 @@ class AppGridEntry(Gtk.EventBox):
         remove_btn.connect("leave-notify-event", self._close_bin_cb)
         self._entry.pack_start(remove_btn, False, False, 0)
 
-        if self._more_btn:
+        if self._update_btn and self._more_btn:
+            self._entry.reorder_child(remove_btn, 4)
+        elif self._update_btn or self._more_btn:
             self._entry.reorder_child(remove_btn, 3)
         else:
             self._entry.reorder_child(remove_btn, 2)
@@ -425,6 +455,21 @@ class AppGridEntry(Gtk.EventBox):
             if os.path.exists(KDESK_EXEC):
                 self._desktop_btn = DesktopButton(self._app, self._apps)
                 self._entry.pack_start(self._desktop_btn, False, False, 0)
+
+    def _setup_update_button(self):
+        if self._update_btn:
+            return
+
+        self._update_btn = update_btn = Gtk.Button(hexpand=False)
+        img = Gtk.Image.new_from_file("{}/icons/update.png".format(media_dir()))
+        update_btn.set_image(img)
+        update_btn.props.margin_right = 21
+        update_btn.get_style_context().add_class('more-button')
+        update_btn.connect("clicked", self._update_cb)
+        update_btn.set_tooltip_text("Update app")
+        update_btn.connect("realize", self._set_cursor_to_hand_cb)
+        self._entry.pack_start(update_btn, False, False, 0)
+        self._entry.reorder_child(update_btn, 2)
 
     def _set_cursor_to_hand_cb(self, widget, data=None):
         widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
@@ -504,48 +549,44 @@ class AppGridEntry(Gtk.EventBox):
         self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
         self._window.unblur()
 
-
     def _install_cb(self):
-        pw = get_sudo_password("Installing {}".format(self._app["title"]),
-                               self._window)
-        if pw is None:
-            return
+        self._install_app()
 
-        self._window.blur()
-        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.WATCH))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-        done = install_app(self._app, sudo_pwd=pw)
-
-        self._window.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
-        self._window.unblur()
-
-        if done:
-            run_sudo_cmd("update-app-dir", pw)
-
-            head = "Done!"
-            message = "{} installed succesfully!".format(self._app["title"])
-
-            del self._app["_install"]
-            add_to_desktop(self._app)
-            self._apps.update_app(self._app)
-        else:
-            head = "Installation failed"
-            message = self._app["title"] + " cannot be installed at the " + \
-                "moment. Please make sure your kit is connected to the " + \
-                "internet and there is enough space left on your card."
-
-        kdialog = KanoDialog(
-            head, message,
-            {
-                "OK": {
-                    "return_value": 0,
-                    "color": "green"
+    def _update_cb(self, widget):
+        confirmation = KanoDialog(
+            title_text="Updating {}".format(self._app["title"]),
+            description_text="This application will be updated " +
+                             "Do you wish to proceed?",
+            button_dict={
+                "YES": {
+                    "return_value": 0
+                },
+                "NO": {
+                    "return_value": -1,
+                    "color": "red"
                 }
             },
             parent_window=self._window
         )
-        kdialog.set_action_background("grey")
-        kdialog.title.description.set_max_width_chars(40)
-        kdialog.run()
+        confirmation.title.description.set_max_width_chars(40)
+
+        rv = confirmation.run()
+        del confirmation
+        if rv < 0:
+            return
+
+        self._install_app()
+
+    def _install_app(self):
+        installer = AppInstaller(self._app['id'], self._apps, None,
+                                 self._window)
+        if not installer.install():
+            return
+
+        # We need to reload the application information, readd it to
+        # the desktop and send an update to the parent object.
+        new_app = load_from_app_file(installer.get_loc())
+        self._app['origin'] = new_app['origin']
+        remove_from_desktop(self._app)
+        self._apps.update_app(new_app)
+        add_to_desktop(new_app)

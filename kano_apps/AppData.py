@@ -14,6 +14,7 @@ _SYSTEM_ICONS_LOC = '/usr/share/applications/'
 
 _INSTALLED_PKGS = get_dpkg_dict()[0]
 
+
 def try_exec(app):
     path = None
     if len(app) <= 0:
@@ -27,7 +28,9 @@ def try_exec(app):
                 path = possible_path
                 break
 
-    return path is not None and os.path.isfile(path) and os.access(path, os.X_OK)
+    return path is not None and \
+        os.path.isfile(path) and \
+        os.access(path, os.X_OK)
 
 
 def is_app_installed(app):
@@ -37,7 +40,7 @@ def is_app_installed(app):
     return True
 
 
-def get_applications():
+def get_applications(parse_cmds=True):
     loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
     blacklist = [
         "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
@@ -56,7 +59,7 @@ def get_applications():
                 continue
 
             if f[-4:] == ".app":
-                data = _load_from_app_file(fp)
+                data = load_from_app_file(fp, parse_cmds)
                 if data is not None:
                     if not is_app_installed(data):
                         data["_install"] = True
@@ -80,13 +83,15 @@ def get_applications():
     return sorted(filtered_apps, key=lambda a: a["title"])
 
 
-def _load_from_app_file(app_path):
+def load_from_app_file(app_path, parse_cmd=True):
     with open(app_path, "r") as f:
         app = json.load(f)
 
     app["origin"] = app_path
     app["type"] = "app"
-    app["launch_command"] = parse_command(app["launch_command"])
+
+    if parse_cmd:
+        app["launch_command"] = parse_command(app["launch_command"])
 
     return app
 
