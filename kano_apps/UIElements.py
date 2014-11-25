@@ -55,7 +55,6 @@ def get_sudo_password(heading, parent=None):
     del entry
 
     while not pam.authenticate(getpass.getuser(), pw):
-        print pw
         fail = KanoDialog(
             title_text=heading,
             description_text="The password was incorrect. Try again?",
