@@ -140,6 +140,16 @@ def download_app(app_id_or_slug):
 def install_link_and_icon(app_name, app_data_file, app_icon_file, pw=None):
     app_icon_file_type = app_icon_file.split(".")[-1]
 
+    # Install icon
+    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(
+        app_name, app_icon_file_type)
+    run_sudo_cmd("mv {} {}".format(app_icon_file, system_app_icon_file),
+                 pw)
+    run_sudo_cmd("update-icon-caches {}".format("/usr/share/icons/Kano"),
+                 pw)
+    run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
+
+    # Install app file
     local_app_dir = "/usr/share/applications"
     run_sudo_cmd("mkdir -p {}".format(local_app_dir), pw)
 
@@ -148,13 +158,7 @@ def install_link_and_icon(app_name, app_data_file, app_icon_file, pw=None):
                  pw)
     run_sudo_cmd("update-app-dir", pw)
 
-    system_app_icon_file = "/usr/share/icons/Kano/66x66/apps/{}.{}".format(
-        app_name, app_icon_file_type)
-    run_sudo_cmd("mv {} {}".format(app_icon_file, system_app_icon_file),
-                 pw)
-    run_sudo_cmd("update-icon-caches {}".format("/usr/share/icons/Kano"),
-                 pw)
-    run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
+    return system_app_data_file
 
 
 def uninstall_link_and_icon(app_name, pw=None):
