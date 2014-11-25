@@ -58,17 +58,15 @@ class MainWindow(ApplicationWindow):
         style = self.get_style_context()
         style.add_class('main_window')
 
-        # Create elements
-        self._grid = Gtk.Grid()
+        # Setup widgets
+        self.set_decorated(True)
         self._top_bar = TopBar("Apps", self._win_width, False)
         self._top_bar.set_close_callback(Gtk.main_quit)
-        self._grid.attach(self._top_bar, 0, 0, 1, 1)
+        self.set_titlebar(self._top_bar)
 
         self._contents = Contents(self)
-        self._grid.attach(self._contents, 0, 1, 1, 1)
-        self._grid.set_row_spacing(0)
 
-        self.set_main_widget(self._grid)
+        self.set_main_widget(self._contents)
 
         self.show_apps_view()
 
