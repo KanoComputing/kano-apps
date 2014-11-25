@@ -73,8 +73,10 @@ def main():
         if args.gui:
             from gi.repository import Gtk
             from kano_apps.MainWindow import MainWindow
+            from kano.gtk3.scrolled_window import ScrolledWindow
 
             win = MainWindow(install=args.apps, icon_only=args.icon_only)
+            ScrolledWindow.apply_styling_to_screen(wide=True)
 
             win.show_all()
             Gtk.main()
