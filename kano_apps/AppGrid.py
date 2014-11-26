@@ -575,11 +575,12 @@ class AppGridEntry(Gtk.EventBox):
         if rv < 0:
             return
 
-        self._install_app()
+        self._install_app(report_install=False)
 
-    def _install_app(self):
+    def _install_app(self, report_install=True):
         installer = AppInstaller(self._app['id'], self._apps, None,
                                  self._window)
+        installer.set_report_install(report_install)
         if not installer.install():
             return
 
