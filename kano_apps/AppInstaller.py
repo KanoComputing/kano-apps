@@ -14,6 +14,8 @@ from kano_apps.DesktopManage import add_to_desktop
 from kano_apps.AppData import load_from_app_file
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.kano_dialog import KanoDialog
+from kano_world.connection import request_wrapper
+from kano_world.functions import get_glob_session, login_using_token
 
 class AppInstaller:
     def __init__(self, id_or_slug, apps, pw=None, parent_win=None):
@@ -29,6 +31,7 @@ class AppInstaller:
         self._icon_only = False
         self._add_to_desktop = True
         self._check_if_installed = False
+        self._report_install = True
 
     def install(self):
         if self._win is not None:
@@ -51,6 +54,9 @@ class AppInstaller:
 
         rv = self._install()
 
+        if rv and self._report_install:
+            self._report()
+
         return self._end(rv)
 
     def set_icon_only(self, v):
@@ -61,6 +67,9 @@ class AppInstaller:
 
     def set_check_if_installed(self, v):
         self._check_if_installed = v
+
+    def set_report_install(self, v):
+        self._report_install = v
 
     def get_loc(self):
         return self._loc
@@ -119,6 +128,9 @@ class AppInstaller:
             rv = dialog.run()
             del dialog
 
+            if rv == 0:
+                self.set_report_install(False)
+
             return rv == 0
 
         return True
@@ -171,3 +183,12 @@ class AppInstaller:
         del dialog
 
         return success
+
+    def _report(self):
+        success, value = login_using_token()
+        if success:
+            endpoint = '/apps/{}/installed'.format(self._app['id'])
+            gs = get_glob_session()
+            if gs:
+                success, text, data = request_wrapper('post', endpoint,
+                                                      session=gs.session)
