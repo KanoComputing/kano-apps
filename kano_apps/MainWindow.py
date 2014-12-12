@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk
 from kano_apps import Media
 from kano_apps.UIElements import Contents, get_sudo_password
 from kano_apps.AppGrid import Apps
-from kano_apps.AppData import get_applications
+from kano_apps.AppData import get_applications, refresh_package_list
 from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
     install_link_and_icon
 from kano_apps.AppInstaller import AppInstaller
@@ -105,4 +105,5 @@ class MainWindow(ApplicationWindow):
             pw = inst.get_sudo_pw()
 
         self.set_last_page(0)
+        refresh_package_list()
         self.refresh()
