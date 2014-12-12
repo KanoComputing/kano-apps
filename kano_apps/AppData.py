@@ -15,6 +15,12 @@ _SYSTEM_ICONS_LOC = '/usr/share/applications/'
 _INSTALLED_PKGS = get_dpkg_dict()[0]
 
 
+def refresh_package_list():
+    global _INSTALLED_PKGS
+
+    _INSTALLED_PKGS = get_dpkg_dict()[0]
+
+
 def try_exec(app):
     path = None
     if len(app) <= 0:
