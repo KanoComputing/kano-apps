@@ -17,6 +17,7 @@ _SYSTEM_ICONS_LOC = '/usr/share/applications/'
 # we query for applications - it takes some time to parse it.
 _INSTALLED_PKGS = get_dpkg_dict()[0]
 
+
 def refresh_package_list():
     """ Reload the cached list of installed packages. """
 
@@ -80,11 +81,12 @@ def get_applications(parse_cmds=True):
     loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
     blacklist = [
         "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
-        "idle-python3.2.desktop", "xarchiver.desktop", "make-minecraft.desktop",
-        "make-music.desktop", "make-pong.desktop", "make-snake.desktop",
-        "kano-video.desktop", "lxsession-edit.desktop", "lxrandr.desktop",
-        "lxinput.desktop", "obconf.desktop", "openbox.desktop",
-        "libfm-pref-apps.desktop", "lxappearance.desktop", "htop.desktop"
+        "idle-python3.2.desktop", "xarchiver.desktop",
+        "make-minecraft.desktop", "make-music.desktop", "make-pong.desktop",
+        "make-snake.desktop", "kano-video.desktop", "lxsession-edit.desktop",
+        "lxrandr.desktop", "lxinput.desktop", "obconf.desktop",
+        "openbox.desktop", "libfm-pref-apps.desktop", "lxappearance.desktop",
+        "htop.desktop"
     ]
     apps = []
     if os.path.exists(loc):
