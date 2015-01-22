@@ -154,7 +154,8 @@ def _load_from_dentry(de_path):
 
     de = _parse_dentry(de_path)
 
-    if "NoDisplay" in de and de["NoDisplay"] == "true":
+    if ("NoDisplay" in de and de["NoDisplay"] == "true") or \
+       "Icon" not in de or "Exec" not in de or "Name" not in de:
         return
 
     app = {
