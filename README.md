@@ -5,6 +5,8 @@ downloads apps from [Kano World](http://world.kano.me/apps) and installs them
 on your system. Being focused on ease of use, it colour codes each application
 and may provide custom icons for some.
 
+![Kano World Window](http://i.imgur.com/5z3JgI9.png)
+
 The applications are divided into several categories in the directory:
 
 * Code,
@@ -19,8 +21,6 @@ The program is written entirely in Python using **GTK 3.12** via the
 
 It also reads the desktop entries from `/usr/share/applications/` and displays
 them on the **Others** pane.
-
-![Kano World Window](http://i.imgur.com/5z3JgI9.png)
 
 ## Installation
 
