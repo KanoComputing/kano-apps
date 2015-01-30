@@ -9,12 +9,12 @@ and may provide custom icons for some.
 
 The applications are divided into several categories in the directory:
 
-* Code,
-* Games,
-* Media,
-* Others,
-* Tools,
-* and Experimental.
+* **Code**,
+* **Games**,
+* **Media**,
+* **Others**,
+* **Tools**,
+* and **Experimental**.
 
 The program is written entirely in Python using **GTK 3.12** via the
 [gi](https://wiki.gnome.org/action/show/Projects/GObjectIntrospection) bindings.
