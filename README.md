@@ -59,5 +59,5 @@ projects.
 
 ## License
 
-This program is licensed under the terms of the GNU GPLv2. See the `LICENSE`
+This program is licensed under the terms of the **GNU GPLv2**. See the `LICENSE`
 file for the full text.
