@@ -1,12 +1,11 @@
 bin/* usr/bin/
 kano_apps usr/lib/python2.7/dist-packages/
 media usr/share/kano-apps/
-apps/* usr/share/applications/
+apps/*.app usr/share/applications/
 apps/icons/* usr/share/icons/Kano/66x66/apps/
 books usr/share/kano-apps/
 
-icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
-icon/apps.png usr/share/kano-desktop/icons/
-icon/apps-hover.png usr/share/kano-desktop/icons/
+kdesk-icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
+kdesk-icon/*.png usr/share/kano-desktop/icons/
 
 kano-world-hook/* usr/lib/python2.7/dist-packages/kano_world/hooks/
