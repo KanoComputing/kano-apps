@@ -46,6 +46,9 @@ def create_desktop_entry(app):
         "Categories={}\n"
     ).format(cmd, icon, app["title"], app["tagline"], categories)
 
+    if "mime_type" in app:
+        de += "MimeType={}\n".format(app["mime_type"])
+
     return de
 
 
