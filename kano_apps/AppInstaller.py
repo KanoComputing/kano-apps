@@ -161,7 +161,7 @@ class AppInstaller:
                 add_to_desktop(self._app)
 
             head = "Done!"
-            message = self._app["title"] + " installed succesfully! " + \
+            message = self._app["title"] + " installed successfully! " + \
                 "Look for it in the Apps launcher."
         else:
             head = "Installation failed"
