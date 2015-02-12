@@ -8,7 +8,7 @@
 
 import os
 
-from kano.utils import is_running
+from kano.utils import is_running, pkill
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.logging import logger
 
@@ -16,16 +16,9 @@ from kano.logging import logger
 def run(args):
     app_id = args[0]
 
-    if is_running("/usr/bin/python /usr/bin/kano-apps"):
-        dialog = KanoDialog(
-            "Apps is already running",
-            "You need to close it, before you can install an application.",
-            {
-                "OK": {"return_value": 0},
-            },
-        )
-        dialog.run()
-        raise Exception("kano-apps is already running.")
+    kano_apps = "/usr/bin/python /usr/bin/kano-apps"
+    if is_running(kano_apps):
+        pkill(kano_apps)
 
     return app_id
 
