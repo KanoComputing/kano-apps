@@ -36,13 +36,8 @@ def launch(app_id):
 
     try:
         try:
-            from kano_profile.apps import load_app_state_variable, save_app_state_variable
-            installed_apps = load_app_state_variable('kano-tracker', 'installed_apps')
-            if not installed_apps:
-                installed_apps = list()
-            installed_apps.append(app_id)
-            installed_apps = list(set(installed_apps))
-            save_app_state_variable('kano-tracker', 'installed_apps', installed_apps)
+            from kano_profile.tracker import track_data
+            track_data("app-installed", app_id)
         except Exception:
             pass
 
