@@ -42,7 +42,7 @@ class Apps(Gtk.Notebook):
 
             "packages": [],
             "dependencies": ["chromium"],
-            "launch_command": {"cmd": "kdesk-blur", "args": ["kano-world-launcher"]},
+            "launch_command": {"cmd": "kdesk-blur", "args": ["kano-world-launcher", "/apps/"]},
             "overrides": [],
             "desktop": False
         }
