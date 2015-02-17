@@ -57,7 +57,7 @@ def _get_dentry_filename(app):
 
 
 def main():
-    installed_packages = get_dpkg_dict()[0]
+    installed_packages = get_dpkg_dict(include_unpacked=True)[0]
     
     entries = get_applications()
     apps = []
