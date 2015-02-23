@@ -6,14 +6,13 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+from kano.profiling import declare_timepoint
+declare_timepoint("load_apps", isStart=True)
+
 import os
 import sys
 import argparse
 import json
-
-from kano.profiling import declare_timepoint
-
-declare_timepoint("load", isStart=True)
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -72,9 +71,9 @@ def args_parse():
 
 
 def main():
-    declare_timepoint("load", isStart=False)
+    declare_timepoint("load_apps", isStart=False)
 
-    declare_timepoint("run", isStart=True)
+    declare_timepoint("run_apps", isStart=True)
     args = args_parse()
     if args is not None and args.cmd == "install":
         if args.gui:
@@ -145,7 +144,7 @@ def main():
         win.show_all()
         Gtk.main()
 
-    declare_timepoint("run", isStart=False)
+    declare_timepoint("run_apps", isStart=False)
 
     return 0
 
