@@ -71,9 +71,6 @@ def args_parse():
 
 
 def main():
-    declare_timepoint("load_apps", isStart=False)
-
-    declare_timepoint("run_apps", isStart=True)
     args = args_parse()
     if args is not None and args.cmd == "install":
         if args.gui:
@@ -142,6 +139,8 @@ def main():
         win = MainWindow()
         ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
+        declare_timepoint("load_apps", isStart=False)
+        declare_timepoint("run_apps", isStart=True)
         Gtk.main()
 
     declare_timepoint("run_apps", isStart=False)
