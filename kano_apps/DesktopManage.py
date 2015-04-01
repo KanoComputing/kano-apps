@@ -48,8 +48,8 @@ def _create_kdesk_icon(app):
                                               "icons/generic-hover.png")
     kdesk_entry += '  HoverXOffset: 0\n'
     kdesk_entry += '  Relative-To: grid\n'
-    kdesk_entry += '  X: auto\n'
-    kdesk_entry += '  Y: auto\n'
+    kdesk_entry += '  X: 0\n'
+    kdesk_entry += '  Y: 0\n'
     kdesk_entry += 'end\n'
 
     kdesk_dir = os.path.expanduser(KDESK_DIR)
@@ -75,7 +75,7 @@ def add_to_desktop(app):
     if desktop_full is not True:
         _create_kdesk_icon(app)
 
-        os.system('kdesk -i')
+        os.system('kdesk -r')
         return True
 
     return False
@@ -86,7 +86,7 @@ def remove_from_desktop(app):
     if os.path.exists(icon_loc):
         os.unlink(icon_loc)
 
-        os.system('kdesk -i')
+        os.system('kdesk -r')
         return True
 
     return False
