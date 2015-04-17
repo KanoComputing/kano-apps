@@ -2,8 +2,8 @@
 
 # kano-apps
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
 import os
@@ -24,7 +24,11 @@ from kano.logging import logger
 
 def batch_install(apps, icon_only=False):
     for app in apps:
-        app_data_file, app_icon_file = download_app(app)
+        try:
+            app_data_file, app_icon_file = download_app(app)
+        except AppDownloadError as e:
+            logger.error("Unable to download {} ({}), skipping".format(app, e))
+            continue
 
         with open(app_data_file) as f:
             app_data = json.load(f)
@@ -40,6 +44,8 @@ def batch_install(apps, icon_only=False):
 
             install_link_and_icon(app_data["slug"], app_data_file,
                                   app_icon_file)
+        else:
+            logger.warn("Installing the {} app failed".format(app))
 
 
 def args_parse():
