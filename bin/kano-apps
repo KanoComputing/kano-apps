@@ -70,6 +70,10 @@ def args_parse():
         update_help = "Check for possible updates of all installed applications"
         subparsers.add_parser("check-for-updates", help=update_help)
 
+        tutorial_help = "Shows a tutorial that explains how to add icons to" \
+                        "the desktop"
+        subparsers.add_parser("icon-tutorial", help=tutorial_help)
+
         return parser.parse_args()
 
 
@@ -133,6 +137,16 @@ def main():
                 pass
 
         logger.info('{} apps can be updated'.format(n))
+    elif args is not None and args.cmd == "icon-tutorial":
+        # GTK is imported only if we're running in GUI mode
+        from gi.repository import Gtk
+        from kano_apps.MainWindow import MainWindow
+        from kano.gtk3.scrolled_window import ScrolledWindow
+
+        win = MainWindow(tutorial=True)
+        ScrolledWindow.apply_styling_to_screen(wide=True)
+        win.show_all()
+        Gtk.main()
     else:
         # GTK is imported only if we're running in GUI mode
         from gi.repository import Gtk

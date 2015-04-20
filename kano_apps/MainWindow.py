@@ -5,19 +5,13 @@
 #
 # The MainWindow class
 
-import sys
-import json
-
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
-from kano_apps.UIElements import Contents, get_sudo_password
+from kano_apps.UIElements import Contents
 from kano_apps.AppGrid import Apps
 from kano_apps.AppData import get_applications, refresh_package_list
-from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
-    install_link_and_icon
 from kano_apps.AppInstaller import AppInstaller
-from kano_apps.DesktopManage import add_to_desktop
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
@@ -30,10 +24,11 @@ except:
 
 
 class MainWindow(ApplicationWindow):
-    def __init__(self, install=None, icon_only=False):
+    def __init__(self, install=None, icon_only=False, tutorial=False):
         ApplicationWindow.__init__(self, 'Apps', 755, 588)
 
         self._install = install
+        self._tutorial = tutorial
         self._icon_only = icon_only
         self._last_page = 0
 
@@ -94,6 +89,26 @@ class MainWindow(ApplicationWindow):
     def _app_loaded(self, widget):
         if self._install is not None:
             self._install_apps()
+        elif self._tutorial:
+            self._show_icon_tutorial()
+
+    def _show_icon_tutorial(self):
+        kdialog = KanoDialog(
+            "Add more apps to the desktop",
+            "Click the '+' button to the right of the app name to " \
+            "make it appear on the desktop. You can remove it again " \
+            "by clicking on 'x'.",
+            {
+                "OK, GOT IT": {
+                    "return_value": 0,
+                    "color": "green"
+                }
+            },
+            parent_window=self
+        )
+        kdialog.set_action_background("grey")
+        kdialog.title.description.set_max_width_chars(40)
+        kdialog.run()
 
     def _install_apps(self):
         pw = None
