@@ -86,7 +86,7 @@ def get_applications(parse_cmds=True):
         "make-snake.desktop", "kano-video.desktop", "lxsession-edit.desktop",
         "lxrandr.desktop", "lxinput.desktop", "obconf.desktop",
         "openbox.desktop", "libfm-pref-apps.desktop", "lxappearance.desktop",
-        "htop.desktop", "pcmanfm-desktop-pref.desktop"
+        "htop.desktop", "pcmanfm-desktop-pref.desktop", "video-cli.desktop"
     ]
     apps = []
     if os.path.exists(loc):
