@@ -20,6 +20,41 @@ from kano_apps.AppManage import download_app, install_app, \
     install_link_and_icon, query_for_app, AppDownloadError
 from kano_apps.AppData import get_applications
 from kano.logging import logger
+from kano.utils import run_cmd
+from kano.gtk3.kano_dialog import KanoDialog
+
+
+def check_for_expand_partition():
+    # Check if partition has been expanded
+    if not os.path.isfile('/etc/root_has_been_expanded'):
+        # Show dialogue
+        head = "My brain can be expanded!"
+        msg = "I noticed that I can make some more room in " \
+              "my brain if you\'d like?"
+        kdialog = KanoDialog(
+            head,
+            msg,
+            {
+                "OK": {
+                    "return_value": True,
+                    "color": "green"
+                },
+                "CANCEL": {
+                    "return_value": False,
+                    "color": "red"
+                },
+            },
+        )
+        kdialog.set_action_background("grey")
+        kdialog.title.description.set_max_width_chars(40)
+        if kdialog.run():
+            logger.info("Expanding partition from kano-apps")
+            run_cmd('sudo /usr/bin/expand-rootfs')
+            os.system('sudo reboot')
+            return True
+        del kdialog
+
+    return False
 
 
 def batch_install(apps, icon_only=False):
@@ -67,7 +102,8 @@ def args_parse():
         install.add_argument("apps", metavar="APP", type=str, nargs="+",
                              help="A list of applications to install")
 
-        update_help = "Check for possible updates of all installed applications"
+        update_help = "Check for possible updates of all installed " \
+                      "applications"
         subparsers.add_parser("check-for-updates", help=update_help)
 
         tutorial_help = "Shows a tutorial that explains how to add icons to" \
@@ -143,6 +179,7 @@ def main():
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
 
+        check_for_expand_partition()
         win = MainWindow(tutorial=True)
         ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
@@ -153,6 +190,7 @@ def main():
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
 
+        check_for_expand_partition()
         win = MainWindow()
         ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
