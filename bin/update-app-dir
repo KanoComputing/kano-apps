@@ -19,10 +19,30 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano_apps.AppData import get_applications
 from kano.logging import logger
-from kano_updater.utils import get_dpkg_dict
 
 _DENTRIES_LOC = "/usr/share/applications/"
 _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
+
+
+def get_dpkg_dict(include_unpacked=False):
+    apps_ok = dict()
+    apps_other = dict()
+
+    cmd = 'dpkg -l'
+    o, _, _ = run_cmd(cmd)
+    lines = o.splitlines()
+    for l in lines[5:]:
+        parts = l.split()
+        state = parts[0]
+        name = parts[1]
+        version = parts[2]
+
+        if state == 'ii' or (include_unpacked and state == 'iU'):
+            apps_ok[name] = version
+        else:
+            apps_other[name] = version
+
+    return apps_ok, apps_other
 
 
 def create_desktop_entry(app):
