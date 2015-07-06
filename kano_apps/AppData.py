@@ -1,14 +1,14 @@
 # AppData.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Which apps to look for on the system
 
 import os
 import re
 import json
-from kano_updater.utils import get_dpkg_dict
+from kano_apps.utils import get_dpkg_dict
 
 # The system directory that contains *.desktop entries
 _SYSTEM_ICONS_LOC = '/usr/share/applications/'

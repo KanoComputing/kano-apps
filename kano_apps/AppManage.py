@@ -9,7 +9,7 @@ import os
 import json
 import time
 
-from kano_updater.utils import get_dpkg_dict
+from kano_apps.utils import get_dpkg_dict
 from kano.utils import run_cmd, download_url, is_model_2_b
 from kano_world.connection import request_wrapper, content_type_json
 

@@ -2,8 +2,8 @@
 #
 # update-app-dir
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Generates desktop entries in /usr/share/applications for all apps in
 # /usr/share/kano-applications and /usr/local/share/kano-applications
@@ -19,30 +19,10 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano_apps.AppData import get_applications
 from kano.logging import logger
+from kano_apps.utils import get_dpkg_dict
 
 _DENTRIES_LOC = "/usr/share/applications/"
 _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
-
-
-def get_dpkg_dict(include_unpacked=False):
-    apps_ok = dict()
-    apps_other = dict()
-
-    cmd = 'dpkg -l'
-    o, _, _ = run_cmd(cmd)
-    lines = o.splitlines()
-    for l in lines[5:]:
-        parts = l.split()
-        state = parts[0]
-        name = parts[1]
-        version = parts[2]
-
-        if state == 'ii' or (include_unpacked and state == 'iU'):
-            apps_ok[name] = version
-        else:
-            apps_other[name] = version
-
-    return apps_ok, apps_other
 
 
 def create_desktop_entry(app):
@@ -78,7 +58,7 @@ def _get_dentry_filename(app):
 
 def main():
     installed_packages = get_dpkg_dict(include_unpacked=True)[0]
-    
+
     entries = get_applications()
     apps = []
     for e in entries:
@@ -95,7 +75,7 @@ def main():
             logger.info("Removing desktop entry {}".format(de))
             os.unlink(os.path.join(_DENTRIES_LOC, de))
             continue
-        
+
         # Remove if the packages are not installed
         if de[0:5] == 'auto_':
             app_name = ".".join(de[5:].split('.')[:-1])
@@ -106,7 +86,7 @@ def main():
                         if pkg not in installed_packages:
                             logger.info("Removing desktop entry {} (packages not installed)".format(de))
                             os.unlink(os.path.join(_DENTRIES_LOC, de))
-                            
+
 
     # Regenerate all others
     for app in apps:
