@@ -26,9 +26,7 @@ _ICONS_LOC = "/usr/share/icons/Kano/66x66/"
 
 
 def create_desktop_entry(app):
-    args = map(lambda s: "\"{}\"".format(s) if s.find(" ") >= 0 else s, app["launch_command"]["args"])
-    cmd = "{} {}".format(app["launch_command"]["cmd"], " ".join(args))
-
+    cmd = app["launch_command"]
     icon = app["icon"]
 
     categories = ";".join(app["categories"] + [""]).lower()
@@ -59,7 +57,7 @@ def _get_dentry_filename(app):
 def main():
     installed_packages = get_dpkg_dict(include_unpacked=True)[0]
 
-    entries = get_applications()
+    entries = get_applications(parse_cmds=False)
     apps = []
     for e in entries:
         if e["type"] == "app":
