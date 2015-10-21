@@ -329,7 +329,7 @@ class AppGridEntry(Gtk.EventBox):
 
         self.add(entry)
         attach_cursor_events(self)
-        self.connect("button-release-event", self._entry_click_cb)
+        self.connect("button-press-event", self._entry_click_cb)
 
     def get_app_data(self):
         return self._app
