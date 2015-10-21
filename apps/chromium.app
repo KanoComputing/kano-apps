@@ -10,7 +10,8 @@
     "categories": ["tools"],
 
     "packages": [],
-    "dependencies": ["chromium"],
-    "launch_command": "chromium",
-    "overrides": ["chromium.desktop", "lxde-x-www-browser.desktop"]
+    "dependencies": ["chromium-browser"],
+    "launch_command": "chromium-browser",
+    "overrides": ["chromium.desktop", "chromium-browser.desktop",
+                  "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"]
 }
