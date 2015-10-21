@@ -47,6 +47,12 @@ def create_desktop_entry(app):
     if "mime_type" in app:
         de += "MimeType={}\n".format(app["mime_type"])
 
+    # Startup_notify allows us to control the hourglass through kdesk,
+    # on some rare cases where openbox fails.
+    # Set it to "false" lowercase in such cases.
+    if "StartupNotify" in app:
+        de += "StartupNotify={}\n".format(app["StartupNotify"])
+        
     return de
 
 
@@ -54,7 +60,7 @@ def _get_dentry_filename(app):
     return "auto_" + app["slug"] + ".desktop"
 
 
-def main():
+def main(dry_run=False):
     installed_packages = get_dpkg_dict(include_unpacked=True)[0]
 
     entries = get_applications(parse_cmds=False)
@@ -71,7 +77,8 @@ def main():
 
         if de[0:5] == "auto_" and de not in apps_dentries:
             logger.info("Removing desktop entry {}".format(de))
-            os.unlink(os.path.join(_DENTRIES_LOC, de))
+            if not dry_run:
+                os.unlink(os.path.join(_DENTRIES_LOC, de))
             continue
 
         # Remove if the packages are not installed
@@ -83,7 +90,8 @@ def main():
                     for pkg in pkgs:
                         if pkg not in installed_packages:
                             logger.info("Removing desktop entry {} (packages not installed)".format(de))
-                            os.unlink(os.path.join(_DENTRIES_LOC, de))
+                            if not dry_run:
+                                os.unlink(os.path.join(_DENTRIES_LOC, de))
 
 
     # Regenerate all others
@@ -102,14 +110,29 @@ def main():
         de = create_desktop_entry(app)
         file_name = _get_dentry_filename(app)
 
-        try:
-            with open(os.path.join(_DENTRIES_LOC, file_name), "w") as f:
-                f.write(de)
-        except IOError as err:
-            logger.error("Unable to write to {}".format(_DENTRIES_LOC))
-            logger.error(str(err))
+        if dry_run:
+            print '>>> App found:', app
+            print '>>> Filename: {} will be applied these .desktop settings:\n'.format(file_name), de
+        else:
+            try:
+                with open(os.path.join(_DENTRIES_LOC, file_name), "w") as f:
+                    f.write(de)
+            except IOError as err:
+                logger.error("Unable to write to {}".format(_DENTRIES_LOC))
+                logger.error(str(err))
 
     return 0
 
 if __name__ == "__main__":
-    sys.exit(main())
+    '''
+    Pass "--dry-run" as first parameter to explain what would be done, but nothing wil change.
+    $ python update-add-dir | grep ">>> Filename" will dump a list of would-be-affected desktop files.
+    '''
+    
+    dry_run=False
+    
+    if len(sys.argv) > 1 and sys.argv[1] == '--dry-run':
+        print 'Running in dry-run mode (no changes will be applied)'
+        dry_run=True
+
+    sys.exit(main(dry_run))
