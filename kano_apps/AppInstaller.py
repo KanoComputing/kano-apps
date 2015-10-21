@@ -123,7 +123,7 @@ class AppInstaller:
                         "return_value": -1
                     }
                 },
-                parent_window=self
+                parent_window=self._win
             )
             rv = dialog.run()
             del dialog
