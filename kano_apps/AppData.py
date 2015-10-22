@@ -86,7 +86,10 @@ def get_applications(parse_cmds=True):
         "make-snake.desktop", "kano-video.desktop", "lxsession-edit.desktop",
         "lxrandr.desktop", "lxinput.desktop", "obconf.desktop",
         "openbox.desktop", "libfm-pref-apps.desktop", "lxappearance.desktop",
-        "htop.desktop", "pcmanfm-desktop-pref.desktop", "video-cli.desktop"
+        "htop.desktop", "pcmanfm-desktop-pref.desktop", "video-cli.desktop",
+        "lxsession-default-apps.desktop", "pcmanfm.desktop", "help.desktop",
+        "rxvt-unicode.desktop", "org.gnome.gedit.desktop",
+        "chromium-browser.desktop", "openjdk-7-policytool.desktop"
     ]
     apps = []
     if os.path.exists(loc):
