@@ -16,6 +16,8 @@ from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
 
+from kano_profile.apps import save_app_state_variable, load_app_state_variable
+
 try:
     from kano_profile.tracker import Tracker
     kanotracker = Tracker()
@@ -93,10 +95,15 @@ class MainWindow(ApplicationWindow):
             self._show_icon_tutorial()
 
     def _show_icon_tutorial(self):
+        if load_app_state_variable('kano-apps', 'icon-tutorial-shown'):
+            return
+        else:
+            save_app_state_variable('kano-apps', 'icon-tutorial-shown', True)
+
         kdialog = KanoDialog(
             "Add more apps to the desktop",
-            "Click the '+' button to the right of the app name to " \
-            "make it appear on the desktop. You can remove it again " \
+            "Click the '+' button to the right of the app name to "
+            "make it appear on the desktop. You can remove it again "
             "by clicking on 'x'.",
             {
                 "OK, GOT IT": {
