@@ -38,11 +38,13 @@ class Apps(Gtk.Notebook):
             "icon": "want-more-apps",
             "colour": "#fda96f",
 
-            "categories": ["code", "media", "games", "others", "tools", "experimental"],
+            "categories": ["code", "media", "games", "others",
+                           "tools", "experimental"],
 
             "packages": [],
             "dependencies": ["chromium"],
-            "launch_command": {"cmd": "kdesk-blur", "args": ["kano-world-launcher /apps/"]},
+            "launch_command": {"cmd": "kdesk-blur",
+                               "args": ["kano-world-launcher /apps/"]},
             "overrides": [],
             "desktop": False
         }
@@ -55,7 +57,21 @@ class Apps(Gtk.Notebook):
 
         self._apps = {}
 
-        for cat in self._cat_names:
+        # Determine which categories have apps (the others won't be shown)
+        used_categories = set(["latest", "others"])
+        for app in apps:
+            if 'categories' in app:
+                for category in app['categories']:
+                    if category in self._cat_names:
+                        used_categories.add(category)
+
+        # Sort the categories to the predetermined order
+        sorted_categories = sorted(used_categories, lambda a, b:
+                                   cmp(self._cat_names.index(a),
+                                       self._cat_names.index(b)))
+
+        # Prepare tabs for the apps
+        for cat in sorted_categories:
             self._categories[cat] = AppGrid(main_win, self)
             label = Gtk.Label(cat.upper())
             ebox = Gtk.EventBox()
@@ -102,11 +118,19 @@ class Apps(Gtk.Notebook):
         if app_data["type"] == "app":
             if "categories" in app_data:
                 categories = map(lambda c: c.lower(), app_data["categories"])
+                shown = False
                 for cat in categories:
                     if cat in self._categories:
                         cat_obj = self._categories[cat]
                         entry = cat_obj.new_entry(app_data)
                         app_entries.append(entry)
+                        shown = True
+                # If the app doesn't fall under any category, it will be put
+                # inside others
+                if not shown:
+                    cat_obj = self._categories["others"]
+                    entry = cat_obj.new_entry(app_data)
+                    app_entries.append(entry)
         elif app_data["type"] == "dentry":
             entry = self._categories["others"].new_entry(app_data)
             app_entries.append(entry)
