@@ -50,7 +50,7 @@ def check_for_expand_partition():
         if kdialog.run():
             logger.info("Expanding partition from kano-apps")
             run_cmd('sudo /usr/bin/expand-rootfs')
-            os.system('sudo reboot')
+            os.system('sudo systemctl reboot')
             return True
         del kdialog
 
