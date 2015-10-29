@@ -28,10 +28,10 @@ def is_partition_expanded(device):
     try:
         cmd = 'lsblk -n -b {} -o SIZE'.format(device)
         stdout, stderr, returncode = run_cmd(cmd)
-        if rc !=0:
+        if returncode !=0:
             logger.warning("error running lsblk")
             return True
-        lines = stdout.split('\n')
+        lines = stdout.strip().split('\n')
         total = int(lines.pop(0))
         rest = sum(map(int, lines))
         if rest < total * 0.8:
