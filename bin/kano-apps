@@ -23,10 +23,30 @@ from kano.logging import logger
 from kano.utils import run_cmd
 from kano.gtk3.kano_dialog import KanoDialog
 
+device = '/dev/mmcblk0'
+def is_partition_expanded(device):
+    try:
+        cmd = 'lsblk -n -b {} -o SIZE'.format(device)
+        stdout, stderr, returncode = run_cmd(cmd)
+        if rc !=0:
+            logger.warning("error running lsblk")
+            return True
+        lines = stdout.split('\n')
+        total = int(lines.pop(0))
+        rest = sum(map(int, lines))
+        if rest < total * 0.8:
+            return False
+        return True
+    except:
+        logger.error("exception in is_partition_expanded")
+        return True
+    
+    
+    
 
 def check_for_expand_partition():
     # Check if partition has been expanded
-    if not os.path.isfile('/etc/root_has_been_expanded'):
+    if not is_partition_expanded(device):
         # Show dialogue
         head = "My brain can be expanded!"
         msg = "I noticed that I can make some more room in " \
