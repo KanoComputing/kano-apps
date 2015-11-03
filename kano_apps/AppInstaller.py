@@ -11,7 +11,7 @@ from gi.repository import Gtk, Gdk
 from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
     install_link_and_icon
 from kano_apps.DesktopManage import add_to_desktop
-from kano_apps.AppData import load_from_app_file
+from kano_apps.AppData import load_from_app_file, is_app_installed
 from kano_apps.UIElements import get_sudo_password
 from kano.gtk3.kano_dialog import KanoDialog
 from kano_world.connection import request_wrapper
@@ -110,7 +110,7 @@ class AppInstaller:
         return True
 
     def _installed_check(self):
-        if self._apps.has_slug(self._app["slug"]):
+        if is_app_installed(self._app):
             head = "{} is already installed".format(self._app["title"])
             desc = "Would you like to update it?"
             dialog = KanoDialog(
