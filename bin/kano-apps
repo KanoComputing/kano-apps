@@ -50,20 +50,20 @@ def check_for_expand_partition():
     # Check if partition has been expanded
     if not is_partition_expanded(device):
         # Show dialogue
-        head = "My brain can be expanded!"
-        msg = "I noticed that I can make some more room in " \
-              "my brain if you\'d like?"
+        head = "Do you want to reboot now?"
+        msg = "A reboot is required to complete the installation of Kano" \
+              " OS so it can access all the space on the SD card."
         kdialog = KanoDialog(
             head,
             msg,
             {
-                "OK": {
-                    "return_value": True,
-                    "color": "green"
-                },
-                "CANCEL": {
+                "LATER": {
                     "return_value": False,
                     "color": "red"
+                },
+                "REBOOT": {
+                    "return_value": True,
+                    "color": "green"
                 },
             },
         )
