@@ -614,4 +614,6 @@ class AppGridEntry(Gtk.EventBox):
         self._app['origin'] = new_app['origin']
         remove_from_desktop(self._app)
         self._apps.update_app(new_app)
-        add_to_desktop(new_app)
+
+        if new_app.get('desktop'):
+            add_to_desktop(new_app)
