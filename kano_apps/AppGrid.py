@@ -329,7 +329,7 @@ class AppGridEntry(Gtk.EventBox):
 
         self.add(entry)
         attach_cursor_events(self)
-        self.connect("button-release-event", self._entry_click_cb)
+        self.connect("button-press-event", self._entry_click_cb)
 
     def get_app_data(self):
         return self._app
@@ -614,4 +614,6 @@ class AppGridEntry(Gtk.EventBox):
         self._app['origin'] = new_app['origin']
         remove_from_desktop(self._app)
         self._apps.update_app(new_app)
-        add_to_desktop(new_app)
+
+        if new_app.get('desktop'):
+            add_to_desktop(new_app)

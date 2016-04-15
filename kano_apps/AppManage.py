@@ -1,16 +1,17 @@
 # AppManage.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Download, install and remove apps
+
 
 import os
 import json
 import time
 
 from kano_apps.utils import get_dpkg_dict
-from kano.utils import run_cmd, download_url, is_model_2_b
+from kano.utils import run_cmd, download_url, has_min_performance
 from kano_world.connection import request_wrapper, content_type_json
 
 KDESK_DIR = '~/.kdesktop/'
@@ -120,10 +121,12 @@ def download_app(app_id_or_slug):
         msg = "Unable to download the application ({})".format(err)
         raise AppDownloadError(msg)
 
-    # Check if the app isn't rpi2 only
-    if not is_model_2_b() and 'rpi2_only' in data and data['rpi2_only']:
+    # Check if the app is going to run well on the hardware
+    if 'min_performance_score' in data and \
+       has_min_performance(data['min_performance_score']):
+
         msg = "{} won't be downloaded ".format(data['title']) + \
-              "becuase it's Raspberry Pi 2 only"
+              "because the hardware is not performant enough"
         raise AppDownloadError(msg)
 
     # Cleanup the JSON file

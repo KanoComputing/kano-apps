@@ -22,7 +22,7 @@ GtkScrolledWindow, GtkViewport {
 }
 
 .blur {
-    background-color: RGBA(0, 0, 0, 0.25);
+    background-color: RGBA(0, 0, 0, 0.35);
 }
 
 .no_border {
@@ -129,7 +129,7 @@ GtkScrolledWindow, GtkViewport {
 }
 
 GtkNotebook {
-    background-color: #fff;
+    background-color: #e3e3e3;
     -GtkNotebook-tab-overlap: -12px;
     -GtkWidget-focus-line-width: 0px;
     -GtkNotebook-initial-gap: 28px;
@@ -145,8 +145,9 @@ GtkNotebook tab:active {
 GtkNotebook tab {
     border: none;
     background-color: #d1d1d1;
-    border-radius: 5px;
-    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 12px 10px 12px 10px;
 }
 
 GtkNotebook tab GtkLabel {
