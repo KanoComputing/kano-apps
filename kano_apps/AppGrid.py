@@ -1,6 +1,6 @@
 # AppGrid.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
@@ -29,8 +29,8 @@ class Apps(Gtk.Notebook):
 
         want_more_app = {
             "type": "app",
-            "title": "Want more apps?",
-            "tagline": "Go to Kano World to install more",
+            "title": _("Want more apps?"),
+            "tagline": _("Go to Kano World to install more"),
             "slug": "want-more",
 
             "origin": "-",
@@ -244,10 +244,10 @@ class DesktopButton(Gtk.Button):
 
         if self._is_on_desktop():
             self.set_image(Gtk.Image.new_from_file(self._RM_IMG_PATH))
-            self.set_tooltip_text("Remove from desktop")
+            self.set_tooltip_text(_("Remove from desktop"))
         else:
             self.set_image(Gtk.Image.new_from_file(self._ADD_IMG_PATH))
-            self.set_tooltip_text("Add to desktop")
+            self.set_tooltip_text(_("Add to desktop"))
 
         self.show_all()
 
@@ -415,10 +415,10 @@ class AppGridEntry(Gtk.EventBox):
         # The execvp should not return, so if we reach this point,
         # there was an error.
         message = KanoDialog(
-            "Error",
-            "Unable to start the application.",
+            _("Error"),
+            _("Unable to start the application."),
             {
-                "OK": {
+                _("OK"): {
                     "return_value": 0,
                     "color": "red"
                 }
@@ -437,7 +437,7 @@ class AppGridEntry(Gtk.EventBox):
         more_btn.props.margin_right = 21
         more_btn.get_style_context().add_class('more-button')
         more_btn.connect("clicked", self._show_more_cb)
-        more_btn.set_tooltip_text("More information")
+        more_btn.set_tooltip_text(_("More information"))
         more_btn.connect("realize", self._set_cursor_to_hand_cb)
         self._entry.pack_start(more_btn, False, False, 0)
 
@@ -459,7 +459,7 @@ class AppGridEntry(Gtk.EventBox):
         remove_btn.props.margin_right = 21
         remove_btn.get_style_context().add_class('more-button')
         remove_btn.connect("clicked", self._uninstall_cb)
-        remove_btn.set_tooltip_text("Remove")
+        remove_btn.set_tooltip_text(_("Remove"))
         remove_btn.connect("realize", self._set_cursor_to_hand_cb)
         remove_btn.connect("enter-notify-event", self._open_bin_cb)
         remove_btn.connect("leave-notify-event", self._close_bin_cb)
@@ -490,7 +490,7 @@ class AppGridEntry(Gtk.EventBox):
         update_btn.props.margin_right = 21
         update_btn.get_style_context().add_class('more-button')
         update_btn.connect("clicked", self._update_cb)
-        update_btn.set_tooltip_text("Update app")
+        update_btn.set_tooltip_text(_("Update app"))
         update_btn.connect("realize", self._set_cursor_to_hand_cb)
         self._entry.pack_start(update_btn, False, False, 0)
         self._entry.reorder_child(update_btn, 2)
@@ -509,7 +509,7 @@ class AppGridEntry(Gtk.EventBox):
             self._app["title"],
             self._app['description'] if "description" in self._app else self._app['tagline'],
             {
-                "OK, GOT IT": {
+                _("OK, GOT IT"): {
                     "return_value": 0,
                     "color": "green"
                 }
@@ -532,14 +532,14 @@ class AppGridEntry(Gtk.EventBox):
 
     def _uninstall_cb(self, event):
         confirmation = KanoDialog(
-            title_text="Removing {}".format(self._app["title"]),
-            description_text="This application will be uninstalled and " +
-                             "removed from apps. Do you wish to proceed?",
+            title_text=_("Removing {}").format(self._app["title"]),
+            description_text=_("This application will be uninstalled and " +
+                             "removed from apps. Do you wish to proceed?"),
             button_dict={
-                "YES": {
+                _("YES"): {
                     "return_value": 0
                 },
-                "NO": {
+                _("NO"): {
                     "return_value": -1,
                     "color": "red"
                 }
@@ -553,7 +553,7 @@ class AppGridEntry(Gtk.EventBox):
         if rv < 0:
             return
 
-        prompt = "Uninstalling {}".format(self._app["title"])
+        prompt = _("Uninstalling {}").format(self._app["title"])
         pw = get_sudo_password(prompt, self._window)
         if pw is None:
             return
@@ -578,14 +578,14 @@ class AppGridEntry(Gtk.EventBox):
 
     def _update_cb(self, widget):
         confirmation = KanoDialog(
-            title_text="Updating {}".format(self._app["title"]),
-            description_text="This application will be updated " +
-                             "Do you wish to proceed?",
+            title_text=_("Updating {}").format(self._app["title"]),
+            description_text=_("This application will be updated " +
+                             "Do you wish to proceed?"),
             button_dict={
-                "YES": {
+                _("YES"): {
                     "return_value": 0
                 },
-                "NO": {
+                _("NO"): {
                     "return_value": -1,
                     "color": "red"
                 }

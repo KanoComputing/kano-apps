@@ -91,11 +91,11 @@ class AppInstaller:
             self._tmp_data_file = app_data_file
             self._tmp_icon_file = app_icon_file
         except AppDownloadError as err:
-            head = "Unable to download the application"
+            head = _("Unable to download the application")
             dialog = KanoDialog(
                 head, str(err),
                 {
-                    "OK": {
+                    _("OK"): {
                         "return_value": 0
                     },
                 },
@@ -111,15 +111,15 @@ class AppInstaller:
 
     def _installed_check(self):
         if is_app_installed(self._app):
-            head = "{} is already installed".format(self._app["title"])
-            desc = "Would you like to update it?"
+            head = _("{} is already installed").format(self._app["title"])
+            desc = _("Would you like to update it?")
             dialog = KanoDialog(
                 head, desc,
                 {
-                    "YES": {
+                    _("YES"): {
                         "return_value": 0
                     },
-                    "NO": {
+                    _("NO"): {
                         "return_value": -1
                     }
                 },
@@ -137,7 +137,7 @@ class AppInstaller:
 
     def _get_sudo_pw(self):
         if self._pw is None:
-            self._pw = get_sudo_password("Installing {}".format(self._app["title"]))
+            self._pw = get_sudo_password(_("Installing {}").format(self._app["title"]))
             return self._pw is not None
 
         return True
@@ -160,21 +160,21 @@ class AppInstaller:
             if not self._icon_only and self._add_to_desktop:
                 add_to_desktop(self._app)
 
-            head = "Done!"
-            message = self._app["title"] + " installed successfully! " + \
-                "Look for it in the Apps launcher."
+            head = _("Done!")
+            message = _("%s installed successfully! " + \
+                "Look for it in the Apps launcher.") % self._app["title"]
         else:
-            head = "Installation failed"
-            message = self._app["title"] + " cannot be installed at " + \
+            head = _("Installation failed")
+            message = _("%s cannot be installed at " + \
                 "the moment. Please make sure your kit is connected " + \
                 "to the internet and there is enough space left on " + \
-                "your card."
+                "your card.") % self._app["title"]
 
         dialog = KanoDialog(
             head,
             message,
             {
-                "OK": {
+                _("OK"): {
                     "return_value": 0
                 },
             },

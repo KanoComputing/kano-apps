@@ -1,0 +1,173 @@
+# Japanese translations for kano-apps package.
+# Copyright (C) 2016 Kano Computing Ltd.
+# This file is distributed under the same license as the kano-apps package.
+# Choppin Antoine <antoine@japonophile.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kano-apps\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-02 00:15+0900\n"
+"PO-Revision-Date: 2016-06-02 00:15+0900\n"
+"Last-Translator: Choppin Antoine <antoine@japonophile.com>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../kano_apps/AppGrid.py:32
+msgid "Want more apps?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:33
+msgid "Go to Kano World to install more"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:247
+msgid "Remove from desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:250
+msgid "Add to desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:418
+msgid "Error"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:419
+msgid "Unable to start the application."
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:98
+#: ../kano_apps/AppInstaller.py:177
+msgid "OK"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:440
+msgid "More information"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:462
+msgid "Remove"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:493
+msgid "Update app"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:109
+msgid "OK, GOT IT"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:535
+msgid "Removing {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:536
+msgid ""
+"This application will be uninstalled and removed from apps. Do you wish to "
+"proceed?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:539 ../kano_apps/AppGrid.py:585
+#: ../kano_apps/AppInstaller.py:119 ../kano_apps/UIElements.py:62
+msgid "YES"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:542 ../kano_apps/AppGrid.py:588
+#: ../kano_apps/AppInstaller.py:122
+msgid "NO"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:556
+msgid "Uninstalling {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:581
+msgid "Updating {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:582
+msgid "This application will be updated Do you wish to proceed?"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:94
+msgid "Unable to download the application"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:114
+msgid "{} is already installed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:115
+msgid "Would you like to update it?"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:140
+msgid "Installing {}"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:163
+msgid "Done!"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:164
+#, python-format
+msgid "%s installed successfully! Look for it in the Apps launcher."
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:167
+msgid "Installation failed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:168
+#, python-format
+msgid ""
+"%s cannot be installed at the moment. Please make sure your kit is connected "
+"to the internet and there is enough space left on your card."
+msgstr ""
+
+#: ../kano_apps/AppManage.py:70
+msgid "'Uninstalling {}'"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:121
+msgid "Unable to download the application ({})"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:128
+msgid "{} won't be downloaded because the hardware is not performant enough"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:60
+msgid "Apps"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:104
+msgid "Add more apps to the desktop"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:105
+msgid ""
+"Click the '+' button to the right of the app name to make it appear on the "
+"desktop. You can remove it again by clicking on 'x'."
+msgstr ""
+
+#: ../kano_apps/UIElements.py:46
+msgid "Enter your system password - default is kano:"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:60
+msgid "The password was incorrect. Try again?"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:65
+msgid "CANCEL"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:82
+msgid "Re-enter your system password - default is kano:"
+msgstr ""

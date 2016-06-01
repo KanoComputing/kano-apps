@@ -43,7 +43,7 @@ def get_sudo_password(heading, parent=None):
     entry.set_visibility(False)
     kdialog = KanoDialog(
         title_text=heading,
-        description_text="Enter your system password - default is kano:",
+        description_text=_("Enter your system password - default is kano:"),
         widget=entry,
         has_entry=True,
         global_style=True,
@@ -57,12 +57,12 @@ def get_sudo_password(heading, parent=None):
     while not pam.authenticate(getpass.getuser(), pw):
         fail = KanoDialog(
             title_text=heading,
-            description_text="The password was incorrect. Try again?",
+            description_text=_("The password was incorrect. Try again?"),
             button_dict={
-                "YES": {
+                _("YES"): {
                     "return_value": 0
                 },
-                "CANCEL": {
+                _("CANCEL"): {
                     "return_value": -1,
                     "color": "red"
                 }
@@ -79,7 +79,7 @@ def get_sudo_password(heading, parent=None):
         entry.set_visibility(False)
         kdialog = KanoDialog(
             title_text=heading,
-            description_text="Re-enter your system password - default is kano:",
+            description_text=_("Re-enter your system password - default is kano:"),
             widget=entry,
             has_entry=True,
             global_style=True,

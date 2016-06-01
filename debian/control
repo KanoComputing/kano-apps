@@ -3,12 +3,12 @@ Maintainer: Team Kano <dev@kano.me>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.4
-Build-Depends: debhelper (>=9.0.0), python
+Build-Depends: debhelper (>=9.0.0), python, gettext
 
 Package: kano-apps
 Architecture: all
 Depends: ${misc:Depends}, python, python-gi, kano-toolset (>= 1.2-5),
- kano-themes, kano-profile (>=1.3-6)
+ kano-themes, kano-profile (>=1.3-6), kano-i18n
 Replaces: kano-desktop (<< 1.0-60)
 Breaks: kano-desktop (<< 1.0-60)
 Conflicts: kano-extras
