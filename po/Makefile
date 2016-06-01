@@ -18,7 +18,7 @@ clean: clean_locales
 
 define run-xgettext
 xgettext -f PYPOTFILES -L Python --force-po -o messages.pot \
-    --package-name=$(APPNAME) --copyright-holder=$(ORG)
+    --keyword=N_ --package-name=$(APPNAME) --copyright-holder=$(ORG)
 endef
 
 messages:
