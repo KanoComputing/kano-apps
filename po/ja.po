@@ -19,137 +19,139 @@ msgstr ""
 
 #: ../kano_apps/AppGrid.py:32
 msgid "Want more apps?"
-msgstr ""
+msgstr "他のアプリ欲しい？"
 
 #: ../kano_apps/AppGrid.py:33
 msgid "Go to Kano World to install more"
-msgstr ""
+msgstr "Kanoワールドで他のアプリをゲットしよう"
 
 #: ../kano_apps/AppGrid.py:54
 msgid "latest"
-msgstr ""
+msgstr "最新"
 
 #: ../kano_apps/AppGrid.py:54
 msgid "code"
-msgstr ""
+msgstr "コード"
 
 #: ../kano_apps/AppGrid.py:54
 msgid "games"
-msgstr ""
+msgstr "ゲーム"
 
 #: ../kano_apps/AppGrid.py:54
 msgid "media"
-msgstr ""
+msgstr "メディア"
 
 #: ../kano_apps/AppGrid.py:54
 msgid "tools"
-msgstr ""
+msgstr "ツール"
 
 #: ../kano_apps/AppGrid.py:55
 msgid "others"
-msgstr ""
+msgstr "その他"
 
 #: ../kano_apps/AppGrid.py:55
 msgid "experimental"
-msgstr ""
+msgstr "実験中"
 
 #: ../kano_apps/AppGrid.py:247
 msgid "Remove from desktop"
-msgstr ""
+msgstr "デスクトップから削除"
 
 #: ../kano_apps/AppGrid.py:250
 msgid "Add to desktop"
-msgstr ""
+msgstr "デスクトップに追加"
 
 #: ../kano_apps/AppGrid.py:418
 msgid "Error"
-msgstr ""
+msgstr "エラー"
 
 #: ../kano_apps/AppGrid.py:419
 msgid "Unable to start the application."
-msgstr ""
+msgstr "アプリを起動できません。"
 
 #: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:98
 #: ../kano_apps/AppInstaller.py:177
 msgid "OK"
-msgstr ""
+msgstr "了解"
 
 #: ../kano_apps/AppGrid.py:440
 msgid "More information"
-msgstr ""
+msgstr "追加情報"
 
 #: ../kano_apps/AppGrid.py:462
 msgid "Remove"
-msgstr ""
+msgstr "削除"
 
 #: ../kano_apps/AppGrid.py:493
 msgid "Update app"
-msgstr ""
+msgstr "アプリをアップデート"
 
 #: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:109
 msgid "OK, GOT IT"
-msgstr ""
+msgstr "はい、了解"
 
 #: ../kano_apps/AppGrid.py:535
 msgid "Removing {}"
-msgstr ""
+msgstr "{}を削除中"
 
 #: ../kano_apps/AppGrid.py:536
 msgid ""
 "This application will be uninstalled and removed from apps. Do you wish to "
 "proceed?"
 msgstr ""
+"このアプリをアンインストールし、アップスから削除されます。"
+"続けますか？"
 
 #: ../kano_apps/AppGrid.py:539 ../kano_apps/AppGrid.py:585
 #: ../kano_apps/AppInstaller.py:119 ../kano_apps/UIElements.py:62
 msgid "YES"
-msgstr ""
+msgstr "はい"
 
 #: ../kano_apps/AppGrid.py:542 ../kano_apps/AppGrid.py:588
 #: ../kano_apps/AppInstaller.py:122
 msgid "NO"
-msgstr ""
+msgstr "いいえ"
 
 #: ../kano_apps/AppGrid.py:556
 msgid "Uninstalling {}"
-msgstr ""
+msgstr "{}をアンインストール"
 
 #: ../kano_apps/AppGrid.py:581
 msgid "Updating {}"
-msgstr ""
+msgstr "{}をアップデート"
 
 #: ../kano_apps/AppGrid.py:582
 msgid "This application will be updated Do you wish to proceed?"
-msgstr ""
+msgstr "このアプリがアップデートされます。続けますか？"
 
 #: ../kano_apps/AppInstaller.py:94
 msgid "Unable to download the application"
-msgstr ""
+msgstr "アプリのダウンロードが失敗しました"
 
 #: ../kano_apps/AppInstaller.py:114
 msgid "{} is already installed"
-msgstr ""
+msgstr "{}はすでにインストール済みです"
 
 #: ../kano_apps/AppInstaller.py:115
 msgid "Would you like to update it?"
-msgstr ""
+msgstr "アップデートしますか？"
 
 #: ../kano_apps/AppInstaller.py:140
 msgid "Installing {}"
-msgstr ""
+msgstr "{}をインストール中"
 
 #: ../kano_apps/AppInstaller.py:163
 msgid "Done!"
-msgstr ""
+msgstr "完了！"
 
 #: ../kano_apps/AppInstaller.py:164
 #, python-format
 msgid "%s installed successfully! Look for it in the Apps launcher."
-msgstr ""
+msgstr "%sは無事にインストールされました！アップラウンチャーから起動できます。"
 
 #: ../kano_apps/AppInstaller.py:167
 msgid "Installation failed"
-msgstr ""
+msgstr "インストールの失敗"
 
 #: ../kano_apps/AppInstaller.py:168
 #, python-format
@@ -157,45 +159,49 @@ msgid ""
 "%s cannot be installed at the moment. Please make sure your kit is connected "
 "to the internet and there is enough space left on your card."
 msgstr ""
+"現在、%sをインストールすることが出来ません。インターネットに接続していることと"
+"SDカードの空き容量を確認してください。"
 
 #: ../kano_apps/AppManage.py:70
 msgid "'Uninstalling {}'"
-msgstr ""
+msgstr "'{}をアンインストール中'"
 
 #: ../kano_apps/AppManage.py:121
 msgid "Unable to download the application ({})"
-msgstr ""
+msgstr "アプリ({})をダウンロード出来ません"
 
 #: ../kano_apps/AppManage.py:128
 msgid "{} won't be downloaded because the hardware is not performant enough"
-msgstr ""
+msgstr "ハードウェアのスペックが不十分な為、{}がダウンロード出来ません"
 
 #: ../kano_apps/MainWindow.py:60
 msgid "Apps"
-msgstr ""
+msgstr "アップス"
 
 #: ../kano_apps/MainWindow.py:104
 msgid "Add more apps to the desktop"
-msgstr ""
+msgstr "デスクトップに他のアプリを追加しよう"
 
 #: ../kano_apps/MainWindow.py:105
 msgid ""
 "Click the '+' button to the right of the app name to make it appear on the "
 "desktop. You can remove it again by clicking on 'x'."
 msgstr ""
+"アプリの右側の'+'ボタンでアプリをデスクトップに追加できます。"
+"'x'をクリックして、デスクトップから削除できます。"
 
 #: ../kano_apps/UIElements.py:46
 msgid "Enter your system password - default is kano:"
-msgstr ""
+msgstr "システムパスワードを入力してください（初期パスワードはkanoです）:"
 
 #: ../kano_apps/UIElements.py:60
 msgid "The password was incorrect. Try again?"
-msgstr ""
+msgstr "パスワードが間違っています。やり直す？"
 
 #: ../kano_apps/UIElements.py:65
 msgid "CANCEL"
-msgstr ""
+msgstr "キャンセル"
 
 #: ../kano_apps/UIElements.py:82
 msgid "Re-enter your system password - default is kano:"
-msgstr ""
+msgstr "システムパスワードを再度入力してください（初期パスワードはkanoです）:"
