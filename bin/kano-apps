@@ -56,18 +56,18 @@ def check_for_expand_partition():
     # Check if partition has been expanded
     if not is_partition_expanded(device):
         # Show dialogue
-        head = "Do you want to reboot now?"
-        msg = "A reboot is required to complete the installation of Kano" \
-              " OS so it can access all the space on the SD card."
+        head = _("Do you want to reboot now?")
+        msg = _("A reboot is required to complete the installation of Kano" +\
+              " OS so it can access all the space on the SD card.")
         kdialog = KanoDialog(
             head,
             msg,
             {
-                "LATER": {
+                _("LATER"): {
                     "return_value": False,
                     "color": "red"
                 },
-                "REBOOT": {
+                _("REBOOT"): {
                     "return_value": True,
                     "color": "green"
                 },
@@ -113,29 +113,29 @@ def batch_install(apps, icon_only=False):
 
 def args_parse():
     if len(sys.argv) >= 2:
-        desc = "An application hub for Kano OS."
+        desc = _("An application hub for Kano OS.")
         parser = argparse.ArgumentParser(description=desc)
         parser.set_defaults(cmd=None)
         subparsers = parser.add_subparsers(dest="cmd")
 
-        install_help = "Use this to install applications"
+        install_help = _("Use this to install applications")
         install = subparsers.add_parser("install", help=install_help)
 
         install.add_argument("--no-gui", dest="gui", action="store_const",
                              const=False, default=True,
-                             help="Run without the GUI")
+                             help=_("Run without the GUI"))
         install.add_argument("--icon-only", dest="icon_only",
                              action="store_const", const=True, default=False,
-                             help="Install just the app icon")
+                             help=_("Install just the app icon"))
         install.add_argument("apps", metavar="APP", type=str, nargs="+",
-                             help="A list of applications to install")
+                             help=_("A list of applications to install"))
 
-        update_help = "Check for possible updates of all installed " \
-                      "applications"
+        update_help = _("Check for possible updates of all installed " +\
+                      "applications")
         subparsers.add_parser("check-for-updates", help=update_help)
 
-        tutorial_help = "Shows a tutorial that explains how to add icons to" \
-                        "the desktop"
+        tutorial_help = _("Shows a tutorial that explains how to add icons to " +\
+                        "the desktop")
         subparsers.add_parser("icon-tutorial", help=tutorial_help)
 
         return parser.parse_args()

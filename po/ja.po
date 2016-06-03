@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-apps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-02 00:32+0900\n"
+"POT-Creation-Date: 2016-06-03 21:15+0900\n"
 "PO-Revision-Date: 2016-06-02 00:15+0900\n"
 "Last-Translator: Choppin Antoine <antoine@japonophile.com>\n"
 "Language-Team: Japanese\n"
@@ -16,6 +16,54 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../bin/kano-apps:59
+msgid "Do you want to reboot now?"
+msgstr "今再起動しますか？"
+
+#: ../bin/kano-apps:60
+msgid ""
+"A reboot is required to complete the installation of Kano OS so it can "
+"access all the space on the SD card."
+msgstr ""
+"Kano OSのインストールを完了するには、SDカード容量の全てが利用できるよう、再起"
+"動が必要です。"
+
+#: ../bin/kano-apps:66
+msgid "LATER"
+msgstr "後で"
+
+#: ../bin/kano-apps:70
+msgid "REBOOT"
+msgstr "再起動"
+
+#: ../bin/kano-apps:116
+msgid "An application hub for Kano OS."
+msgstr "Kano OSアプリのハブ"
+
+#: ../bin/kano-apps:121
+msgid "Use this to install applications"
+msgstr "アプリをインストールする"
+
+#: ../bin/kano-apps:126
+msgid "Run without the GUI"
+msgstr "GUI無しで起動"
+
+#: ../bin/kano-apps:129
+msgid "Install just the app icon"
+msgstr "アプリのアイコンのみインストール"
+
+#: ../bin/kano-apps:131
+msgid "A list of applications to install"
+msgstr "インストール可能なアプリ一覧"
+
+#: ../bin/kano-apps:133
+msgid "Check for possible updates of all installed applications"
+msgstr "インストール済みアプリのアップデート確認"
+
+#: ../bin/kano-apps:137
+msgid "Shows a tutorial that explains how to add icons to the desktop"
+msgstr "デスクトップにアイコンを追加する為のチュートリアル"
 
 #: ../kano_apps/AppGrid.py:32
 msgid "Want more apps?"
@@ -98,9 +146,7 @@ msgstr "{}を削除中"
 msgid ""
 "This application will be uninstalled and removed from apps. Do you wish to "
 "proceed?"
-msgstr ""
-"このアプリをアンインストールし、アップスから削除されます。"
-"続けますか？"
+msgstr "このアプリをアンインストールし、アップスから削除されます。続けますか？"
 
 #: ../kano_apps/AppGrid.py:539 ../kano_apps/AppGrid.py:585
 #: ../kano_apps/AppInstaller.py:119 ../kano_apps/UIElements.py:62
@@ -159,8 +205,8 @@ msgid ""
 "%s cannot be installed at the moment. Please make sure your kit is connected "
 "to the internet and there is enough space left on your card."
 msgstr ""
-"現在、%sをインストールすることが出来ません。インターネットに接続していることと"
-"SDカードの空き容量を確認してください。"
+"現在、%sをインストールすることが出来ません。インターネットに接続していること"
+"とSDカードの空き容量を確認してください。"
 
 #: ../kano_apps/AppManage.py:70
 msgid "'Uninstalling {}'"
@@ -187,8 +233,8 @@ msgid ""
 "Click the '+' button to the right of the app name to make it appear on the "
 "desktop. You can remove it again by clicking on 'x'."
 msgstr ""
-"アプリの右側の'+'ボタンでアプリをデスクトップに追加できます。"
-"'x'をクリックして、デスクトップから削除できます。"
+"アプリの右側の'+'ボタンでアプリをデスクトップに追加できます。'x'をクリックし"
+"て、デスクトップから削除できます。"
 
 #: ../kano_apps/UIElements.py:46
 msgid "Enter your system password - default is kano:"
@@ -205,3 +251,4 @@ msgstr "キャンセル"
 #: ../kano_apps/UIElements.py:82
 msgid "Re-enter your system password - default is kano:"
 msgstr "システムパスワードを再度入力してください（初期パスワードはkanoです）:"
+

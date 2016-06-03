@@ -1,3 +1,4 @@
+../bin/kano-apps
 ../kano_apps/AppGrid.py
 ../kano_apps/AppInstaller.py
 ../kano_apps/AppManage.py
