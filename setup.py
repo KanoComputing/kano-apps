@@ -3,6 +3,10 @@
 from distutils.core import setup
 import setuptools
 import os
+import sys
+
+if '--install-scripts' not in sys.argv:
+    sys.argv.push('--install-scripts=/usr/bin')
 
 def get_locales():
     locale_dir = 'locale'
