@@ -3,6 +3,7 @@
 from distutils.core import setup
 import setuptools
 import os
+import glob
 
 def get_locales():
     locale_dir = 'locale'
@@ -17,16 +18,6 @@ def get_locales():
 
     return locales
 
-def get_files_in_dir(dir_name, suffix=None):
-    files = []
-
-    for dirpath, dirnames, filenames in os.walk(dir_name):
-        for filename in filenames:
-            if suffix is None or filename.endswith(suffix):
-                files.append(filename)
-
-    return files
-
 
 setup(name='Kano Apps',
       version='1.0',
@@ -38,11 +29,11 @@ setup(name='Kano Apps',
       package_data={'kano_apps': ['media/*']},
       scripts=['bin/kano-apps', 'bin/update-app-dir'],
       data_files=[
-          ('/usr/share/applications', get_files_in_dir('apps', '.app')),
+          ('/usr/share/applications', glob.glob('apps/*.app')),
           ('/usr/share/icons/Kano/66x66/apps', setuptools.findall('apps/icons')),
           ('/usr/share/kano-apps', setuptools.findall('books')),
           ('/usr/share/kano-desktop/kdesk/kdesktop', ['kdesk-icon/Apps.lnk']),
-          ('/usr/share/kano-desktop/icons', get_files_in_dir('kdesk-icon', '.png')),
+          ('/usr/share/kano-desktop/icons', glob.glob('kdesk-icon/*.png')),
           ('/usr/lib/python2.7/dist-packages/kano_world/hooks', setuptools.findall('kano-world-hook/'))
       ] + get_locales()
      )
