@@ -49,7 +49,7 @@ def install_app(app, sudo_pwd=None, gui=True):
     run_cmd(cleanup_cmd)
 
     run_cmd(update_cmd)
-    os.system(cmd)
+    os.system(cmd.encode('utf8'))
 
     done = True
     installed_packages = get_dpkg_dict()[0]
@@ -72,7 +72,7 @@ def uninstall_packages(app, sudo_pwd=None):
         cmd += "'echo {} | sudo -S apt-get purge -y {}'".format(sudo_pwd, pkgs)
     else:
         cmd += "'sudo apt-get purge -y {}'".format(pkgs, sudo_pwd)
-    os.system(cmd)
+    os.system(cmd.encode('utf8'))
 
     done = True
     installed_packages = get_dpkg_dict()[0]
