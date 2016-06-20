@@ -9,3 +9,6 @@ kdesk-icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
 kdesk-icon/*.png usr/share/kano-desktop/icons/
 
 kano-world-hook/* usr/lib/python2.7/dist-packages/kano_world/hooks/
+
+locale/* usr/share/locale/
+

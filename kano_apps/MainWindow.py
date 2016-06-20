@@ -57,7 +57,7 @@ class MainWindow(ApplicationWindow):
 
         # Setup widgets
         self.set_decorated(True)
-        self._top_bar = TopBar("Apps", self._win_width, False)
+        self._top_bar = TopBar(_("Apps"), self._win_width, False)
         self._top_bar.set_close_callback(Gtk.main_quit)
         self.set_titlebar(self._top_bar)
 
@@ -101,12 +101,12 @@ class MainWindow(ApplicationWindow):
             save_app_state_variable('kano-apps', 'icon-tutorial-shown', True)
 
         kdialog = KanoDialog(
-            "Add more apps to the desktop",
-            "Click the '+' button to the right of the app name to "
-            "make it appear on the desktop. You can remove it again "
-            "by clicking on 'x'.",
+            _("Add more apps to the desktop"),
+            _("Click the '+' button to the right of the app name to " +\
+            "make it appear on the desktop. You can remove it again " +\
+            "by clicking on 'x'."),
             {
-                "OK, GOT IT": {
+                _("OK, GOT IT"): {
                     "return_value": 0,
                     "color": "green"
                 }

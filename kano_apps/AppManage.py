@@ -49,7 +49,7 @@ def install_app(app, sudo_pwd=None, gui=True):
     run_cmd(cleanup_cmd)
 
     run_cmd(update_cmd)
-    os.system(cmd)
+    os.system(cmd.encode('utf8'))
 
     done = True
     installed_packages = get_dpkg_dict()[0]
@@ -67,12 +67,12 @@ def uninstall_packages(app, sudo_pwd=None):
 
     pkgs = " ".join(app["packages"])
 
-    cmd = "rxvt -title 'Uninstalling {}' -e bash -c ".format(app["title"])
+    cmd = ("rxvt -title " + _("'Uninstalling {}'") + " -e bash -c ").format(app["title"])
     if sudo_pwd:
         cmd += "'echo {} | sudo -S apt-get purge -y {}'".format(sudo_pwd, pkgs)
     else:
         cmd += "'sudo apt-get purge -y {}'".format(pkgs, sudo_pwd)
-    os.system(cmd)
+    os.system(cmd.encode('utf8'))
 
     done = True
     installed_packages = get_dpkg_dict()[0]
@@ -118,15 +118,15 @@ def download_app(app_id_or_slug):
     icon_path = '/tmp/{}.{}'.format(app_id_or_slug, icon_file_type)
     rv, err = download_url(data['icon_url'], icon_path)
     if not rv:
-        msg = "Unable to download the application ({})".format(err)
+        msg = _("Unable to download the application ({})").format(err)
         raise AppDownloadError(msg)
 
     # Check if the app is going to run well on the hardware
     if 'min_performance_score' in data and \
        has_min_performance(data['min_performance_score']):
 
-        msg = "{} won't be downloaded ".format(data['title']) + \
-              "because the hardware is not performant enough"
+        msg = _("{} won't be downloaded " + \
+              "because the hardware is not performant enough").format(data['title'])
         raise AppDownloadError(msg)
 
     # Cleanup the JSON file
