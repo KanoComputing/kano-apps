@@ -125,7 +125,7 @@ def download_app(app_id_or_slug):
     if 'min_performance_score' in data and \
        has_min_performance(data['min_performance_score']):
 
-        msg = _("{} won't be downloaded " + \
+        msg = _("{} won't be downloaded " \
               "because the hardware is not performant enough").format(data['title'])
         raise AppDownloadError(msg)
 

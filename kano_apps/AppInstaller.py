@@ -161,13 +161,13 @@ class AppInstaller:
                 add_to_desktop(self._app)
 
             head = _("Done!")
-            message = _("%s installed successfully! " + \
+            message = _("%s installed successfully! " \
                 "Look for it in the Apps launcher.") % self._app["title"]
         else:
             head = _("Installation failed")
-            message = _("%s cannot be installed at " + \
-                "the moment. Please make sure your kit is connected " + \
-                "to the internet and there is enough space left on " + \
+            message = _("%s cannot be installed at " \
+                "the moment. Please make sure your kit is connected " \
+                "to the internet and there is enough space left on " \
                 "your card.") % self._app["title"]
 
         dialog = KanoDialog(

@@ -102,8 +102,8 @@ class MainWindow(ApplicationWindow):
 
         kdialog = KanoDialog(
             _("Add more apps to the desktop"),
-            _("Click the '+' button to the right of the app name to " +\
-            "make it appear on the desktop. You can remove it again " +\
+            _("Click the '+' button to the right of the app name to " \
+            "make it appear on the desktop. You can remove it again " \
             "by clicking on 'x'."),
             {
                 _("OK, GOT IT"): {

@@ -533,7 +533,7 @@ class AppGridEntry(Gtk.EventBox):
     def _uninstall_cb(self, event):
         confirmation = KanoDialog(
             title_text=_("Removing {}").format(self._app["title"]),
-            description_text=_("This application will be uninstalled and " +
+            description_text=_("This application will be uninstalled and " \
                              "removed from apps. Do you wish to proceed?"),
             button_dict={
                 _("YES"): {
@@ -579,7 +579,7 @@ class AppGridEntry(Gtk.EventBox):
     def _update_cb(self, widget):
         confirmation = KanoDialog(
             title_text=_("Updating {}").format(self._app["title"]),
-            description_text=_("This application will be updated " +
+            description_text=_("This application will be updated " \
                              "Do you wish to proceed?"),
             button_dict={
                 _("YES"): {
