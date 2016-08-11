@@ -1,0 +1,298 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Kano Computing Ltd.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: kano-apps\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-11 13:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../bin/kano-apps:59
+msgid "Do you want to reboot now?"
+msgstr ""
+
+#: ../bin/kano-apps:60
+msgid ""
+"A reboot is required to complete the installation of Kano OS so it can "
+"access all the space on the SD card."
+msgstr ""
+
+#: ../bin/kano-apps:66
+msgid "LATER"
+msgstr ""
+
+#: ../bin/kano-apps:70
+msgid "REBOOT"
+msgstr ""
+
+#: ../bin/kano-apps:116
+msgid "An application hub for Kano OS."
+msgstr ""
+
+#: ../bin/kano-apps:121
+msgid "Use this to install applications"
+msgstr ""
+
+#: ../bin/kano-apps:126
+msgid "Run without the GUI"
+msgstr ""
+
+#: ../bin/kano-apps:129
+msgid "Install just the app icon"
+msgstr ""
+
+#: ../bin/kano-apps:131
+msgid "A list of applications to install"
+msgstr ""
+
+#: ../bin/kano-apps:133
+msgid "Check for possible updates of all installed applications"
+msgstr ""
+
+#: ../bin/kano-apps:137
+msgid "Shows a tutorial that explains how to add icons to the desktop"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:94
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:94
+msgid "Unable to download the application"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:98 ../kano_apps/AppInstaller.py:177
+#: ../kano_apps/AppGrid.py:421
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:98
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:177
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:421
+msgid "OK"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:114
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:114
+msgid "{} is already installed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:115
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:115
+msgid "Would you like to update it?"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:119 ../kano_apps/UIElements.py:62
+#: ../kano_apps/AppGrid.py:539 ../kano_apps/AppGrid.py:585
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:119
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/UIElements.py:62
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:539
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:585
+msgid "YES"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:122 ../kano_apps/AppGrid.py:542
+#: ../kano_apps/AppGrid.py:588
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:122
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:542
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:588
+msgid "NO"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:140
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:140
+msgid "Installing {}"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:163
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:163
+msgid "Done!"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:164
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:164
+#, python-format
+msgid "%s installed successfully! Look for it in the Apps launcher."
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:167
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:167
+msgid "Installation failed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:168
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppInstaller.py:168
+#, python-format
+msgid ""
+"%s cannot be installed at the moment. Please make sure your kit is connected "
+"to the internet and there is enough space left on your card."
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:60
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/MainWindow.py:60
+msgid "Apps"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:104
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/MainWindow.py:104
+msgid "Add more apps to the desktop"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:105
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/MainWindow.py:105
+msgid ""
+"Click the '+' button to the right of the app name to make it appear on the "
+"desktop. You can remove it again by clicking on 'x'."
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:109 ../kano_apps/AppGrid.py:512
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/MainWindow.py:109
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:512
+msgid "OK, GOT IT"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:70
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppManage.py:70
+msgid "'Uninstalling {}'"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:121
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppManage.py:121
+msgid "Unable to download the application ({})"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:128
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppManage.py:128
+msgid "{} won't be downloaded because the hardware is not performant enough"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:46
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/UIElements.py:46
+msgid "Enter your system password - default is kano:"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:60
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/UIElements.py:60
+msgid "The password was incorrect. Try again?"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:65
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/UIElements.py:65
+msgid "CANCEL"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:82
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/UIElements.py:82
+msgid "Re-enter your system password - default is kano:"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:32
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:32
+msgid "Want more apps?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:33
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:33
+msgid "Go to Kano World to install more"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:54
+msgid "latest"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:54
+msgid "code"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:54
+msgid "games"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:54
+msgid "media"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:54
+msgid "tools"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:55
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:55
+msgid "others"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:55
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:55
+msgid "experimental"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:247
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:247
+msgid "Remove from desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:250
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:250
+msgid "Add to desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:418
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:418
+msgid "Error"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:419
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:419
+msgid "Unable to start the application."
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:440
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:440
+msgid "More information"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:462
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:462
+msgid "Remove"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:493
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:493
+msgid "Update app"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:535
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:535
+msgid "Removing {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:536
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:536
+msgid ""
+"This application will be uninstalled and removed from apps. Do you wish to "
+"proceed?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:556
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:556
+msgid "Uninstalling {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:581
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:581
+msgid "Updating {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:582
+#: ../debian/kano-apps/usr/lib/python2.7/dist-packages/kano_apps/AppGrid.py:582
+msgid "This application will be updated Do you wish to proceed?"
+msgstr ""
