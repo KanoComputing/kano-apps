@@ -26,8 +26,8 @@ TEST_APP = {
 # Blame Google translate...
 TEST_APP_ES = {
     "title": "Pruebas",
-    "tagline": u"Aplicación de prueba",
-    "description": u"Esta es una aplicación de prueba para, así, las cosas de la prueba.",
+    "tagline": "Aplicación de prueba",
+    "description": "Esta es una aplicación de prueba para, así, las cosas de la prueba.",
     "slug": "test-app",
 
     "icon": "test",
@@ -37,7 +37,7 @@ TEST_APP_ES = {
 
     "packages": [],
     "dependencies": [],
-    "launch_command": "echo 'Hola''"
+    "launch_command": "echo '¡Hola!'"
 }
 
 
@@ -89,7 +89,7 @@ def test_get_applications_locale(mock_getlocale, tmpdir):
     assert test_app['title'] == 'Pruebas'
     assert test_app['launch_command'] == {
         'cmd': 'echo',
-        'args': ['Hola'],
+        'args': [u'¡Hola!'],
     }
 
 
