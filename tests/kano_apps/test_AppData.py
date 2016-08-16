@@ -16,6 +16,8 @@ TEST_APP = {
 
     "categories": ["code"],
 
+    "overrides": ["blacklisted.app"],
+
     "packages": [],
     "dependencies": [],
     "launch_command": "echo 'Hi''"
@@ -89,3 +91,25 @@ def test_get_applications_locale(mock_getlocale, tmpdir):
         'cmd': 'echo',
         'args': ['Hola'],
     }
+
+
+def test_get_applications_blacklist(tmpdir):
+    application_dir = tmpdir.mkdir('applications')
+
+    # create some fake applications
+    test_app_1 = application_dir.join('test-app-1.app')
+    test_app_1.write(json.dumps(TEST_APP))
+
+    blacklisted_app = application_dir.join('blacklisted.app')
+    blacklisted_app.write(json.dumps(TEST_APP))
+
+    with patch(
+        'kano_apps.AppData._SYSTEM_APPLICATIONS_LOC',
+        os.path.join(application_dir.strpath, '')
+    ):
+        apps = get_applications()
+
+    assert len(apps) == 1
+
+    test_app = apps[0]
+    assert test_app['title'] == 'Test App'

@@ -94,8 +94,6 @@ def get_applications(parse_cmds=True):
     ]
 
     def _collect_apps(application_dir):
-        global blacklist
-
         if not os.path.exists(application_dir):
             return None
 
@@ -115,7 +113,7 @@ def get_applications(parse_cmds=True):
 
                     _applications[f] = data
                     if "overrides" in data:
-                        blacklist += data["overrides"]
+                        blacklist.extend(data["overrides"])
 
             if f[-8:] == ".desktop" and f[0:5] != "auto_":
                 data = _load_from_dentry(fp)
