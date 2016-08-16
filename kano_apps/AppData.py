@@ -95,7 +95,7 @@ def get_applications(parse_cmds=True):
 
     def _collect_apps(application_dir):
         if not os.path.exists(application_dir):
-            return None
+            return {}
 
         _applications = {}
 
@@ -115,7 +115,7 @@ def get_applications(parse_cmds=True):
                     if "overrides" in data:
                         blacklist.extend(data["overrides"])
 
-            if f[-8:] == ".desktop" and f[0:5] != "auto_":
+            elif f[-8:] == ".desktop" and f[0:5] != "auto_":
                 data = _load_from_dentry(fp)
                 if data is not None:
                     _applications[f] = data
@@ -125,16 +125,15 @@ def get_applications(parse_cmds=True):
     apps = _collect_apps(loc)
 
     # get localised apps
-    current_locale, _ = locale.getlocale()
+    current_locale, __ = locale.getlocale()
     if current_locale:
         locale_path = os.path.join(_SYSTEM_APPLICATIONS_LOC, "locale", current_locale)
 
         localised_apps = _collect_apps(locale_path)
-        if localised_apps:
-            apps.update(localised_apps)
+        apps.update(localised_apps)
 
     filtered_apps = [
-        app for f, app in apps.items()
+        app for f, app in apps.iteritems()
         if os.path.basename(app['origin']) not in blacklist
     ]
 
