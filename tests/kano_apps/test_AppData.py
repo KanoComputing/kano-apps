@@ -64,9 +64,9 @@ def test_get_applications(tmpdir):
     }
 
 
-@patch('kano_apps.AppData.locale.getlocale')
+@patch('kano_apps.AppData.get_locale')
 def test_get_applications_locale(mock_getlocale, tmpdir):
-    mock_getlocale.return_value = ('es_AR', '')
+    mock_getlocale.return_value = 'es_AR.UTF-8'
 
     application_dir = tmpdir.mkdir('applications')
 
