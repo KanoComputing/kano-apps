@@ -7,7 +7,6 @@
 
 import os
 import json
-import time
 import re
 
 from gi.repository import Gtk, Gdk
@@ -16,6 +15,7 @@ from kano_apps.Media import media_dir
 
 KDESK_DIR = '~/.kdesktop/'
 KDESK_EXEC = '/usr/bin/kdesk'
+
 
 def _get_kdesk_icon_path(app):
     kdesk_dir = os.path.expanduser(KDESK_DIR)

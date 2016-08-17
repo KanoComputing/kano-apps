@@ -8,10 +8,12 @@
 import os
 import re
 import json
+
+from kano_settings.system.locale import get_locale, ensure_utf_locale
 from kano_apps.utils import get_dpkg_dict
 
-# The system directory that contains *.desktop entries
-_SYSTEM_ICONS_LOC = '/usr/share/applications/'
+# The system directory that contains *.app and *.desktop entries
+_SYSTEM_APPLICATIONS_LOC = '/usr/share/applications/'
 
 # Store the package list globally so it doesn't get parsed every time
 # we query for applications - it takes some time to parse it.
@@ -78,7 +80,7 @@ def get_applications(parse_cmds=True):
         :rtype: dict
     """
 
-    loc = os.path.expanduser(_SYSTEM_ICONS_LOC)
+    loc = os.path.expanduser(_SYSTEM_APPLICATIONS_LOC)
     blacklist = [
         "idle3.desktop", "idle.desktop", "idle-python2.7.desktop",
         "idle-python3.2.desktop", "xarchiver.desktop",
@@ -91,10 +93,15 @@ def get_applications(parse_cmds=True):
         "rxvt-unicode.desktop", "org.gnome.gedit.desktop",
         "chromium-browser.desktop", "openjdk-7-policytool.desktop"
     ]
-    apps = []
-    if os.path.exists(loc):
-        for f in os.listdir(_SYSTEM_ICONS_LOC):
-            fp = os.path.join(loc, f)
+
+    def _collect_apps(application_dir):
+        if not os.path.exists(application_dir):
+            return {}
+
+        _applications = {}
+
+        for f in os.listdir(os.path.join(application_dir, '')):
+            fp = os.path.join(application_dir, f)
 
             if os.path.isdir(fp):
                 continue
@@ -105,21 +112,35 @@ def get_applications(parse_cmds=True):
                     if not is_app_installed(data):
                         data["_install"] = True
 
-                    apps.append(data)
+                    _applications[f] = data
                     if "overrides" in data:
-                        blacklist += data["overrides"]
+                        blacklist.extend(data["overrides"])
 
-            if f[-8:] == ".desktop" and f[0:5] != "auto_":
+            elif f[-8:] == ".desktop" and f[0:5] != "auto_":
                 data = _load_from_dentry(fp)
                 if data is not None:
-                    apps.append(data)
+                    _applications[f] = data
 
-    filtered_apps = []
-    for app in apps:
-        if os.path.basename(app["origin"]) in blacklist:
-            continue
+        return _applications
 
-        filtered_apps.append(app)
+    apps = _collect_apps(loc)
+
+    # get localised apps
+    current_locale = ensure_utf_locale(get_locale())
+
+    if current_locale:
+        locale_code = current_locale.split('.')[0]
+        locale_path = os.path.join(
+            _SYSTEM_APPLICATIONS_LOC, "locale", locale_code
+        )
+
+        localised_apps = _collect_apps(locale_path)
+        apps.update(localised_apps)
+
+    filtered_apps = [
+        app for f, app in apps.iteritems()
+        if os.path.basename(app['origin']) not in blacklist
+    ]
 
     return sorted(filtered_apps, key=lambda a: a["title"])
 
