@@ -17,8 +17,8 @@ clean: clean_locales
 	rm -f messages.pot
 
 define generate-pypotfiles
-grep "env python" -rl --exclude=*.py --exclude=Makefile .. > PYPOTFILES
-find .. -name *.py >> PYPOTFILES
+grep "env python" -rl --exclude=*.py --exclude-dir=po .. > PYPOTFILES
+find .. -not \( -path ../tests -prune \) -name *.py >> PYPOTFILES
 endef
 
 define run-xgettext
