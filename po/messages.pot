@@ -1,0 +1,245 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Kano Computing Ltd.
+# This file is distributed under the same license as the kano-apps package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: kano-apps\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-18 15:24+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../bin/kano-apps:59
+msgid "Do you want to reboot now?"
+msgstr ""
+
+#: ../bin/kano-apps:60
+msgid ""
+"A reboot is required to complete the installation of Kano OS so it can "
+"access all the space on the SD card."
+msgstr ""
+
+#: ../bin/kano-apps:66
+msgid "LATER"
+msgstr ""
+
+#: ../bin/kano-apps:70
+msgid "REBOOT"
+msgstr ""
+
+#: ../bin/kano-apps:116
+msgid "An application hub for Kano OS."
+msgstr ""
+
+#: ../bin/kano-apps:121
+msgid "Use this to install applications"
+msgstr ""
+
+#: ../bin/kano-apps:126
+msgid "Run without the GUI"
+msgstr ""
+
+#: ../bin/kano-apps:129
+msgid "Install just the app icon"
+msgstr ""
+
+#: ../bin/kano-apps:131
+msgid "A list of applications to install"
+msgstr ""
+
+#: ../bin/kano-apps:133
+msgid "Check for possible updates of all installed applications"
+msgstr ""
+
+#: ../bin/kano-apps:137
+msgid "Shows a tutorial that explains how to add icons to the desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:32
+msgid "Want more apps?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:33
+msgid "Go to Kano World to install more"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+msgid "latest"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+msgid "code"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+msgid "games"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+msgid "media"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:54
+msgid "tools"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:55
+msgid "others"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:55
+msgid "experimental"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:247
+msgid "Remove from desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:250
+msgid "Add to desktop"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:418
+msgid "Error"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:419
+msgid "Unable to start the application."
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:99
+#: ../kano_apps/AppInstaller.py:182
+msgid "OK"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:440
+msgid "More information"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:462
+msgid "Remove"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:493
+msgid "Update app"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:111
+msgid "OK, GOT IT"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:535
+msgid "Removing {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:537
+msgid ""
+"This application will be uninstalled and removed from apps. Do you wish to "
+"proceed?"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:541 ../kano_apps/AppGrid.py:589
+#: ../kano_apps/AppInstaller.py:120 ../kano_apps/UIElements.py:62
+msgid "YES"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:544 ../kano_apps/AppGrid.py:592
+#: ../kano_apps/AppInstaller.py:123
+msgid "NO"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:558
+msgid "Uninstalling {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:583
+msgid "Updating {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:585
+msgid "This application will be updated Do you wish to proceed?"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:95
+msgid "Unable to download the application"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:115
+msgid "{} is already installed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:116
+msgid "Would you like to update it?"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:141
+msgid "Installing {}"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:164
+msgid "Done!"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:166
+msgid "{} installed successfully! Look for it in the Apps launcher."
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:170
+msgid "Installation failed"
+msgstr ""
+
+#: ../kano_apps/AppInstaller.py:172
+msgid ""
+"{} cannot be installed at the moment. Please make sure your kit is connected "
+"to the internet and there is enough space left on your card."
+msgstr ""
+
+#: ../kano_apps/AppManage.py:70
+msgid "'Uninstalling {}'"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:121
+msgid "Unable to download the application ({})"
+msgstr ""
+
+#: ../kano_apps/AppManage.py:129
+msgid "{} won't be downloaded because the hardware is not performant enough"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:60
+msgid "Apps"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:104
+msgid "Add more apps to the desktop"
+msgstr ""
+
+#: ../kano_apps/MainWindow.py:106
+msgid ""
+"Click the '+' button to the right of the app name to make it appear on the "
+"desktop. You can remove it again by clicking on 'x'."
+msgstr ""
+
+#: ../kano_apps/UIElements.py:46
+msgid "Enter your system password - default is kano:"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:60
+msgid "The password was incorrect. Try again?"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:65
+msgid "CANCEL"
+msgstr ""
+
+#: ../kano_apps/UIElements.py:82
+msgid "Re-enter your system password - default is kano:"
+msgstr ""

@@ -1,7 +1,13 @@
 ../bin/kano-apps
+../bin/update-app-dir
+../kano-world-hook/apps.py
+../kano_apps/__init__.py
+../kano_apps/AppData.py
 ../kano_apps/AppGrid.py
 ../kano_apps/AppInstaller.py
 ../kano_apps/AppManage.py
+../kano_apps/DesktopManage.py
 ../kano_apps/MainWindow.py
+../kano_apps/Media.py
 ../kano_apps/UIElements.py
-
+../kano_apps/utils.py
