@@ -17,6 +17,7 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano_world.connection import request_wrapper
 from kano_world.functions import get_glob_session, login_using_token
 
+
 class AppInstaller:
     def __init__(self, id_or_slug, apps, pw=None, parent_win=None):
         self._handle = id_or_slug
@@ -161,14 +162,18 @@ class AppInstaller:
                 add_to_desktop(self._app)
 
             head = _("Done!")
-            message = _("%s installed successfully! " \
-                "Look for it in the Apps launcher.") % self._app["title"]
+            message = _(
+                "{} installed successfully! "
+                "Look for it in the Apps launcher."
+            ).format(self._app["title"])
         else:
             head = _("Installation failed")
-            message = _("%s cannot be installed at " \
-                "the moment. Please make sure your kit is connected " \
-                "to the internet and there is enough space left on " \
-                "your card.") % self._app["title"]
+            message = _(
+                "{} cannot be installed at "
+                "the moment. Please make sure your kit is connected "
+                "to the internet and there is enough space left on "
+                "your card."
+            ).format(self._app["title"])
 
         dialog = KanoDialog(
             head,
