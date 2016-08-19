@@ -94,7 +94,7 @@ class AppInstaller:
         except AppDownloadError as err:
             head = _("Unable to download the application")
             dialog = KanoDialog(
-                head, unicode(err),
+                head, _(unicode(err)),
                 {
                     _("OK"): {
                         "return_value": 0

@@ -23,4 +23,4 @@ def test_download_app_error(
 
     with pytest.raises(AppDownloadError) as excinfo:
         download_app('foo')
-    assert u'¡Hola!' in unicode(excinfo)
+    assert u'¡Hola!' in _(unicode(excinfo))
