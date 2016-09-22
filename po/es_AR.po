@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-apps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-22 10:57+0100\n"
+"POT-Creation-Date: 2016-09-22 11:48+0100\n"
 "PO-Revision-Date: 2016-09-22 10:59+0100\n"
 "Last-Translator: Jonathan Kim <dev@kano.me>\n"
 "Language-Team: Argentinian\n"
@@ -61,8 +61,7 @@ msgstr "Una lista de aplicaciones para instalar"
 #: ../bin/kano-apps:133
 msgid "Check for possible updates of all installed applications"
 msgstr ""
-"Fíjate las posible actualizaciones para todas"
-"las aplicaciones instaladas"
+"Fíjate las posible actualizaciones para todaslas aplicaciones instaladas"
 
 #: ../bin/kano-apps:137
 msgid "Shows a tutorial that explains how to add icons to the desktop"
@@ -76,48 +75,80 @@ msgstr "¿Quieres más aplicaciones?"
 msgid "Go to Kano World to install more"
 msgstr "Ve a Mundo Kano para instalar más"
 
-#: ../kano_apps/AppGrid.py:247
+#: ../kano_apps/AppGrid.py:55
+msgid "latest"
+msgstr "últimas"
+
+#: ../kano_apps/AppGrid.py:56
+msgid "code"
+msgstr "programación"
+
+#: ../kano_apps/AppGrid.py:57
+msgid "games"
+msgstr "juegos"
+
+#: ../kano_apps/AppGrid.py:58
+msgid "media"
+msgstr "media"
+
+#: ../kano_apps/AppGrid.py:59
+msgid "tools"
+msgstr "utilidades"
+
+#: ../kano_apps/AppGrid.py:60
+msgid "others"
+msgstr "otras"
+
+#: ../kano_apps/AppGrid.py:61
+msgid "experimental"
+msgstr "expermientales"
+
+#: ../kano_apps/AppGrid.py:254
 msgid "Remove from desktop"
 msgstr "Remover del escritorio"
 
-#: ../kano_apps/AppGrid.py:250
+#: ../kano_apps/AppGrid.py:257
 msgid "Add to desktop"
 msgstr "Agregar al escritorio"
 
-#: ../kano_apps/AppGrid.py:418
+#: ../kano_apps/AppGrid.py:405
+msgid "Install {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:425
 msgid "Error"
 msgstr "Error"
 
-#: ../kano_apps/AppGrid.py:419
+#: ../kano_apps/AppGrid.py:426
 msgid "Unable to start the application."
 msgstr "No se puede abrir la aplicación."
 
-#: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:99
+#: ../kano_apps/AppGrid.py:428 ../kano_apps/AppInstaller.py:99
 #: ../kano_apps/AppInstaller.py:182
 msgid "OK"
 msgstr "OK"
 
-#: ../kano_apps/AppGrid.py:440
+#: ../kano_apps/AppGrid.py:447
 msgid "More information"
 msgstr "Más información"
 
-#: ../kano_apps/AppGrid.py:462
+#: ../kano_apps/AppGrid.py:469
 msgid "Remove"
 msgstr "Eliminar"
 
-#: ../kano_apps/AppGrid.py:493
+#: ../kano_apps/AppGrid.py:500
 msgid "Update app"
 msgstr "Actualizar aplicación"
 
-#: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:111
+#: ../kano_apps/AppGrid.py:519 ../kano_apps/MainWindow.py:111
 msgid "OK, GOT IT"
 msgstr "OK, ENTENDIDO"
 
-#: ../kano_apps/AppGrid.py:535
+#: ../kano_apps/AppGrid.py:542
 msgid "Removing {}"
 msgstr "Eliminando {}"
 
-#: ../kano_apps/AppGrid.py:537
+#: ../kano_apps/AppGrid.py:544
 msgid ""
 "This application will be uninstalled and removed from apps. Do you wish to "
 "proceed?"
@@ -125,25 +156,25 @@ msgstr ""
 "Esta aplicación será desinstalada y eliminada de las aplicaciones.¿Deseas "
 "continuar?"
 
-#: ../kano_apps/AppGrid.py:541 ../kano_apps/AppGrid.py:589
+#: ../kano_apps/AppGrid.py:548 ../kano_apps/AppGrid.py:596
 #: ../kano_apps/AppInstaller.py:120 ../kano_apps/UIElements.py:62
 msgid "YES"
 msgstr "SI"
 
-#: ../kano_apps/AppGrid.py:544 ../kano_apps/AppGrid.py:592
+#: ../kano_apps/AppGrid.py:551 ../kano_apps/AppGrid.py:599
 #: ../kano_apps/AppInstaller.py:123
 msgid "NO"
 msgstr "NO"
 
-#: ../kano_apps/AppGrid.py:558
+#: ../kano_apps/AppGrid.py:565
 msgid "Uninstalling {}"
 msgstr "Desinstalando {}"
 
-#: ../kano_apps/AppGrid.py:583
+#: ../kano_apps/AppGrid.py:590
 msgid "Updating {}"
 msgstr "Actualizando {}"
 
-#: ../kano_apps/AppGrid.py:585
+#: ../kano_apps/AppGrid.py:592
 msgid "This application will be updated Do you wish to proceed?"
 msgstr "Esta aplicación será actualizada ¿deseas continuar?"
 
@@ -180,8 +211,9 @@ msgid ""
 "{} cannot be installed at the moment. Please make sure your kit is connected "
 "to the internet and there is enough space left on your card."
 msgstr ""
-"{} no pudo ser instalada por el momento. Por favor asegúrate de que tu computadora este conectada "
-"a internet y que tengas suficiente espacio en tu tarjeta."
+"{} no pudo ser instalada por el momento. Por favor asegúrate de que tu "
+"computadora este conectada a internet y que tengas suficiente espacio en tu "
+"tarjeta."
 
 #: ../kano_apps/AppManage.py:70
 msgid "'Uninstalling {}'"
@@ -193,7 +225,8 @@ msgstr "Imposible descargar la aplicación ({})"
 
 #: ../kano_apps/AppManage.py:129
 msgid "{} won't be downloaded because the hardware is not performant enough"
-msgstr "{} no se descargará porque el hardware no es lo suficientemente eficiente"
+msgstr ""
+"{} no se descargará porque el hardware no es lo suficientemente eficiente"
 
 #: ../kano_apps/MainWindow.py:60
 msgid "Apps"
@@ -208,8 +241,8 @@ msgid ""
 "Click the '+' button to the right of the app name to make it appear on the "
 "desktop. You can remove it again by clicking on 'x'."
 msgstr ""
-"Presiona el botón '+' a la derecha del nombre de la aplicación para que aparezca en el "
-"escritorio. Puedes eliminarla presionando en la 'x'."
+"Presiona el botón '+' a la derecha del nombre de la aplicación para que "
+"aparezca en el escritorio. Puedes eliminarla presionando en la 'x'."
 
 #: ../kano_apps/UIElements.py:46
 msgid "Enter your system password - default is kano:"
