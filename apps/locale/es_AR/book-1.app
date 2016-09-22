@@ -11,5 +11,5 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "launch_command": "epdfview '/usr/share/kano-apps/books/Book 1 - Make a Computer.pdf'"
+    "launch_command": "epdfview '/usr/share/kano-apps/books/locale/es_AR/Book 1.pdf'"
 }
