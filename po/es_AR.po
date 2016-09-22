@@ -113,7 +113,7 @@ msgstr "Agregar al escritorio"
 
 #: ../kano_apps/AppGrid.py:405
 msgid "Install {}"
-msgstr ""
+msgstr "Instalar {}"
 
 #: ../kano_apps/AppGrid.py:425
 msgid "Error"
