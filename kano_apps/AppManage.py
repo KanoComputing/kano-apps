@@ -118,7 +118,7 @@ def download_app(app_id_or_slug):
     icon_path = '/tmp/{}.{}'.format(app_id_or_slug, icon_file_type)
     rv, err = download_url(data['icon_url'], icon_path)
     if not rv:
-        msg = _(u"Unable to download the application ({})").format(err)
+        msg = _("Unable to download the application ({})").format(err)
         raise AppDownloadError(msg)
 
     # Check if the app is going to run well on the hardware
@@ -126,7 +126,7 @@ def download_app(app_id_or_slug):
        has_min_performance(data['min_performance_score']):
 
         msg = _(
-            u"{} won't be downloaded "
+            "{} won't be downloaded "
             "because the hardware is not performant enough"
         ).format(data['title'])
         raise AppDownloadError(msg)
