@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-apps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-18 15:24+0100\n"
+"POT-Creation-Date: 2016-09-22 11:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,100 +71,104 @@ msgstr ""
 msgid "Go to Kano World to install more"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:54
+#: ../kano_apps/AppGrid.py:55
 msgid "latest"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:54
+#: ../kano_apps/AppGrid.py:56
 msgid "code"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:54
+#: ../kano_apps/AppGrid.py:57
 msgid "games"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:54
+#: ../kano_apps/AppGrid.py:58
 msgid "media"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:54
+#: ../kano_apps/AppGrid.py:59
 msgid "tools"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:55
+#: ../kano_apps/AppGrid.py:60
 msgid "others"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:55
+#: ../kano_apps/AppGrid.py:61
 msgid "experimental"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:247
+#: ../kano_apps/AppGrid.py:254
 msgid "Remove from desktop"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:250
+#: ../kano_apps/AppGrid.py:257
 msgid "Add to desktop"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:418
+#: ../kano_apps/AppGrid.py:405
+msgid "Install {}"
+msgstr ""
+
+#: ../kano_apps/AppGrid.py:425
 msgid "Error"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:419
+#: ../kano_apps/AppGrid.py:426
 msgid "Unable to start the application."
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:99
+#: ../kano_apps/AppGrid.py:428 ../kano_apps/AppInstaller.py:99
 #: ../kano_apps/AppInstaller.py:182
 msgid "OK"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:440
+#: ../kano_apps/AppGrid.py:447
 msgid "More information"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:462
+#: ../kano_apps/AppGrid.py:469
 msgid "Remove"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:493
+#: ../kano_apps/AppGrid.py:500
 msgid "Update app"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:111
+#: ../kano_apps/AppGrid.py:519 ../kano_apps/MainWindow.py:111
 msgid "OK, GOT IT"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:535
+#: ../kano_apps/AppGrid.py:542
 msgid "Removing {}"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:537
+#: ../kano_apps/AppGrid.py:544
 msgid ""
 "This application will be uninstalled and removed from apps. Do you wish to "
 "proceed?"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:541 ../kano_apps/AppGrid.py:589
+#: ../kano_apps/AppGrid.py:548 ../kano_apps/AppGrid.py:596
 #: ../kano_apps/AppInstaller.py:120 ../kano_apps/UIElements.py:62
 msgid "YES"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:544 ../kano_apps/AppGrid.py:592
+#: ../kano_apps/AppGrid.py:551 ../kano_apps/AppGrid.py:599
 #: ../kano_apps/AppInstaller.py:123
 msgid "NO"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:558
+#: ../kano_apps/AppGrid.py:565
 msgid "Uninstalling {}"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:583
+#: ../kano_apps/AppGrid.py:590
 msgid "Updating {}"
 msgstr ""
 
-#: ../kano_apps/AppGrid.py:585
+#: ../kano_apps/AppGrid.py:592
 msgid "This application will be updated Do you wish to proceed?"
 msgstr ""
 

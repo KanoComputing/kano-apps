@@ -51,8 +51,15 @@ class Apps(Gtk.Notebook):
 
         last_page = 0
 
-        self._cat_names = [N_("latest"), N_("code"), N_("games"), N_("media"), N_("tools"),
-                           N_("others"), N_("experimental")]
+        self._cat_names = [
+            N_("latest"),
+            N_("code"),
+            N_("games"),
+            N_("media"),
+            N_("tools"),
+            N_("others"),
+            N_("experimental")
+        ]
         self._categories = {}
 
         self._apps = {}
@@ -395,7 +402,7 @@ class AppGridEntry(Gtk.EventBox):
     def _set_title(self, app):
         name = app["title"]
         if "_install" in app:
-            name = "Install {}".format(name)
+            name = _("Install {}").format(name)
 
         self._app_name.set_text(name)
 
