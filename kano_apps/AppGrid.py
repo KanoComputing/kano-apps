@@ -51,8 +51,8 @@ class Apps(Gtk.Notebook):
 
         last_page = 0
 
-        self._cat_names = [_("latest"), _("code"), _("games"), _("media"), _("tools"),
-                           _("others"), _("experimental")]
+        self._cat_names = ["latest", "code", "games", "media", "tools",
+                           "others", "experimental"]
         self._categories = {}
 
         self._apps = {}
