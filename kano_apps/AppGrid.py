@@ -402,7 +402,7 @@ class AppGridEntry(Gtk.EventBox):
     def _set_title(self, app):
         name = app["title"]
         if "_install" in app:
-            name = "Install {}".format(name)
+            name = _("Install {}").format(name)
 
         self._app_name.set_text(name)
 
