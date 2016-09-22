@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-apps\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-22 10:57+0100\n"
+"POT-Creation-Date: 2016-09-22 11:43+0100\n"
 "PO-Revision-Date: 2016-06-02 00:15+0900\n"
 "Last-Translator: Choppin Antoine <antoine@japonophile.com>\n"
 "Language-Team: Japanese\n"
@@ -73,72 +73,100 @@ msgstr "他のアプリ欲しい？"
 msgid "Go to Kano World to install more"
 msgstr "Kanoワールドで他のアプリをゲットしよう"
 
-#: ../kano_apps/AppGrid.py:247
+#: ../kano_apps/AppGrid.py:55
+msgid "latest"
+msgstr "最新"
+
+#: ../kano_apps/AppGrid.py:56
+msgid "code"
+msgstr "コード"
+
+#: ../kano_apps/AppGrid.py:57
+msgid "games"
+msgstr "ゲーム"
+
+#: ../kano_apps/AppGrid.py:58
+msgid "media"
+msgstr "メディア"
+
+#: ../kano_apps/AppGrid.py:59
+msgid "tools"
+msgstr "ツール"
+
+#: ../kano_apps/AppGrid.py:60
+msgid "others"
+msgstr "その他"
+
+#: ../kano_apps/AppGrid.py:61
+msgid "experimental"
+msgstr "実験中"
+
+#: ../kano_apps/AppGrid.py:254
 msgid "Remove from desktop"
 msgstr "デスクトップから削除"
 
-#: ../kano_apps/AppGrid.py:250
+#: ../kano_apps/AppGrid.py:257
 msgid "Add to desktop"
 msgstr "デスクトップに追加"
 
-#: ../kano_apps/AppGrid.py:418
+#: ../kano_apps/AppGrid.py:425
 msgid "Error"
 msgstr "エラー"
 
-#: ../kano_apps/AppGrid.py:419
+#: ../kano_apps/AppGrid.py:426
 msgid "Unable to start the application."
 msgstr "アプリを起動できません。"
 
-#: ../kano_apps/AppGrid.py:421 ../kano_apps/AppInstaller.py:99
+#: ../kano_apps/AppGrid.py:428 ../kano_apps/AppInstaller.py:99
 #: ../kano_apps/AppInstaller.py:182
 msgid "OK"
 msgstr "了解"
 
-#: ../kano_apps/AppGrid.py:440
+#: ../kano_apps/AppGrid.py:447
 msgid "More information"
 msgstr "追加情報"
 
-#: ../kano_apps/AppGrid.py:462
+#: ../kano_apps/AppGrid.py:469
 msgid "Remove"
 msgstr "削除"
 
-#: ../kano_apps/AppGrid.py:493
+#: ../kano_apps/AppGrid.py:500
 msgid "Update app"
 msgstr "アプリをアップデート"
 
-#: ../kano_apps/AppGrid.py:512 ../kano_apps/MainWindow.py:111
+#: ../kano_apps/AppGrid.py:519 ../kano_apps/MainWindow.py:111
 msgid "OK, GOT IT"
 msgstr "はい、了解"
 
-#: ../kano_apps/AppGrid.py:535
+#: ../kano_apps/AppGrid.py:542
 msgid "Removing {}"
 msgstr "{}を削除中"
 
-#: ../kano_apps/AppGrid.py:537
+#: ../kano_apps/AppGrid.py:544
 msgid ""
 "This application will be uninstalled and removed from apps. Do you wish to "
 "proceed?"
 msgstr "このアプリをアンインストールし、アップスから削除されます。続けますか？"
 
-#: ../kano_apps/AppGrid.py:541 ../kano_apps/AppGrid.py:589
+#: ../kano_apps/AppGrid.py:548 ../kano_apps/AppGrid.py:596
 #: ../kano_apps/AppInstaller.py:120 ../kano_apps/UIElements.py:62
 msgid "YES"
 msgstr "はい"
 
-#: ../kano_apps/AppGrid.py:544 ../kano_apps/AppGrid.py:592
+#: ../kano_apps/AppGrid.py:551 ../kano_apps/AppGrid.py:599
 #: ../kano_apps/AppInstaller.py:123
 msgid "NO"
 msgstr "いいえ"
 
-#: ../kano_apps/AppGrid.py:558
+#: ../kano_apps/AppGrid.py:565
 msgid "Uninstalling {}"
 msgstr "{}をアンインストール"
 
-#: ../kano_apps/AppGrid.py:583
+#: ../kano_apps/AppGrid.py:590
 msgid "Updating {}"
 msgstr "{}をアップデート"
 
-#: ../kano_apps/AppGrid.py:585
+#: ../kano_apps/AppGrid.py:592
 msgid "This application will be updated Do you wish to proceed?"
 msgstr "このアプリがアップデートされます。続けますか？"
 
@@ -219,27 +247,6 @@ msgstr "キャンセル"
 #: ../kano_apps/UIElements.py:82
 msgid "Re-enter your system password - default is kano:"
 msgstr "システムパスワードを再度入力してください（初期パスワードはkanoです）:"
-
-#~ msgid "latest"
-#~ msgstr "最新"
-
-#~ msgid "code"
-#~ msgstr "コード"
-
-#~ msgid "games"
-#~ msgstr "ゲーム"
-
-#~ msgid "media"
-#~ msgstr "メディア"
-
-#~ msgid "tools"
-#~ msgstr "ツール"
-
-#~ msgid "others"
-#~ msgstr "その他"
-
-#~ msgid "experimental"
-#~ msgstr "実験中"
 
 #~ msgid "%s installed successfully! Look for it in the Apps launcher."
 #~ msgstr ""
