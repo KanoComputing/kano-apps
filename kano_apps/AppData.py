@@ -11,6 +11,7 @@ import json
 
 from kano_settings.system.locale import get_locale, ensure_utf_locale
 from kano_apps.utils import get_dpkg_dict
+from kano_i18n.init import get_current_translation
 
 # The system directory that contains *.app and *.desktop entries
 _SYSTEM_APPLICATIONS_LOC = '/usr/share/applications/'
@@ -128,7 +129,7 @@ def get_applications(parse_cmds=True):
     # get localised apps
     current_locale = ensure_utf_locale(get_locale())
 
-    if current_locale:
+    if current_locale and get_current_translation():
         locale_code = current_locale.split('.')[0]
         locale_path = os.path.join(
             _SYSTEM_APPLICATIONS_LOC, "locale", locale_code
