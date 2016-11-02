@@ -49,6 +49,8 @@ QList<QVariant> QAppList::get_app_list()
     for (auto it = this->app_list.begin(); it != this->app_list.end(); ++it) {
         q_app = new QApp(*it);
         variant_q_app = QVariant::fromValue(q_app);
-        q_app_list.push_back(variant_q_app);
+        this->q_app_list.push_back(variant_q_app);
     }
+
+    return this->q_app_list;
 }

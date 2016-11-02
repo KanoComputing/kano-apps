@@ -15,8 +15,9 @@
 class QAppList : public QObject, public AppList
 {
     Q_OBJECT
-    Q_PROPERTY(QList<QVariant> app_list
-               READ get_app_list)
+    Q_PROPERTY(QList<QVariant> apps
+               READ get_app_list
+               NOTIFY apps_changed)
 
     public:
         QAppList(QObject *parent = NULL);
@@ -27,6 +28,9 @@ class QAppList : public QObject, public AppList
     protected:
         QList<QVariant> q_app_list;
         void clean_q_app_list();
+
+    signals:
+        Q_INVOKABLE void apps_changed();
 };
 
 

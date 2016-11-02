@@ -13,7 +13,7 @@ QString convert_to_qobject(std::string &s)
 // -----------------------------------------------------------------
 
 
-QApp::QApp(QString app_file_path):
+QApp::QApp(const QString app_file_path):
     QObject(),
     App(app_file_path.toUtf8().constData())
 {
@@ -34,13 +34,11 @@ QApp::QApp(const App &other):
 }
 
 
-/*
 QApp::QApp(const QApp &other):
     QObject(),
-    App(other)
+    App(static_cast<App>(other))
 {
 }
-*/
 
 
 /*

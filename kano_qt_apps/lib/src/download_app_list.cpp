@@ -65,4 +65,6 @@ void DownloadAppList::refresh_list(QNetworkReply *reply)
     }
 
     json_value_free(root);
+
+    emit this->apps_changed();
 }
