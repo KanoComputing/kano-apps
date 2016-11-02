@@ -76,10 +76,10 @@ class QApp : public QObject, public App
                CONSTANT)
 
     public:
-        QApp(QString app_file_path);
+        QApp(const QString app_file_path = "");
         QApp(JSON_Object *app_object);
         QApp(const App &other);
-        // QApp(const QApp &other);
+        QApp(const QApp &other);
         // QApp& operator=(const App &other);
 
     protected:
@@ -96,6 +96,8 @@ class QApp : public QObject, public App
         QStringList get_overrides();
         bool get_desktop();
 };
+
+Q_DECLARE_METATYPE(QApp)
 
 
 #endif  // __Q_APP_H__

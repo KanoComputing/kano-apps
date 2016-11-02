@@ -3,39 +3,26 @@
 #include <QNetworkReply>
 #include <parson/parson.h>
 
-#include "download_app_list.h"
+#include "installed_app_list.h"
 
 
-DownloadAppList::DownloadAppList():
-    apps_api_endpoint("http://api.kano.me/apps")  // TODO: Allow configuration file
+InstalledAppList::InstalledAppList():
+    apps_dir("/usr/share/applications")  // TODO: Allow configuration file
 {
-    QObject::connect(
-        &this->network_manager, SIGNAL(finished(QNetworkReply *)),
-        this, SLOT(refresh_list(QNetworkReply *))
-    );
-
     this->update_app_list();
 }
 
 
-void DownloadAppList::update_app_list(unsigned int limit, unsigned page,
+void InstalledAppList::update_app_list(unsigned int limit, unsigned page,
                                       QStringList sort_by)
 {
     qDebug() << "Updating app list";
-    QNetworkRequest req(this->apps_api_endpoint);
-    this->network_manager.get(req);
 }
 
 
-void DownloadAppList::refresh_list(QNetworkReply *reply)
+void InstalledAppList::refresh_list(QString res)
 {
     qDebug() << "Got response";
-    QByteArray res = reply->readAll();
-
-    reply->close();
-    reply->deleteLater();
-
-
     JSON_Value *root = json_parse_string(res.toStdString().c_str());
 
     if (!root) {
@@ -65,6 +52,4 @@ void DownloadAppList::refresh_list(QNetworkReply *reply)
     }
 
     json_value_free(root);
-
-    emit this->apps_changed();
 }
