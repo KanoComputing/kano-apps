@@ -31,7 +31,7 @@ class DownloadAppList : public QAppList
         );
 
     private:
-        const QUrl apps_api_endpoint;
+        QUrl apps_api_endpoint;
         QNetworkAccessManager network_manager;
 
     private slots:

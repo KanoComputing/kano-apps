@@ -3,12 +3,16 @@
 #include <QNetworkReply>
 #include <parson/parson.h>
 
+#include "app_list.h"
 #include "installed_app_list.h"
 
 
 InstalledAppList::InstalledAppList():
-    apps_dir("/usr/share/applications")  // TODO: Allow configuration file
+    QAppList()
 {
+    this->apps_dir.setPath(
+        QString::fromStdString(this->config[APPS_DIR_KEY])
+    );
     this->update_app_list();
 }
 
@@ -16,14 +20,14 @@ InstalledAppList::InstalledAppList():
 void InstalledAppList::update_app_list(unsigned int limit, unsigned page,
                                       QStringList sort_by)
 {
-    qDebug() << "Updating app list";
+    qDebug() << "Updating local app list";
+    this->refresh_list("");  // FIXME
 }
 
 
-void InstalledAppList::refresh_list(QString res)
+void InstalledAppList::add_app_from_file(QString file_path)
 {
-    qDebug() << "Got response";
-    JSON_Value *root = json_parse_string(res.toStdString().c_str());
+    JSON_Value *root = json_parse_file(file_path.toStdString().c_str());
 
     if (!root) {
         qDebug() << "Couldn't parse returned JSON";
@@ -41,15 +45,25 @@ void InstalledAppList::refresh_list(QString res)
     if (!node) {
         qDebug() << "Couldn't get node";
         json_value_free(root);
+        return;
     }
 
-    JSON_Array *entries = json_object_get_array(node, "entries");
-    size_t len = json_array_get_count(entries);
-
-    for (size_t i = 0; i < len; i++) {
-        JSON_Object *app_object = json_array_get_object(entries, i);
-        this->add_app(App(app_object));
-    }
+    this->add_app(node);
 
     json_value_free(root);
+}
+
+
+void InstalledAppList::refresh_list(QString res)
+{
+    qDebug() << "Got response";
+
+    QStringList app_files = apps_dir.entryList(QStringList({"*.app"}), QDir::Files);
+    qDebug() << "Found files" << app_files;
+
+    for (auto it = app_files.begin(); it != app_files.end(); ++it) {
+        this->add_app_from_file(this->apps_dir.filePath(*it));
+    }
+
+    emit this->apps_changed();
 }
