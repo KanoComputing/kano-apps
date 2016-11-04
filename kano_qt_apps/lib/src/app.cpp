@@ -42,6 +42,10 @@ App::App(JSON_Object *app_object)
     this->description = get_json_string(app_object, "description");
     this->slug = get_json_string(app_object, "slug");
     this->icon = get_json_string(app_object, "icon");
+
+    if (this->icon.empty())
+        this->icon = get_json_string(app_object, "icon_url");
+
     this->color = get_json_string(app_object, "colour");
     // this->categories = json_object_get_string(app_object, "categories");
     // this->packages = json_object_get_string(app_object, "packages");

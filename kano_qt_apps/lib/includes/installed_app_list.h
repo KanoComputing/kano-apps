@@ -30,8 +30,9 @@ class InstalledAppList : public QAppList
             QStringList sort_by = {"featured", "likes"}
         );
 
-    private:
-        const QDir apps_dir;
+    protected:
+        QDir apps_dir;
+        void add_app_from_file(QString file_path);
 
     private slots:
         void refresh_list(QString res);

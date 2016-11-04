@@ -1,14 +1,20 @@
 #include <QObject>
+#include <QString>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <parson/parson.h>
 
+#include "app_list.h"
 #include "download_app_list.h"
 
 
 DownloadAppList::DownloadAppList():
-    apps_api_endpoint("http://api.kano.me/apps")  // TODO: Allow configuration file
+    QAppList()
 {
+    this->apps_api_endpoint = QString::fromStdString(
+        this->config[API_URL_KEY]
+    );
+
     QObject::connect(
         &this->network_manager, SIGNAL(finished(QNetworkReply *)),
         this, SLOT(refresh_list(QNetworkReply *))
@@ -54,6 +60,7 @@ void DownloadAppList::refresh_list(QNetworkReply *reply)
     if (!node) {
         qDebug() << "Couldn't get node";
         json_value_free(root);
+        return;
     }
 
     JSON_Array *entries = json_object_get_array(node, "entries");
@@ -61,7 +68,7 @@ void DownloadAppList::refresh_list(QNetworkReply *reply)
 
     for (size_t i = 0; i < len; i++) {
         JSON_Object *app_object = json_array_get_object(entries, i);
-        this->add_app(App(app_object));
+        this->add_app(app_object);
     }
 
     json_value_free(root);
