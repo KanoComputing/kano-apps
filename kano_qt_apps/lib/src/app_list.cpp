@@ -24,6 +24,15 @@ AppList::AppList():
 
 void AppList::add_app(App new_app)
 {
+    int prio = new_app.priority;
+
+    for (auto it = this->app_list.begin(); it != this->app_list.end(); ++it) {
+        if (it->priority < prio) {
+            this->app_list.insert(it, new_app);
+            return;
+        }
+    }
+
     this->app_list.push_back(new_app);
 }
 

@@ -14,5 +14,6 @@
     "dependencies": ["make-minecraft"],
     "launch_command": "make-minecraft",
     "overrides": [],
-    "desktop": false
+    "desktop": false,
+    "priority": 99
 }
