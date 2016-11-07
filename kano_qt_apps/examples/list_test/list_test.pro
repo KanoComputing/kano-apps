@@ -16,4 +16,4 @@ INCLUDEPATH += $$PWD/includes
 HEADERS += \
     includes/core_app.h
 
-include(../lib/kano_apps_lib.pri)
+include(../../lib/kano_apps_lib.pri)

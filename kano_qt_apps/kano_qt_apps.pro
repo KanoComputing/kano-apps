@@ -3,6 +3,6 @@ TEMPLATE = subdirs
 SUBDIRS = \
     kano_apps \
     imports \
-    test
+    examples
 
 kano_apps.file = lib/kano_apps.pro
