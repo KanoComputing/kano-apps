@@ -21,6 +21,9 @@ class Config
             std::vector<std::string> config_dirs = {
                 "/etc",
                 get_home_dir() + "/.config"
+#ifdef DEBUG
+                , WORKING_DIR "/../fixtures"
+#endif  // DEBUG
             }
         );
 
