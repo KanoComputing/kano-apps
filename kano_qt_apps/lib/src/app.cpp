@@ -37,22 +37,22 @@ App::App(JSON_Object *app_object)
         return;
     }
 
-    this->title = get_json_string(app_object, "title");
-    this->tagline = get_json_string(app_object, "tagline");
-    this->description = get_json_string(app_object, "description");
-    this->slug = get_json_string(app_object, "slug");
-    this->icon = get_json_string(app_object, "icon");
+    this->title = get_json_val<std::string>(app_object, "title");
+    this->tagline = get_json_val<std::string>(app_object, "tagline");
+    this->description = get_json_val<std::string>(app_object, "description");
+    this->slug = get_json_val<std::string>(app_object, "slug");
+    this->icon = get_json_val<std::string>(app_object, "icon");
 
     if (this->icon.empty())
-        this->icon = get_json_string(app_object, "icon_url");
+        this->icon = get_json_val<std::string>(app_object, "icon_url");
 
-    this->color = get_json_string(app_object, "colour");
-    // this->categories = json_object_get_string(app_object, "categories");
-    // this->packages = json_object_get_string(app_object, "packages");
-    // this->dependencies = json_object_get_string(app_object, "dependencies");
-    // this->launch_command = json_object_get_string(app_object, "launch_command");
-    // this->overrides = json_object_get_string(app_object, "overrides");
-    // this->desktop = json_object_get_string(app_object, "desktop");
+    this->color = get_json_val<std::string>(app_object, "colour");
+    this->categories = get_json_array<std::string>(app_object, "categories");
+    this->packages = get_json_array<std::string>(app_object, "packages");
+    this->dependencies = get_json_array<std::string>(app_object, "dependencies");
+    this->launch_command = get_json_val<std::string>(app_object, "launch_command");
+    this->overrides = get_json_array<std::string>(app_object, "overrides");
+    this->desktop = get_json_val<bool>(app_object, "desktop");
 
     logger() << this->title.c_str() << " - " << this->tagline.c_str();
 }
