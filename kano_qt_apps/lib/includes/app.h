@@ -15,6 +15,8 @@ class App
         App(const App &other);
         App& operator=(const App &other);
 
+        int priority;
+
     protected:
         std::string title;
         std::string tagline;

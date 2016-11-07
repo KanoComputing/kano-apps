@@ -39,6 +39,7 @@ void QAppList::clean_q_app_list()
 }
 
 
+// TODO: Update the array as it changes to avoid calculating this multiple times
 QList<QVariant> QAppList::get_app_list()
 {
     this->clean_q_app_list();

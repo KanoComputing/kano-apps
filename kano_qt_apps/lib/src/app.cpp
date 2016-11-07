@@ -53,6 +53,7 @@ App::App(JSON_Object *app_object)
     this->launch_command = get_json_val<std::string>(app_object, "launch_command");
     this->overrides = get_json_array<std::string>(app_object, "overrides");
     this->desktop = get_json_val<bool>(app_object, "desktop");
+    this->priority = get_json_val<int>(app_object, "priority");
 
     logger() << this->title.c_str() << " - " << this->tagline.c_str();
 }
@@ -78,6 +79,7 @@ App& App::operator=(const App &other)
     this->launch_command = other.launch_command;
     this->overrides = other.overrides;
     this->desktop = other.desktop;
+    this->priority = other.priority;
 
     return *this;
 }

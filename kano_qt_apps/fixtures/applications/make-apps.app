@@ -13,5 +13,6 @@
     "dependencies": [],
     "launch_command": "make-apps",
     "overrides": [],
-    "desktop": false
+    "desktop": false,
+    "priority": 100
 }
