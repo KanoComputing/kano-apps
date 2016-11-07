@@ -91,12 +91,25 @@ void Config::parse_config_file(const std::string& config_file_path)
     }
 
     std::string val;
+    bool rel_path;
+    const std::string rel_path_pattern = "./";
 
     for (auto it = this->config.begin(); it != this->config.end(); ++it) {
-        val = get_json_string(node, it->first);
+        val = get_json_val<std::string>(node, it->first);
 
-        if (!val.empty())
-            it->second = val;
+        if (val.empty())
+            continue;
+
+        rel_path = val.find("./") == 0;
+
+        if (rel_path) {
+            val = config_file_path.substr(
+                    0,
+                    config_file_path.length() - this->conf_filename.length()
+                ) + val.substr(rel_path_pattern.length());
+        }
+
+        it->second = val;
     }
 
     json_value_free(root);
