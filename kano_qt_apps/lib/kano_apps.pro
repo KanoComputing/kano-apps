@@ -9,6 +9,7 @@ CONFIG += \
 include(kano_apps_deps.pri)
 
 SOURCES += \
+    src/config.cpp \
     src/logger.cpp \
     src/app.cpp \
     src/q_app.cpp \
