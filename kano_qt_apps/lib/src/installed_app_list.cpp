@@ -61,8 +61,8 @@ void InstalledAppList::refresh_list(QString res)
     QStringList app_files = this->apps_dir.entryList(QStringList({"*.app"}), QDir::Files);
     qDebug() << "Found files" << app_files;
 
-    for (auto it = app_files.begin(); it != app_files.end(); ++it) {
-        this->add_app_from_file(this->apps_dir.filePath(*it));
+    for (auto app_file : app_files) {
+        this->add_app_from_file(this->apps_dir.filePath(app_file));
     }
 
     emit this->apps_changed();

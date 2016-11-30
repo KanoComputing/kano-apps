@@ -4,6 +4,8 @@ CONFIG += \
     kano_build_options \
     network
 
+DEFINES += DEBUG
+
 # include(i18n.pri)
 
 include(kano_apps_deps.pri)
@@ -13,6 +15,7 @@ SOURCES += \
     src/logger.cpp \
     src/app.cpp \
     src/q_app.cpp \
+    src/installed_apps.cpp \
     src/app_list.cpp \
     src/q_app_list.cpp \
     src/installed_app_list.cpp \

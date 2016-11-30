@@ -9,11 +9,11 @@
 #include <parson/parson.h>
 
 #include "app.h"
+#include "installed_apps.h"
 #include "config.h"
 
 
-#define APPS_DIR_KEY "applications_dir"
-#define API_URL_KEY "api_url"
+const std::string API_URL_KEY = "api_url";
 
 
 class AppList : public Config

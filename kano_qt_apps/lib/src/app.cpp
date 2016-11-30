@@ -65,6 +65,11 @@ App::App(const App &other)
 }
 
 
+App::~App()
+{
+}
+
+
 App& App::operator=(const App &other)
 {
     this->title = other.title;
@@ -82,4 +87,82 @@ App& App::operator=(const App &other)
     this->priority = other.priority;
 
     return *this;
+}
+
+
+std::string App::get_title()
+{
+    return this->title;
+}
+
+
+std::string App::get_tagline()
+{
+    return this->tagline;
+}
+
+
+std::string App::get_description()
+{
+    return this->description;
+}
+
+
+std::string App::get_slug()
+{
+    return this->slug;
+}
+
+
+std::string App::get_icon()
+{
+    return this->icon;
+}
+
+
+std::string App::get_color()
+{
+    return this->color;
+}
+
+
+std::vector<std::string> App::get_categories()
+{
+    return this->categories;
+}
+
+
+std::vector<std::string> App::get_packages()
+{
+    return this->packages;
+}
+
+
+std::vector<std::string> App::get_dependencies()
+{
+    return this->dependencies;
+}
+
+
+std::string App::get_launch_command()
+{
+    return this->launch_command;
+}
+
+
+std::vector<std::string> App::get_overrides()
+{
+    return this->overrides;
+}
+
+
+bool App::get_desktop()
+{
+    return this->desktop;
+}
+
+
+int App::get_priority()
+{
+    return this->priority;
 }
