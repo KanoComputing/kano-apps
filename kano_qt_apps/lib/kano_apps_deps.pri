@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/includes/logger.h \
     $$PWD/includes/app.h \
     $$PWD/includes/q_app.h \
+    $$PWD/includes/installed_apps.h \
     $$PWD/includes/app_list.h \
     $$PWD/includes/q_app_list.h \
     $$PWD/includes/installed_app_list.h \
