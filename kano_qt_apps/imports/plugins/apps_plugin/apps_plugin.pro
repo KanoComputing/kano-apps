@@ -4,7 +4,7 @@ CONFIG += \
     plugin
 
 TARGET = apps_plugin
-DESTDIR = ../Apps/
+DESTDIR = ../../Kano/Apps/
 
 SRC_DIR = 'src'
 INCLUDE_DIR = $$PWD/includes
