@@ -13,15 +13,10 @@ InstalledAppList::InstalledAppList():
     this->apps_dir.setPath(
         QString::fromStdString(this->config[APPS_DIR_KEY])
     );
-    this->update_app_list();
-}
-
-
-void InstalledAppList::update_app_list(unsigned int limit, unsigned page,
-                                      QStringList sort_by)
-{
-    qDebug() << "Updating local app list";
-    this->refresh_list("");  // FIXME
+    this->connect(
+        this, SIGNAL(update()),
+        this, SLOT(refresh_list())
+    );
 }
 
 
@@ -54,12 +49,17 @@ void InstalledAppList::add_app_from_file(QString file_path)
 }
 
 
-void InstalledAppList::refresh_list(QString res)
+void InstalledAppList::refresh_list()
 {
-    qDebug() << "Got response" << this->apps_dir;
 
     QStringList app_files = this->apps_dir.entryList(QStringList({"*.app"}), QDir::Files);
-    qDebug() << "Found files" << app_files;
+
+#ifdef DEBUG
+    qDebug() << "Looking in" << this->apps_dir
+             << " and found files" << app_files;
+#endif  // DEBUG
+
+    this->clean_q_app_list();
 
     for (auto app_file : app_files) {
         this->add_app_from_file(this->apps_dir.filePath(app_file));

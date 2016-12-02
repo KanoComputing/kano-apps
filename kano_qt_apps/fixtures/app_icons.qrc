@@ -1,0 +1,48 @@
+<RCC>
+    <qresource>
+        <file alias="internet">app_icons/internet.png</file>
+        <file alias="kano-apps">app_icons/kano-apps.png</file>
+        <file alias="kano-world">app_icons/kano-world.png</file>
+        <file alias="make-apps">app_icons/make-apps.png</file>
+        <file alias="kano-draw">app_icons/make-art.png</file>
+        <file alias="make-light">app_icons/make-light.png</file>
+        <file alias="make-minecraft">app_icons/make-minecraft.png</file>
+        <file alias="make-pong">app_icons/make-pong.png</file>
+        <file alias="pong">app_icons/make-pong.png</file>
+        <file alias="make-snake">app_icons/make-snake.png</file>
+        <file alias="snake">app_icons/make-snake.png</file>
+        <file alias="profile">app_icons/profile.png</file>
+        <file alias="scratch">app_icons/scratch.png</file>
+        <file alias="settings">app_icons/settings.png</file>
+        <file alias="sonicpi">app_icons/sonic-pi.png</file>
+        <file alias="terminal-quest">app_icons/terminal-quest.png</file>
+        <file alias="terminal-app">app_icons/terminal.png</file>
+        <file alias="youtube">app_icons/youtube.png</file>
+
+        <file alias="book1">app_icons/book1.png</file>
+        <file alias="book2">app_icons/book2.png</file>
+        <file alias="calculator">app_icons/calculator.png</file>
+        <file alias="chromium-app">app_icons/chromium-app.png</file>
+        <file alias="codecademy">app_icons/codecademy.png</file>
+        <file alias="credits">app_icons/credits.png</file>
+        <file alias="epdfview">app_icons/epdfview.png</file>
+        <file alias="feedback">app_icons/feedback.png</file>
+        <file alias="geany">app_icons/geany.png</file>
+        <file alias="gnome_terminal">app_icons/gnome_terminal.png</file>
+        <file alias="kano-dialog">app_icons/kano-dialog.png</file>
+        <file alias="kano-settings">app_icons/kano-settings.png</file>
+        <file alias="kano-updater">app_icons/kano-updater.png</file>
+        <file alias="konsole">app_icons/konsole.png</file>
+        <file alias="leafpad">app_icons/leafpad.png</file>
+        <file alias="midori">app_icons/midori.png</file>
+        <file alias="minecraft">app_icons/minecraft.png</file>
+        <file alias="openterm">app_icons/openterm.png</file>
+        <file alias="painter">app_icons/painter.png</file>
+        <file alias="powerup">app_icons/powerup.png</file>
+        <file alias="terminal">app_icons/terminal.png</file>
+        <file alias="utilities-terminal">app_icons/utilities-terminal.png</file>
+        <file alias="vnc">app_icons/vnc.png</file>
+        <file alias="want-more-apps">app_icons/want-more-apps.png</file>
+        <file alias="xfce-terminal">app_icons/xfce-terminal.png</file>
+    </qresource>
+</RCC>

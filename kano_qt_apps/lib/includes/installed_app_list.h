@@ -23,19 +23,15 @@ class InstalledAppList : public QAppList
     public:
         InstalledAppList();
 
-    public slots:  // Needed?
-        void update_app_list(
-            unsigned int limit = 10,
-            unsigned page = 0,
-            QStringList sort_by = {"featured", "likes"}
-        );
-
     protected:
         QDir apps_dir;
         void add_app_from_file(QString file_path);
 
     private slots:
-        void refresh_list(QString res);
+        void refresh_list();
+
+    signals:
+        Q_INVOKABLE void update();
 };
 
 
