@@ -1,7 +1,7 @@
-QMAKE_LFLAGS += -lparson
-INCLUDEPATH += $$PWD/includes
+QMAKE_LFLAGS *= -lparson
+INCLUDEPATH *= $$PWD/includes
 
-HEADERS += \
+HEADERS *= \
     $$PWD/includes/config.h \
     $$PWD/includes/logger.h \
     $$PWD/includes/app.h \

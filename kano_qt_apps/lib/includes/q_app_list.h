@@ -22,7 +22,6 @@ class QAppList : public QObject, public AppList
     public:
         QAppList(QObject *parent = NULL);
         ~QAppList();
-        // void add_app(QApp new_app);
         QList<QVariant> get_app_list();
 
     protected:

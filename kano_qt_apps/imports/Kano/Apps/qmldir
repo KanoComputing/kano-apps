@@ -1,2 +1,5 @@
 module Kano.Apps
+AppGrid 1.0 app_grid.qml
+AppGridLayout 1.0 app_grid_layout.qml
+AppTile 1.0 app_tile.qml
 plugin apps_plugin
