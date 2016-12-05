@@ -61,14 +61,17 @@ Item {
                     }
 
                     MouseArea {
+                        id: indicator_mouse
                         anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.OpenHandCursor
                         onClicked: grid.set_page(index + 1)
                     }
 
                     states: [
                         State {
                             name: 'active'
-                            when: index == grid.page_index
+                            when: index == grid.page_index || indicator_mouse.containsMouse
                             PropertyChanges {
                                 target: indicator
                                 opacity: 1.0
