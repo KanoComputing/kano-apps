@@ -3,7 +3,7 @@ Maintainer: Team Kano <dev@kano.me>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.4
-Build-Depends: debhelper (>=9.0.0), python, gettext
+Build-Depends: debhelper (>=9.0.0), python, gettext, g++, libqt5all-dev, libparson-dev
 
 Package: kano-apps
 Architecture: all
@@ -14,3 +14,18 @@ Breaks: kano-desktop (<< 1.0-60)
 Conflicts: kano-extras
 Description: A simple app to launch various program
  In Kano OS, it is used to manage the Apps folder.
+
+Package: libkano-apps
+Architecture: any
+Depends: ${misc:Depends}, libparson
+Description: Library to manage apps installed on Kano OS
+
+Package: libkano-apps-dev
+Architecture: any
+Depends: ${misc:Depends}
+Description: Library to manage apps installed on Kano OS
+
+Package: kano-qt-apps
+Architecture: any
+Depends: ${misc:Depends}, libqt5all, libkano-apps
+Description: Library to manage apps installed on Kano OS
