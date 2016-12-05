@@ -4,7 +4,9 @@ CONFIG += \
     kano_build_options \
     network
 
-DEFINES += DEBUG
+macx {
+    DEFINES += DEBUG
+}
 
 # include(i18n.pri)
 
