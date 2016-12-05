@@ -5,11 +5,11 @@
 #include <QObject>
 #include <QString>
 #include <QList>
-#include <QtNetwork>
-#include <QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkAccessManager>
 #include <QUrl>
 #include <QDebug>
-#include <QNetworkReply>
 
 #include "app.h"
 #include "app_list.h"
