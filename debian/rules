@@ -1,5 +1,15 @@
 #!/usr/bin/make -f
 
+#
+# FIXME: libqt5all-dev package should resolve binary paths
+#
+QT5PATH=/usr/local/qt5/bin
+export PATH := $(PATH):$(QT5PATH)
+
 %:
 	cd po && make
 	dh $@ --with python2
+
+override_dh_auto_build:
+	cd kano_qt_apps && qmake -r
+	cd kano_qt_apps && make
