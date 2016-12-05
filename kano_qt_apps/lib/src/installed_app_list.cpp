@@ -1,6 +1,4 @@
 #include <QObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <parson/parson.h>
 
 #include "app_list.h"

@@ -1,7 +1,7 @@
 #include <QObject>
 #include <QString>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 #include <parson/parson.h>
 
 #include "app_list.h"
