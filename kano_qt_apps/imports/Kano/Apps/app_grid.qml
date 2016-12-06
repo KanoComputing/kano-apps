@@ -15,7 +15,9 @@ import Kano.Apps 1.0 as KanoApps
 
 
 Item {
+    signal app_launched(string launch_command)
     signal app_hovered(string app)
+
     property alias grid: grid
     property alias columns: grid.columns
     property alias rows: grid.rows
@@ -24,6 +26,7 @@ Item {
 
     KanoApps.AppGridLayout {
         id: grid
+        onApp_launched: parent.app_launched(launch_command)
         onApp_hovered: parent.app_hovered(app)
 
         anchors.top: parent.top
