@@ -26,10 +26,10 @@ class Config
 #endif  // DEBUG
             }
         );
+        static bool file_exists(const std::string& name);
 
     protected:
         static std::string get_home_dir();
-        static bool file_exists(const std::string& name);
 
         void load_config();
         void parse_config_file(const std::string& config_file_path);

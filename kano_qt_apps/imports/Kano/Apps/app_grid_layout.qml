@@ -94,7 +94,7 @@ KanoLayouts.TileGridLayout {
     delegate: KanoApps.AppTile {
         app: modelData.title
         launch_command: modelData.launch_command
-        image_source: 'qrc:/' + modelData.icon
+        image_source: modelData.icon
         height: grid.cellHeight
         width: grid.cellWidth
         onApp_launched: grid.app_launched(launch_command)

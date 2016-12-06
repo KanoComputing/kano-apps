@@ -39,37 +39,37 @@ class QApp : public QObject, public App
 {
     Q_OBJECT
     Q_PROPERTY(QString title
-               READ get_title
+               READ get_q_title
                CONSTANT)
     Q_PROPERTY(QString tagline
-               READ get_tagline
+               READ get_q_tagline
                CONSTANT)
     Q_PROPERTY(QString description
-               READ get_description
+               READ get_q_description
                CONSTANT)
     Q_PROPERTY(QString slug
-               READ get_slug
+               READ get_q_slug
                CONSTANT)
     Q_PROPERTY(QString icon
-               READ get_icon
+               READ get_q_icon
                CONSTANT)
     Q_PROPERTY(QString color
-               READ get_color
+               READ get_q_color
                CONSTANT)
     Q_PROPERTY(QStringList categories
-               READ get_categories
+               READ get_q_categories
                CONSTANT)
     Q_PROPERTY(QStringList packages
-               READ get_packages
+               READ get_q_packages
                CONSTANT)
     Q_PROPERTY(QStringList dependencies
-               READ get_dependencies
+               READ get_q_dependencies
                CONSTANT)
     Q_PROPERTY(QString launch_command
-               READ get_launch_command
+               READ get_q_launch_command
                CONSTANT)
     Q_PROPERTY(QStringList overrides
-               READ get_overrides
+               READ get_q_overrides
                CONSTANT)
     Q_PROPERTY(bool desktop
                READ get_desktop
@@ -83,18 +83,17 @@ class QApp : public QObject, public App
         // QApp& operator=(const App &other);
 
     protected:
-        QString get_title();
-        QString get_tagline();
-        QString get_description();
-        QString get_slug();
-        QString get_icon();
-        QString get_color();
-        QStringList get_categories();
-        QStringList get_packages();
-        QStringList get_dependencies();
-        QString get_launch_command();
-        QStringList get_overrides();
-        bool get_desktop();
+        QString get_q_title();
+        QString get_q_tagline();
+        QString get_q_description();
+        QString get_q_slug();
+        QString get_q_icon();
+        QString get_q_color();
+        QStringList get_q_categories();
+        QStringList get_q_packages();
+        QStringList get_q_dependencies();
+        QString get_q_launch_command();
+        QStringList get_q_overrides();
 };
 
 Q_DECLARE_METATYPE(QApp)

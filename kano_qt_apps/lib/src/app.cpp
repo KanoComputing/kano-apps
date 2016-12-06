@@ -1,8 +1,10 @@
 #include <string>
+#include <vector>
 #include <parson/json_helpers.h>
 
 #include "logger.h"
 #include "app.h"
+#include "config.h"
 
 
 App::App(std::string app_file_path)
@@ -116,7 +118,23 @@ std::string App::get_slug()
 
 std::string App::get_icon()
 {
+#ifdef DEBUG
+    return "qrc:/" + this->icon;
+#else  // DEBUG
+    const std::vector<std::string> candidate_paths = {
+        "/usr/share/icons/Kano/66x66/apps/",
+        "/usr/share/icons/hicolor/48x48/apps/",
+    };
+
+    for (auto candidate : candidate_paths) {
+        candidate += this->icon + ".png";
+
+        if (Config::file_exists(candidate))
+            return candidate;
+    }
+
     return this->icon;
+#endif  // DEBUG
 }
 
 

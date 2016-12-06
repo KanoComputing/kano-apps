@@ -52,73 +52,71 @@ QApp::QApp& operator=(const App &other)
 
 
 
-QString QApp::get_title()
+QString QApp::get_q_title()
 {
-    return QString::fromStdString(this->title);
+    return QString::fromStdString(this->get_title());
 }
 
 
-QString QApp::get_tagline()
+QString QApp::get_q_tagline()
 {
-    return QString::fromStdString(this->tagline);
+    return QString::fromStdString(this->get_tagline());
 }
 
 
-QString QApp::get_description()
+QString QApp::get_q_description()
 {
-    return QString::fromStdString(this->description);
+    return QString::fromStdString(this->get_description());
 }
 
 
-QString QApp::get_slug()
+QString QApp::get_q_slug()
 {
-    return QString::fromStdString(this->slug);
+    return QString::fromStdString(this->get_slug());
 }
 
 
-QString QApp::get_icon()
+QString QApp::get_q_icon()
 {
-    return QString::fromStdString(this->icon);
+    return QString::fromStdString(this->get_icon());
 }
 
 
-QString QApp::get_color()
+QString QApp::get_q_color()
 {
-    return QString::fromStdString(this->color);
+    return QString::fromStdString(this->get_color());
 }
 
 
-QStringList QApp::get_categories()
+QStringList QApp::get_q_categories()
 {
-    return vec_to_qlist<QString, std::string>(this->categories);
+    std::vector<std::string> val = this->get_categories();
+    return vec_to_qlist<QString, std::string>(val);
 }
 
 
-QStringList QApp::get_packages()
+QStringList QApp::get_q_packages()
 {
-    return vec_to_qlist<QString, std::string>(this->packages);
+    std::vector<std::string> val = this->get_packages();
+    return vec_to_qlist<QString, std::string>(val);
 }
 
 
-QStringList QApp::get_dependencies()
+QStringList QApp::get_q_dependencies()
 {
-    return vec_to_qlist<QString, std::string>(this->dependencies);
+    std::vector<std::string> val = this->get_dependencies();
+    return vec_to_qlist<QString, std::string>(val);
 }
 
 
-QString QApp::get_launch_command()
+QString QApp::get_q_launch_command()
 {
-    return QString::fromStdString(this->launch_command);
+    return QString::fromStdString(this->get_launch_command());
 }
 
 
-QStringList QApp::get_overrides()
+QStringList QApp::get_q_overrides()
 {
-    return vec_to_qlist<QString, std::string>(this->overrides);
-}
-
-
-bool QApp::get_desktop()
-{
-    return this->desktop;
+    std::vector<std::string> val = this->get_overrides();
+    return vec_to_qlist<QString, std::string>(val);
 }
