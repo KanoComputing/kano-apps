@@ -21,8 +21,7 @@ Item {
     property string launch_command: ''
     property string color
     property string hover_colour
-    property int spacing: 15
-    property int cell_spacing: 50
+    property int cell_spacing: 10
 
     height: 100
     width: 100

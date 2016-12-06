@@ -33,7 +33,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: page_nav.top
-        anchors.bottomMargin: page_nav.height
+        anchors.bottomMargin: 5
     }
 
 
