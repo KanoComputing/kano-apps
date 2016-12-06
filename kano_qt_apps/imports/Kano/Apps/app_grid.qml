@@ -67,7 +67,7 @@ Item {
                         id: indicator_mouse
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: Qt.OpenHandCursor
+                        cursorShape: Qt.PointingHandCursor
                         onClicked: grid.set_page(index + 1)
                     }
 
