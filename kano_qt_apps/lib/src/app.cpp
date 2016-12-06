@@ -123,6 +123,7 @@ std::string App::get_icon()
 #else  // DEBUG
     const std::vector<std::string> candidate_paths = {
         "/usr/share/icons/Kano/66x66/apps/",
+        "/usr/share/icons/Kano/88x88/apps/",
         "/usr/share/icons/hicolor/48x48/apps/",
     };
 
