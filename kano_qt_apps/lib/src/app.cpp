@@ -57,7 +57,9 @@ App::App(JSON_Object *app_object)
     this->desktop = get_json_val<bool>(app_object, "desktop");
     this->priority = get_json_val<int>(app_object, "priority");
 
+#ifdef DEBUG
     logger() << this->title.c_str() << " - " << this->tagline.c_str();
+#endif  // DEBUG
 }
 
 

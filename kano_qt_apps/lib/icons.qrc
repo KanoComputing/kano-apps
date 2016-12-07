@@ -1,0 +1,5 @@
+<RCC>
+    <qresource>
+        <file alias="app-store">icons/app-store.png</file>
+    </qresource>
+</RCC>
