@@ -94,7 +94,7 @@ Item {
                     states: [
                         State {
                             name: 'active'
-                            when: index == grid.page_index || indicator_mouse.containsMouse
+                            when: index == grid.queued_page || indicator_mouse.containsMouse
                             PropertyChanges {
                                 target: indicator
                                 opacity: 1.0
@@ -102,7 +102,7 @@ Item {
                         },
                         State {
                             name: 'inactive'
-                            when: index != grid.page_index
+                            when: index != grid.queued_page
                             PropertyChanges {
                                 target: indicator
                                 opacity: 0.5
