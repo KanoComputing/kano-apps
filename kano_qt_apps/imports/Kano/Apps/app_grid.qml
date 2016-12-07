@@ -33,6 +33,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: page_nav.top
+        anchors.topMargin: 0
         anchors.bottomMargin: 5
     }
 
