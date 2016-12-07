@@ -30,7 +30,7 @@ KanoLayouts.TileGridLayout {
 
 
     id: grid
-    spacing: 30
+    spacing: 0
 
     offset: page_index * tile_count
 
@@ -132,8 +132,8 @@ KanoLayouts.TileGridLayout {
         app: modelData.title
         launch_command: modelData.launch_command
         image_source: modelData.icon
-        height: grid.cellHeight
-        width: grid.cellWidth
+        height: grid.content_height
+        width: grid.content_width
         onApp_launched: grid.app_launched(launch_command)
         onApp_hovered: grid.app_hovered(app)
     }
