@@ -31,11 +31,13 @@ def install_app(app, sudo_pwd=None, gui=True):
     cmd = ""
     if gui:
         cmd = "rxvt -title 'Installing {}' -e bash -c ".format(app["title"])
+        if sudo_pwd:
+            cmd = "echo {} | sudo -S ".format(sudo_pwd) + cmd
 
     if sudo_pwd:
         cleanup_cmd = "echo {} | sudo -S dpkg --configure -a".format(sudo_pwd)
         update_cmd = "echo {} | sudo -S apt-get update".format(sudo_pwd)
-        run = "echo {} | sudo -S apt-get install -y {}".format(sudo_pwd, pkgs)
+        run = "sudo apt-get install -y {}".format(pkgs)
     else:
         cleanup_cmd = "sudo dpkg --configure -a".format(sudo_pwd)
         update_cmd = "sudo apt-get update".format(sudo_pwd)
