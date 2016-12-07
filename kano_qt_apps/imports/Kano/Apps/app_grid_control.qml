@@ -22,34 +22,38 @@ Row {
     property int page_count: 0
     property int tile_count: 0
 
-    height: 50
+    height: 48
 
     Repeater {
         model: page_count
         delegate: Item {
+            property int spacing: 7
+
             anchors.top: page_nav.top
             anchors.bottom: page_nav.bottom
-            width: height
+            width: height + spacing * 2
 
             Rectangle {
                 property bool is_last_page: index + 1 < page_count
 
                 id: indicator
+
                 anchors.fill: parent
-                anchors.margins: 5
                 color: 'transparent'
                 border.width: 2
                 radius: 5
+                anchors.leftMargin: spacing
+                anchors.rightMargin: spacing
 
                 KanoLayouts.TileGridLayout {
                     id: indicator_apps
                     anchors.fill: parent
-                    anchors.margins: 2
+                    anchors.margins: 3
                     anchors.leftMargin: anchors.margins * 2
-                    anchors.topMargin: anchors.margins * 2
+                    anchors.topMargin: anchors.margins + indicator.border.width
                     rows: 3
                     columns: 3
-                    spacing: 5
+                    spacing: 3
 
                     model: 9
                     delegate: Rectangle {
@@ -57,7 +61,8 @@ Row {
                             indicator.is_last_page ||
                             index < (tile_count % page_count)
                         color: space_filled ? 'black' : 'transparent'
-                        border.width: 2
+                        border.width: 1
+                        radius: 3
                         width: indicator_apps.content_width
                         height: indicator_apps.content_width
                     }
