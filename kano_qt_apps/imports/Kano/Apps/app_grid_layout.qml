@@ -125,7 +125,7 @@ KanoLayouts.TileGridLayout {
     }
 
 
-    clip: true
+    clip: false
 
     delegate: KanoApps.AppTile {
         app: modelData.title
