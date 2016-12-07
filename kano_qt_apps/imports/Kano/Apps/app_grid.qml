@@ -51,6 +51,8 @@ Item {
                 width: height
 
                 Rectangle {
+                    property bool is_last_page: index + 1 < grid.page_count
+
                     id: indicator
                     anchors.fill: parent
                     anchors.margins: 5
@@ -58,9 +60,26 @@ Item {
                     border.width: 2
                     radius: 5
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: index + 1
+                    KanoLayouts.TileGridLayout {
+                        id: indicator_apps
+                        anchors.fill: parent
+                        anchors.margins: 2
+                        anchors.leftMargin: anchors.margins * 2
+                        anchors.topMargin: anchors.margins * 2
+                        rows: 3
+                        columns: 3
+                        spacing: 5
+
+                        model: 9
+                        delegate: Rectangle {
+                            property bool space_filled:
+                                indicator.is_last_page ||
+                                index < (grid.tile_count % grid.page_count)
+                            color: space_filled ? 'black' : 'transparent'
+                            border.width: 2
+                            width: indicator_apps.content_width
+                            height: indicator_apps.content_width
+                        }
                     }
 
                     MouseArea {

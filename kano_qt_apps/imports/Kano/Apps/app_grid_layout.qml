@@ -20,7 +20,8 @@ KanoLayouts.TileGridLayout {
 
     property int page_index: 0
     property int page: page_index + 1
-    readonly property int page_count: Math.ceil(apps_list.apps.length / tile_count)
+    readonly property int app_count: apps_list.apps.length
+    readonly property int page_count: Math.ceil(app_count / tile_count)
 
     property bool ltr: true
     readonly property int page_turn_offset: ltr ? -grid.cellWidth / 2 : grid.cellWidth / 2
