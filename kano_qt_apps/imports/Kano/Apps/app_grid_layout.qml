@@ -28,6 +28,29 @@ KanoLayouts.TileGridLayout {
     readonly property int page_turn_duration: 75
     property int queued_page: 0
 
+    property var control   // Some KanoApps.AppGridControl
+
+    Binding {
+        target: control
+        property: 'current_page'
+        value: grid.queued_page
+    }
+    Binding {
+        target: control
+        property: 'page_count'
+        value: grid.page_count
+    }
+    Binding {
+        target: control
+        property: 'tile_count'
+        value: grid.tile_count
+    }
+    Connections {
+        target: control
+
+        onChange_page: grid.set_page(page)
+    }
+
 
     id: grid
     spacing: 0
