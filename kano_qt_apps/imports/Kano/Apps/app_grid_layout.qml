@@ -22,6 +22,12 @@ KanoLayouts.TileGridLayout {
     property int page: page_index + 1
     readonly property int page_count: Math.ceil(apps_list.apps.length / tile_count)
 
+    property bool ltr: true
+    readonly property int page_turn_offset: ltr ? -grid.cellWidth / 2 : grid.cellWidth / 2
+    readonly property int page_turn_duration: 75
+    property int queued_page: 0
+
+
     id: grid
     spacing: 30
 
@@ -37,14 +43,15 @@ KanoLayouts.TileGridLayout {
 
     function set_page(page_no) {
         page_no--;
-        pop_trans.ltr = page_no < page_index;
+        grid.ltr = page_no < page_index;
 
         page_no = page_no % page_count;
         if (page_no < 0) {
             page_no = page_count + page_no;
         }
 
-        page_index = page_no;
+        queued_page = page_no;
+        page_change.running = true
     }
 
     rows: 3
@@ -77,17 +84,46 @@ KanoLayouts.TileGridLayout {
                 property: 'opacity'
                 from: 0.0
                 to: 1.0
-                duration: 400
+                duration: grid.page_turn_duration
             }
             NumberAnimation {
                 properties: 'x'
-                from: pop_trans.ltr ?
-                    pop_trans.dest.x - grid.cellWidth / 2 :
-                    pop_trans.dest.x + grid.cellWidth / 2
-                duration: 300
+                from: pop_trans.dest.x - grid.page_turn_offset
+                duration: grid.page_turn_duration
             }
         }
     }
+    SequentialAnimation {
+        id: page_change
+        running: false
+        ParallelAnimation {
+            PropertyAnimation {
+                target: grid
+                property: 'opacity'
+                from: 1.0
+                to: 0.0
+                duration: grid.page_turn_duration
+            }
+            PropertyAnimation {
+                target: grid
+                property: 'contentX'
+                to: -grid.page_turn_offset
+                duration: grid.page_turn_duration
+            }
+        }
+        ParallelAnimation {
+            ScriptAction {
+                script: grid.page_index = grid.queued_page
+            }
+            PropertyAnimation {
+                target: grid
+                property: 'opacity'
+                to: 1.0
+                duration: 0
+            }
+        }
+    }
+
 
     clip: true
 
