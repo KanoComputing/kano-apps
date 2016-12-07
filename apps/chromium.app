@@ -13,5 +13,6 @@
     "dependencies": ["chromium-browser"],
     "launch_command": "chromium-browser",
     "overrides": ["chromium.desktop", "chromium-browser.desktop",
-                  "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"]
+                  "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"],
+    "priority": 700
 }
