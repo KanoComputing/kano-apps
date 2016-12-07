@@ -7,6 +7,18 @@ QAppList::QAppList(QObject *parent):
 {
 }
 
+QAppList::QAppList(const QAppList &other):
+    QObject(other.parent()),
+    AppList(static_cast<AppList>(other))
+{
+}
+
+QAppList::QAppList(const AppList &other):
+    QObject(nullptr),
+    AppList(static_cast<AppList>(other))
+{
+}
+
 
 QAppList::~QAppList()
 {

@@ -41,3 +41,32 @@ void AppList::add_app(JSON_Object *new_app)
 {
     this->add_app(App(new_app));
 }
+
+
+void AppList::add_app_from_file(std::string file_path)
+{
+    JSON_Value *root = json_parse_file(file_path.c_str());
+
+    if (!root) {
+        std::cout << "Couldn't parse returned JSON";
+        return;
+    }
+
+    if (json_value_get_type(root) != JSONObject) {
+        std::cout << "Returned JSON isn't a JSON object";
+        json_value_free(root);
+        return;
+    }
+
+    JSON_Object *node = json_value_get_object(root);
+
+    if (!node) {
+        std::cout << "Couldn't get node";
+        json_value_free(root);
+        return;
+    }
+
+    this->add_app(node);
+
+    json_value_free(root);
+}

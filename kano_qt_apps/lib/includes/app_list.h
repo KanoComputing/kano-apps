@@ -23,8 +23,8 @@ class AppList : public Config
         AppList();
         void add_app(App new_app);
         void add_app(JSON_Object *new_app);
+        void add_app_from_file(std::string file_path);
 
-    protected:
         std::vector<App> app_list;
 };
 

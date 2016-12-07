@@ -21,4 +21,5 @@ SOURCES += \
     src/app_list.cpp \
     src/q_app_list.cpp \
     src/installed_app_list.cpp \
+    src/installed_app_list_populator.cpp \
     src/download_app_list.cpp

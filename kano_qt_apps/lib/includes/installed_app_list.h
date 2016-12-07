@@ -7,6 +7,7 @@
 #include <QList>
 #include <QDir>
 #include <QDebug>
+#include <QThread>
 
 #include "app.h"
 #include "app_list.h"
@@ -22,10 +23,10 @@ class InstalledAppList : public QAppList
 
     protected:
         QDir apps_dir;
-        void add_app_from_file(QString file_path);
+        QThread populate_thr;
 
     private slots:
-        void refresh_list();
+        void update_list(QAppList apps);
 
     signals:
         Q_INVOKABLE void update();

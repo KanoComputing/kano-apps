@@ -12,7 +12,6 @@
 void AppsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QApp>(uri, 1, 0, "App");
-    // qmlRegisterType<QAppList>(uri, 1, 0, "AppList");
     qmlRegisterType<InstalledAppList>(uri, 1, 0, "InstalledAppList");
     qmlRegisterType<DownloadAppList>(uri, 1, 0, "DownloadAppList");
 }

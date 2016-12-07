@@ -6,6 +6,7 @@
 #include <QString>
 #include <QList>
 #include <QVariant>
+#include <QMetaType>
 
 #include "app.h"
 #include "app_list.h"
@@ -21,6 +22,8 @@ class QAppList : public QObject, public AppList
 
     public:
         QAppList(QObject *parent = NULL);
+        QAppList(const QAppList &other);
+        QAppList(const AppList &other);
         ~QAppList();
         QList<QVariant> get_app_list();
 
@@ -31,6 +34,9 @@ class QAppList : public QObject, public AppList
     signals:
         Q_INVOKABLE void apps_changed();
 };
+
+
+Q_DECLARE_METATYPE(QAppList)
 
 
 #endif  // __Q_APP_LIST_H__
