@@ -24,7 +24,7 @@ KanoLayouts.TileGridLayout {
     readonly property int page_count: Math.ceil(app_count / tile_count)
 
     property bool ltr: true
-    readonly property int page_turn_offset: ltr ? -grid.cellWidth / 2 : grid.cellWidth / 2
+    readonly property int page_turn_offset: ltr ? grid.cellWidth / 2 : -grid.cellWidth / 2
     readonly property int page_turn_duration: 75
     property int queued_page: 0
 
