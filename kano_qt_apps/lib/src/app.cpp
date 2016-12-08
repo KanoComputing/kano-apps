@@ -128,12 +128,20 @@ std::string App::get_icon()
         "/usr/share/icons/Kano/88x88/apps/",
         "/usr/share/icons/hicolor/48x48/apps/",
     };
+    const std::vector<std::string> extensions = {
+        ".png",
+        ".jpeg",
+        ".jpg",
+    };
+    std::string candidate;
 
-    for (auto candidate : candidate_paths) {
-        candidate += this->icon + ".png";
+    for (auto candidate_path : candidate_paths) {
+        for (auto extension : extensions) {
+            candidate = candidate_path + this->icon + extension;
 
-        if (Config::file_exists(candidate))
-            return candidate;
+            if (Config::file_exists(candidate))
+                return candidate;
+        }
     }
 
     return this->icon;
