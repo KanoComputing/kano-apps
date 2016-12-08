@@ -1,1 +1,2 @@
 kano_qt_apps/lib/libkano_apps.so.*.*.* /usr/lib/
+kano_qt_apps/lib/icons/* /usr/share/icons/Kano/66x66/apps/
