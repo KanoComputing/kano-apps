@@ -21,6 +21,7 @@ Row {
     property int current_page: 0
     property int page_count: 0
     property int tile_count: 0
+    property color indicator_color: 'black'
 
     height: 48
 
@@ -41,6 +42,7 @@ Row {
                 anchors.fill: parent
                 color: 'transparent'
                 border.width: 2
+                border.color: indicator_color
                 radius: 5
                 anchors.leftMargin: spacing
                 anchors.rightMargin: spacing
@@ -60,8 +62,9 @@ Row {
                         property bool space_filled:
                             indicator.is_last_page ||
                             index < (tile_count % page_count)
-                        color: space_filled ? 'black' : 'transparent'
+                        color: space_filled ? indicator_color : 'transparent'
                         border.width: 1
+                        border.color: indicator_color
                         radius: 3
                         width: indicator_apps.content_width
                         height: indicator_apps.content_width
