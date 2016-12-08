@@ -21,6 +21,7 @@ Row {
     property int current_page: 0
     property int page_count: 0
     property int tile_count: 0
+    property int app_count: 0
     property color indicator_color: 'black'
 
     height: 48
@@ -61,7 +62,7 @@ Row {
                     delegate: Rectangle {
                         property bool space_filled:
                             indicator.is_last_page ||
-                            index < (tile_count % page_count)
+                            index < (app_count % tile_count)
                         color: space_filled ? indicator_color : 'transparent'
                         border.width: 1
                         border.color: indicator_color

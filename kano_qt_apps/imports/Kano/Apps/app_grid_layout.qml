@@ -45,6 +45,11 @@ KanoLayouts.TileGridLayout {
         property: 'tile_count'
         value: grid.tile_count
     }
+    Binding {
+        target: control
+        property: 'app_count'
+        value: grid.app_count
+    }
     Connections {
         target: control
 
