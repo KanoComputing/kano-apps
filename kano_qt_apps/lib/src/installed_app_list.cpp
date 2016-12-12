@@ -34,7 +34,6 @@ InstalledAppList::InstalledAppList():
 
 void InstalledAppList::update_list(QAppList apps)
 {
-    this->clean_q_app_list();
     this->app_list = apps.app_list;
 
     emit this->apps_changed();
