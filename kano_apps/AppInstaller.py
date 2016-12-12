@@ -7,6 +7,7 @@
 #
 
 import json
+import os
 from gi.repository import Gtk, Gdk
 from kano_apps.AppManage import install_app, download_app, AppDownloadError, \
     install_link_and_icon
@@ -49,11 +50,17 @@ class AppInstaller:
         if not self._get_sudo_pw():
             return self._end(False)
 
+        # Prevent the user escaping with the home button
+        os.system('kano-home-button-visible no')
+
         # Make sure the dialogs are gone before installing
         while Gtk.events_pending():
             Gtk.main_iteration()
 
         rv = self._install()
+
+        # Should be safe to bail at this point
+        os.system('kano-home-button-visible yes')
 
         if rv and self._report_install:
             self._report()
