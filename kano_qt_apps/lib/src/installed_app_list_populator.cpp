@@ -21,14 +21,32 @@
 #include "logger.h"
 
 
+// TODO: Decide if this should be just another `.app` file
 const char *APP_STORE_APP = "{ \
-    \"categories\": [], \
-    \"packages\": [], \
-    \"dependencies\": [], \
-    \"overrides\": [], \
+    \"type\": \"app\", \
     \"title\": \"App Store\", \
-    \"launch_command\": \"kano-dashboard-uimode apps --force\", \
-    \"icon\": \"app-store\" \
+    \"tagline\": \"Go to Kano World to install more\", \
+    \"slug\": \"want-more\", \
+    \
+    \"origin\": \"-\", \
+    \
+    \"icon\": \"app-store\", \
+    \"colour\": \"#fda96f\", \
+    \
+    \"categories\": [ \
+        \"code\", \
+        \"media\", \
+        \"games\", \
+        \"others\", \
+        \"tools\", \
+        \"experimental\" \
+    ], \
+    \
+    \"packages\": [], \
+    \"dependencies\": [\"chromium\"], \
+    \"launch_command\": \"kano-world-launcher /apps/\", \
+    \"overrides\": [], \
+    \"desktop\": false \
 }";
 
 
