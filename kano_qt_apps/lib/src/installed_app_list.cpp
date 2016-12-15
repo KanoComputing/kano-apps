@@ -7,7 +7,8 @@
 
 
 InstalledAppList::InstalledAppList():
-    QAppList()
+    QAppList(),
+    populate_thr(this)
 {
     this->apps_dir.setPath(
         QString::fromStdString(this->config[APPS_DIR_KEY])
@@ -27,8 +28,15 @@ InstalledAppList::InstalledAppList():
         worker, &InstalledAppListPopulator::apps_ready,
         this, &InstalledAppList::update_list
     );
-    this->populate_thr.start();
-    this->populate_thr.setPriority(QThread::Priority::LowPriority);
+    this->populate_thr.start(
+        QThread::Priority::LowPriority
+    );
+}
+
+
+InstalledAppList::~InstalledAppList()
+{
+    this->clean_up();
 }
 
 
@@ -37,4 +45,19 @@ void InstalledAppList::update_list(QAppList apps)
     this->app_list = apps.app_list;
 
     emit this->apps_changed();
+}
+
+void InstalledAppList::clean_up()
+{
+    this->populate_thr.requestInterruption();
+    this->populate_thr.quit();
+    this->populate_thr.wait(100);
+
+    if (this->populate_thr.isRunning()) {
+#ifdef DEBUG
+        qDebug() << "App List thread still running, forcing it to close";
+#endif  // DEBUG
+        this->populate_thr.terminate();
+        this->populate_thr.wait(100);
+    }
 }

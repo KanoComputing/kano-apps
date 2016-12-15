@@ -20,6 +20,7 @@ class InstalledAppList : public QAppList
 
     public:
         InstalledAppList();
+        ~InstalledAppList();
 
     protected:
         QDir apps_dir;
@@ -27,6 +28,7 @@ class InstalledAppList : public QAppList
 
     private slots:
         void update_list(QAppList apps);
+        void clean_up();
 
     signals:
         Q_INVOKABLE void update();

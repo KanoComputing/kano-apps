@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QString>
+#include <QThread>
 #include <pwd.h>
 #include <unistd.h>
 #include <parson/parson.h>
@@ -65,12 +66,20 @@ void InstalledAppListPopulator::refresh_list()
 
 #ifdef DEBUG
     qDebug() << "Looking in" << this->apps_dir
-             << " and found files" << app_files;
+             << "and found files" << app_files;
 #endif  // DEBUG
 
     QAppList apps;
+    QThread *current_thr = QThread::currentThread();
 
     for (auto app_file : app_files) {
+        if (current_thr->isInterruptionRequested()) {
+#ifdef DEBUG
+            qDebug() << "Apps: Interrupt requested while parsing apps";
+#endif  // DEBUG
+            return;
+        }
+
         apps.add_app_from_file(this->apps_dir.filePath(app_file).toStdString());
     }
 
