@@ -45,6 +45,9 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
 
         onClicked: parent.app_launched(launch_command)
+
+        // Prevent space triggered launch events
+        Keys.onSpacePressed: event.accepted = true
     }
 
     Item {
