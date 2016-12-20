@@ -47,7 +47,8 @@ const char *APP_STORE_APP = "{ \
     \"dependencies\": [\"chromium\"], \
     \"launch_command\": \"kano-world-launcher /apps/\", \
     \"overrides\": [], \
-    \"desktop\": false \
+    \"desktop\": false, \
+    \"priority\": -10000 \
 }";
 
 

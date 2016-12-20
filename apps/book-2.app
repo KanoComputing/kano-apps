@@ -11,5 +11,6 @@
 
     "packages": [],
     "dependencies": ["epdfview"],
-    "launch_command": "epdfview '/usr/share/kano-apps/books/Book 2 - Levels.pdf'"
+    "launch_command": "epdfview '/usr/share/kano-apps/books/Book 2 - Levels.pdf'",
+    "priority": -125
 }
