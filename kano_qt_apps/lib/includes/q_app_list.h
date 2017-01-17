@@ -17,15 +17,19 @@
 #include <QList>
 #include <QVariant>
 #include <QMetaType>
+#include <QQmlParserStatus>
 
 #include "app.h"
 #include "app_list.h"
 #include "q_app.h"
 
 
-class QAppList : public QObject, public AppList
+
+
+class QAppList : public QObject, public QQmlParserStatus, public AppList
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QList<QVariant> apps
                READ get_app_list
                NOTIFY apps_changed)
@@ -36,6 +40,9 @@ class QAppList : public QObject, public AppList
         QAppList(const AppList &other);
         ~QAppList();
         QList<QVariant> get_app_list();
+        virtual void classBegin();
+        virtual void componentComplete();
+        virtual void initialise();
 
     protected:
         QList<QVariant> q_app_list;
