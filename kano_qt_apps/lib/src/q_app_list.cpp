@@ -13,18 +13,21 @@
 
 QAppList::QAppList(QObject *parent):
     QObject(parent),
+    QQmlParserStatus(),
     AppList()
 {
 }
 
 QAppList::QAppList(const QAppList &other):
     QObject(other.parent()),
+    QQmlParserStatus(),
     AppList(static_cast<AppList>(other))
 {
 }
 
 QAppList::QAppList(const AppList &other):
     QObject(nullptr),
+    QQmlParserStatus(),
     AppList(static_cast<AppList>(other))
 {
 }
@@ -68,4 +71,28 @@ QList<QVariant> QAppList::get_app_list()
     }
 
     return this->q_app_list;
+}
+
+
+/*
+ * Invoked after class creation, but before any properties have been set.
+ */
+void QAppList::classBegin()
+{
+}
+
+
+/**
+ * Invoked after the root component that caused this instantiation has
+ * completed construction. At this point all static values and binding
+ * values have been assigned to the class.
+ */
+void QAppList::componentComplete()
+{
+    this->initialise();
+}
+
+
+void QAppList::initialise()
+{
 }
