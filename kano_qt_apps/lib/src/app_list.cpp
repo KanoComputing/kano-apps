@@ -1,3 +1,13 @@
+/**
+ * app_list.cpp
+ *
+ * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+ *
+ * Data structure to contain a list of apps
+ */
+
+
 #include <iostream>
 #include <unistd.h>
 #include <pwd.h>
@@ -22,8 +32,12 @@ AppList::AppList():
 }
 
 
-void AppList::add_app(App new_app)
+void AppList::add_app(App new_app, std::shared_ptr<App> fallback)
 {
+    std::cout << "Add_app: " << fallback.get() << "\n";
+    if (fallback)
+        new_app.set_fallback(std::move(fallback));
+
     int prio = new_app.get_priority();
 
     for (auto it = this->app_list.begin(); it != this->app_list.end(); ++it) {
@@ -37,36 +51,23 @@ void AppList::add_app(App new_app)
 }
 
 
-void AppList::add_app(JSON_Object *new_app)
+void AppList::add_app(JSON_Object *new_app, std::shared_ptr<App> fallback)
 {
-    this->add_app(App(new_app));
+    this->add_app(App(new_app, std::move(fallback)));
 }
 
 
-void AppList::add_app_from_file(std::string file_path)
+void AppList::add_app_from_file(std::string file_path, std::shared_ptr<App> fallback)
 {
-    JSON_Value *root = json_parse_file(file_path.c_str());
+    this->add_app(App(file_path), std::move(fallback));
+}
 
-    if (!root) {
-        std::cout << "Couldn't parse returned JSON";
-        return;
-    }
+void AppList::add_app_from_file(std::string file_path, std::string fallback)
+{
+    std::shared_ptr<App> fb = nullptr;
 
-    if (json_value_get_type(root) != JSONObject) {
-        std::cout << "Returned JSON isn't a JSON object";
-        json_value_free(root);
-        return;
-    }
+    if (!fallback.empty())
+        fb = std::make_shared<App>(fallback);
 
-    JSON_Object *node = json_value_get_object(root);
-
-    if (!node) {
-        std::cout << "Couldn't get node";
-        json_value_free(root);
-        return;
-    }
-
-    this->add_app(node);
-
-    json_value_free(root);
+    this->add_app_from_file(file_path, std::move(fb));
 }

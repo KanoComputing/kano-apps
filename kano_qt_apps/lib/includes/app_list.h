@@ -1,3 +1,13 @@
+/**
+ * app_list.h
+ *
+ * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+ *
+ * Data structure to contain a list of apps
+ */
+
+
 #ifndef __APP_LIST_H__
 #define __APP_LIST_H__
 
@@ -21,9 +31,10 @@ class AppList : public Config
 
     public:
         AppList();
-        void add_app(App new_app);
-        void add_app(JSON_Object *new_app);
-        void add_app_from_file(std::string file_path);
+        void add_app(App new_app, std::shared_ptr<App> fallback = nullptr);
+        void add_app(JSON_Object *new_app, std::shared_ptr<App> fallback = nullptr);
+        void add_app_from_file(std::string file_path, std::shared_ptr<App> fallback = nullptr);
+        void add_app_from_file(std::string file_path, std::string fallback);
 
         std::vector<App> app_list;
 };
