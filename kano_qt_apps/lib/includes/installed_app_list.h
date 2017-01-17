@@ -1,3 +1,13 @@
+/**
+ * installed_app_list.h
+ *
+ * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+ *
+ * Lists the apps intalled on the system
+ */
+
+
 #ifndef __INSTALLED_APP_LIST_H__
 #define __INSTALLED_APP_LIST_H__
 

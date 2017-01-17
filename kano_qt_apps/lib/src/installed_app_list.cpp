@@ -1,3 +1,13 @@
+/**
+ * installed_app_list.cpp
+ *
+ * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+ *
+ * Lists the apps intalled on the system
+ */
+
+
 #include <QObject>
 #include <parson/parson.h>
 
@@ -14,7 +24,8 @@ InstalledAppList::InstalledAppList():
         QString::fromStdString(this->config[APPS_DIR_KEY])
     );
 
-    auto *worker = new InstalledAppListPopulator(this->apps_dir);
+    QString locale = QLocale::system().name();
+    auto *worker = new InstalledAppListPopulator(this->apps_dir, locale);
     worker->moveToThread(&this->populate_thr);
     connect(
         &this->populate_thr, &QThread::finished,

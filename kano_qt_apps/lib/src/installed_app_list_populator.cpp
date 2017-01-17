@@ -1,7 +1,7 @@
 /**
  * share_list_populator.cpp
  *
- * Copyright (C) 2016 Kano Computing Ltd.
+ * Copyright (C) 2016-2017 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Populates the Qt share list object (intended to run in a thread)
@@ -52,10 +52,17 @@ const char *APP_STORE_APP = "{ \
 }";
 
 
-InstalledAppListPopulator::InstalledAppListPopulator(QDir apps_dir):
+InstalledAppListPopulator::InstalledAppListPopulator(QDir apps_dir, QString locale):
     QObject(),
     apps_dir(apps_dir)
 {
+    this->i18n_apps_dir = apps_dir;
+    this->i18n_apps_available = this->i18n_apps_dir.cd("locale/" + locale);
+
+#ifdef DEBUG
+    if (this->i18n_apps_available)
+        qDebug() << "Located i18n directory:" << this->i18n_apps_dir.path();
+#endif  // DEBUG
 }
 
 
@@ -66,12 +73,19 @@ void InstalledAppListPopulator::refresh_list()
     );
 
 #ifdef DEBUG
-    qDebug() << "Looking in" << this->apps_dir
+    qDebug() << "Looking in" << this->apps_dir.path()
              << "and found files" << app_files;
 #endif  // DEBUG
 
     QAppList apps;
     QThread *current_thr = QThread::currentThread();
+
+#ifdef DEBUG
+    qDebug() << "";
+    qDebug() << "-------------------------------------------------------";
+    qDebug() << "Populating apps:";
+    qDebug() << "-------------------------------------------------------";
+#endif  // DEBUG
 
     for (auto app_file : app_files) {
         if (current_thr->isInterruptionRequested()) {
@@ -81,7 +95,25 @@ void InstalledAppListPopulator::refresh_list()
             return;
         }
 
-        apps.add_app_from_file(this->apps_dir.filePath(app_file).toStdString());
+        std::string en_file_path = this->apps_dir.filePath(app_file)
+            .toStdString();
+
+        if (this->i18n_apps_available
+                && this->i18n_apps_dir.exists(app_file)) {
+#ifdef DEBUG
+            qDebug() << "Found i18n app file" << app_file;
+#endif  // DEBUG
+            std::string i18n_file_path = this->i18n_apps_dir
+                .filePath(app_file)
+                .toStdString();
+            apps.add_app_from_file(i18n_file_path, en_file_path);
+        } else {
+            apps.add_app_from_file(en_file_path);
+        }
+
+#ifdef DEBUG
+        qDebug() << "-------------------------------------------------------";
+#endif  // DEBUG
     }
 
     JSON_Value *app_store_app = json_parse_string(APP_STORE_APP);
@@ -102,4 +134,8 @@ void InstalledAppListPopulator::refresh_list()
     // FIXME: Type registration required here despite the Q_DECLARE_METATYPE
     qRegisterMetaType<QAppList>();
     emit this->apps_ready(apps);
+
+#ifdef DEBUG
+    qDebug() << "-------------------------------------------------------\n\n";
+#endif  // DEBUG
 }
