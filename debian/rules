@@ -13,3 +13,4 @@ export PATH := $(PATH):$(QT5PATH)
 override_dh_auto_build:
 	cd kano_qt_apps && qmake -r
 	cd kano_qt_apps && make
+	cd po && make messages.pot
