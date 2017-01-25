@@ -38,7 +38,6 @@ Depends: ${misc:Depends}, libqt5all, libkano-apps
 Description: Library to manage apps installed on Kano OS
 
 Package: kano-apps-i18n-orig
-Architecture: armhf
-# not really armhf. See https://github.com/KanoComputing/peldins/wiki/Multiarch-note
+Architecture: all
 Description: Data for working on translations of kano-apps
 Multi-Arch: foreign
