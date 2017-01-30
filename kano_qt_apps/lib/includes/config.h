@@ -2,6 +2,7 @@
 #define __CONFIG_H__
 
 
+#include <memory>
 #include <vector>
 #include <string>
 #include <unordered_map>
