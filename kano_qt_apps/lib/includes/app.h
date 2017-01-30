@@ -12,6 +12,7 @@
 #define __APP_H__
 
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <parson/parson.h>
