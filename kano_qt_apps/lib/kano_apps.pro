@@ -10,7 +10,7 @@ macx {
 
 RESOURCES += icons.qrc
 
-# include(i18n.pri)
+include(i18n.pri)
 
 include(kano_apps_deps.pri)
 

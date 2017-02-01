@@ -10,7 +10,9 @@ Build-Depends:
     g++,
     libqt5all-dev,
     libparson-dev,
-    kano-qt-sdk-dev
+    kano-qt-sdk-dev,
+    dh-exec
+
 
 Package: kano-apps
 Architecture: all
