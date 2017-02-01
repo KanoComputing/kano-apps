@@ -6,5 +6,6 @@ lupdate_only {
 }
 
 TRANSLATIONS = \
+    $$KANO.i18n_path/kano_qt_apps_en_US.ts \
     $$KANO.i18n_path/kano_qt_apps_es_AR.ts \
     $$KANO.i18n_path/kano_qt_apps_fr_FR.ts

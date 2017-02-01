@@ -1,1 +1,4 @@
+#!/usr/bin/dh-exec
 po/messages.pot /mnt/translations/translations/kano-apps/
+kano_qt_apps/lib/i18n/kano_qt_apps_en_US.ts => /mnt/translations/translations/kano_qt_apps/base.ts
+
