@@ -11,7 +11,6 @@ Build-Depends:
     libqt5all-dev,
     libparson-dev,
     kano-qt-sdk-dev,
-    dh-exec
 
 
 Package: kano-apps
