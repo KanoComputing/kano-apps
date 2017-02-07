@@ -31,60 +31,6 @@ from kano_apps.AppManage import download_app, install_app, \
     install_link_and_icon, query_for_app, AppDownloadError
 
 
-device = '/dev/mmcblk0'
-
-
-def is_partition_expanded(device):
-    try:
-        cmd = 'lsblk -n -b {} -o SIZE'.format(device)
-        stdout, stderr, returncode = run_cmd(cmd)
-        if returncode != 0:
-            logger.warning("error running lsblk")
-            return True
-        lines = stdout.strip().split('\n')
-        total = int(lines.pop(0))
-        rest = sum(map(int, lines))
-        if rest < total * 0.8:
-            return False
-        return True
-    except:
-        logger.error("exception in is_partition_expanded")
-        return True
-
-
-def check_for_expand_partition():
-    # Check if partition has been expanded
-    if not is_partition_expanded(device):
-        # Show dialogue
-        head = _("Do you want to reboot now?")
-        msg = _("A reboot is required to complete the installation of Kano" +\
-              " OS so it can access all the space on the SD card.")
-        kdialog = KanoDialog(
-            head,
-            msg,
-            {
-                _("LATER"): {
-                    "return_value": False,
-                    "color": "red"
-                },
-                _("REBOOT"): {
-                    "return_value": True,
-                    "color": "green"
-                },
-            },
-        )
-        kdialog.set_action_background("grey")
-        kdialog.title.description.set_max_width_chars(40)
-        if kdialog.run():
-            logger.info("Expanding partition from kano-apps")
-            run_cmd('sudo /usr/bin/expand-rootfs')
-            os.system('sudo systemctl reboot')
-            return True
-        del kdialog
-
-    return False
-
-
 def batch_install(apps, icon_only=False):
     for app in apps:
         try:
@@ -207,7 +153,6 @@ def main():
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
 
-        check_for_expand_partition()
         win = MainWindow(tutorial=True)
         ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
@@ -218,7 +163,6 @@ def main():
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
 
-        check_for_expand_partition()
         win = MainWindow()
         ScrolledWindow.apply_styling_to_screen(wide=True)
         win.show_all()
