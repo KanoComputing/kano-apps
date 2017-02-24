@@ -11,7 +11,8 @@
 
     "packages": [],
     "dependencies": ["make-pong"],
-    "launch_command": "make-pong",
+    "launch_command": "kano-app-launcher make-pong",
     "overrides": [],
-    "desktop": false
+    "desktop": false,
+    "priority": 850
 }
