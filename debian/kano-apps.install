@@ -8,6 +8,7 @@ books usr/share/kano-apps/
 
 kdesk-icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
 kdesk-icon/*.png usr/share/kano-desktop/icons/
+kdesk-icon/i18n/es_AR/*.png usr/share/kano-desktop/icons/i18n/es_AR/
 
 kano-world-hook/* usr/lib/python2.7/dist-packages/kano_world/hooks/
 
