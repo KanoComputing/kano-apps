@@ -14,5 +14,5 @@
     "launch_command": "make-apps",
     "overrides": [],
     "desktop": false,
-    "priority": 100
+    "priority": 1000
 }

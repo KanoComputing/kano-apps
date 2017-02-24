@@ -10,5 +10,5 @@
 
   "packages": [],
   "dependencies": ["kano-feedback"],
-  "launch_command": "/usr/bin/kano-launcher \"/usr/bin/kano-feedback\" feedback"
+  "launch_command": "/usr/bin/kano-feedback feedback"
 }

@@ -10,5 +10,5 @@
 
   "packages": [],
   "dependencies": ["kano-settings"],
-  "launch_command": "sudo /usr/bin/kano-launcher /usr/bin/kano-settings settings"
+  "launch_command": "sudo /usr/bin/kano-launcher /usr/bin/kano-settings"
 }
