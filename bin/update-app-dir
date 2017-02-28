@@ -11,13 +11,14 @@
 
 import sys
 import os
+import codecs
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
         sys.path = [dir_path] + sys.path
 
-from kano_apps.AppData import get_applications
+from kano_apps.AppData import get_applications, LOCALE_KEY
 from kano.logging import logger
 from kano_apps.utils import get_dpkg_dict
 
@@ -29,20 +30,44 @@ def create_desktop_entry(app):
     cmd = app["launch_command"]
     icon = app["icon"]
 
+    def get_localised_entries(key, entry_name):
+        entries = u"{entry_name}={val}".format(
+            entry_name=entry_name,
+            val=app[key]
+        )
+
+        if LOCALE_KEY in app:
+            entries = u'\n'.join(
+                [entries] +
+                [
+                    u'{entry_name}[{locale}]={val}'.format(
+                        entry_name=entry_name,
+                        locale=locale,
+                        val=transl['title']
+                    ) for locale, transl
+                    in app[LOCALE_KEY].iteritems()
+                ]
+            )
+
+        return entries
+
+    names = get_localised_entries('title', 'Name')
+    comments = get_localised_entries('tagline', 'Comment')
     categories = ";".join(app["categories"] + [""]).lower()
 
-    de = (
-        "[Desktop Entry]\n" +
-        "Encoding=UTF-8\n" +
-        "Version=1.0\n" +
-        "Type=Application\n" +
-        "Exec={}\n" +
-        "Icon={}\n" +
-        "Terminal=false\n" +
-        "Name={}\n" +
-        "Comment={}\n" +
-        "Categories={}\n"
-    ).format(cmd, icon, app["title"], app["tagline"], categories)
+    de = u'\n'.join([
+        "[Desktop Entry]",
+        "Encoding=UTF-8",
+        "Version=1.0",
+        "Type=Application",
+        "Exec={}".format(cmd),
+        "Icon={}".format(icon),
+        "Terminal=false",
+        names,
+        comments,
+        "Categories={}".format(categories),
+        ''
+    ])
 
     if "mime_type" in app:
         de += "MimeType={}\n".format(app["mime_type"])
@@ -52,7 +77,7 @@ def create_desktop_entry(app):
     # Set it to "false" lowercase in such cases.
     if "StartupNotify" in app:
         de += "StartupNotify={}\n".format(app["StartupNotify"])
-        
+
     return de
 
 
@@ -63,9 +88,9 @@ def _get_dentry_filename(app):
 def main(dry_run=False):
     installed_packages = get_dpkg_dict(include_unpacked=True)[0]
 
-    entries = get_applications(parse_cmds=False)
+    entries = get_applications(parse_cmds=False, all_locales=True)
     apps = []
-    for e in entries:
+    for e in entries.itervalues():
         if e["type"] == "app":
             apps.append(e)
 
@@ -115,7 +140,7 @@ def main(dry_run=False):
             print '>>> Filename: {} will be applied these .desktop settings:\n'.format(file_name), de
         else:
             try:
-                with open(os.path.join(_DENTRIES_LOC, file_name), "w") as f:
+                with codecs.open(os.path.join(_DENTRIES_LOC, file_name), 'w', 'utf-8') as f:
                     f.write(de)
             except IOError as err:
                 logger.error("Unable to write to {}".format(_DENTRIES_LOC))
@@ -128,9 +153,9 @@ if __name__ == "__main__":
     Pass "--dry-run" as first parameter to explain what would be done, but nothing wil change.
     $ python update-add-dir | grep ">>> Filename" will dump a list of would-be-affected desktop files.
     '''
-    
+
     dry_run=False
-    
+
     if len(sys.argv) > 1 and sys.argv[1] == '--dry-run':
         print 'Running in dry-run mode (no changes will be applied)'
         dry_run=True
