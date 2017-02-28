@@ -15,6 +15,10 @@ from kano_i18n.init import get_current_translation
 
 # The system directory that contains *.app and *.desktop entries
 _SYSTEM_APPLICATIONS_LOC = '/usr/share/applications/'
+DEFAULT_LOCALE = 'en_US'
+LOCALE_KEY = 'locale'
+APP_LOCALE_DIR = os.path.join(_SYSTEM_APPLICATIONS_LOC, 'locale')
+
 
 # Store the package list globally so it doesn't get parsed every time
 # we query for applications - it takes some time to parse it.
@@ -71,7 +75,22 @@ def is_app_installed(app):
     return True
 
 
-def get_applications(parse_cmds=True):
+def get_locale_dir(locale_code):
+    return os.path.join(APP_LOCALE_DIR, locale_code)
+
+def flatten_locale(apps, locale):
+    flat_apps = {}
+
+    for app_name, app_data in apps.iteritems():
+        app_locale = app_data.pop(LOCALE_KEY, {})
+        if locale in app_locale:
+            app_data.update(app_locale[locale])
+        flat_apps[app_name] = app_data
+
+    return flat_apps
+
+
+def get_applications(parse_cmds=True, all_locales=False, current_locale=True):
     """ Get all the applications installed on the system.
 
         :param parse_cmds:
@@ -95,7 +114,7 @@ def get_applications(parse_cmds=True):
         "chromium-browser.desktop", "openjdk-7-policytool.desktop"
     ]
 
-    def _collect_apps(application_dir):
+    def _collect_apps(application_dir, skip_checks=False):
         if not os.path.exists(application_dir):
             return {}
 
@@ -108,9 +127,9 @@ def get_applications(parse_cmds=True):
                 continue
 
             if f[-4:] == ".app":
-                data = load_from_app_file(fp, parse_cmds)
+                data = load_from_app_file(fp, not skip_checks and parse_cmds)
                 if data is not None:
-                    if not is_app_installed(data):
+                    if not skip_checks and not is_app_installed(data):
                         data["_install"] = True
 
                     _applications[f] = data
@@ -124,26 +143,55 @@ def get_applications(parse_cmds=True):
 
         return _applications
 
-    apps = _collect_apps(loc)
-
-    # get localised apps
-    current_locale = ensure_utf_locale(get_locale())
-
-    if current_locale and get_current_translation():
-        locale_code = current_locale.split('.')[0]
-        locale_path = os.path.join(
-            _SYSTEM_APPLICATIONS_LOC, "locale", locale_code
-        )
-
-        localised_apps = _collect_apps(locale_path)
-        apps.update(localised_apps)
-
-    filtered_apps = [
-        app for f, app in apps.iteritems()
-        if os.path.basename(app['origin']) not in blacklist
+    locales = [
+        (DEFAULT_LOCALE, _SYSTEM_APPLICATIONS_LOC)
     ]
 
-    return sorted(filtered_apps, key=lambda a: a["title"])
+    locale_code = None
+
+    if all_locales:
+        locales += [
+            (locale, get_locale_dir(locale))
+            for locale in os.listdir(APP_LOCALE_DIR)
+        ]
+    elif current_locale:
+        current_locale = ensure_utf_locale(get_locale())
+        if current_locale and get_current_translation():
+            locale_code = current_locale.split('.')[0]
+            locales.append(
+                (locale_code, get_locale_dir(locale_code))
+            )
+
+    apps = {}
+
+    for locale, locale_dir in locales:
+        locale_apps = _collect_apps(
+            locale_dir, skip_checks=locale != DEFAULT_LOCALE
+        )
+
+        for app_name, app_data in locale_apps.iteritems():
+            if app_name not in apps:
+                apps[app_name] = {}
+
+            if locale == DEFAULT_LOCALE:
+                apps[app_name].update(app_data)
+            else:
+                if LOCALE_KEY not in apps[app_name]:
+                    apps[app_name][LOCALE_KEY] = {}
+
+                apps[app_name][LOCALE_KEY][locale] = app_data
+
+    if locale_code:
+        apps = flatten_locale(apps, locale_code)
+        filtered_apps = [
+            app for f, app in apps.iteritems()
+            if os.path.basename(app['origin']) not in blacklist
+        ]
+
+        return sorted(filtered_apps, key=lambda a: a["title"])
+
+    return apps
+
 
 
 def load_from_app_file(app_path, parse_cmd=True):
