@@ -11,7 +11,7 @@
 
     "packages": [],
     "dependencies": ["chromium-browser"],
-    "launch_command": "chromium-browser",
+    "launch_command": "chromium-browser --start-maximized",
     "overrides": ["chromium.desktop", "chromium-browser.desktop",
                   "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"],
 
