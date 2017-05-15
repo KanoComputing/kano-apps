@@ -142,6 +142,10 @@ def download_app(app_id_or_slug):
     data['categories'] = map(lambda c: c.lower(), data['categories'])
     data['removable'] = True
 
+    # FIXME: This should all be done in the API
+    if 'priority' not in data:
+        data['priority'] = get_prio(data['slug'])
+
     # write out the data
     data_path = '/tmp/{}.app'.format(app_id_or_slug)
     with open(data_path, 'w') as f:
@@ -184,3 +188,16 @@ def uninstall_link_and_icon(app_name, pw=None):
     run_sudo_cmd("rm -f {}".format(system_app_icon_file), pw)
     run_sudo_cmd("update-icon-caches /usr/share/icons/Kano", pw)
     run_sudo_cmd("gtk-update-icon-cache-3.0", pw)
+
+
+'''
+Assigns priority to apps based on their name. Ideally this would be stored in
+the API and we simply have to query it.
+
+FIXME: Migrate this to the API
+'''
+def get_prio(slug):
+    if slug == 'terminal-quest':
+        return 725
+
+    return 0
