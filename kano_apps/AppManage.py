@@ -202,5 +202,7 @@ FIXME: Migrate this to the API
 def get_prio(slug):
     if slug == 'terminal-quest':
         return 725
+    elif slug == 'powerup':
+        return 525
 
     return 0
