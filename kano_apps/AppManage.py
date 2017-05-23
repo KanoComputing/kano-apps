@@ -146,6 +146,9 @@ def download_app(app_id_or_slug):
     if 'priority' not in data:
         data['priority'] = get_prio(data['slug'])
 
+    if data['slug'] == 'powerup':
+        data['title'] = 'Make Light'
+
     # write out the data
     data_path = '/tmp/{}.app'.format(app_id_or_slug)
     with open(data_path, 'w') as f:
