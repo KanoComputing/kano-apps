@@ -66,7 +66,7 @@ App::App(JSON_Object *app_object, std::shared_ptr<App> fb):
 
     // FIXME: move this to qDebug()
     std::cout << "kano_qt_apps parsed app icon: " << this->icon << " title: '" << this->title << "'" << std::endl;
-    if (this->hidden == true) {
+    if (this->hidden) {
         std::cout << "kano_qt_apps WARNING icon '" << this->icon << "' is set hidden" << std::endl;
     }
 
