@@ -33,8 +33,9 @@ App::App(std::string app_file_path, std::shared_ptr<App> fb):
         return;
     }
 
-    // FIXME: move this to qDebug()
-    std::cout << "kano_qt_apps parsing app file: " << app_file_path << std::endl;
+#ifdef DEBUG
+    qDebug() << "kano_qt_apps parsing app file: " << app_file_path;
+#endif
 
     JSON_Object *node = json_value_get_object(root);
 
@@ -64,11 +65,12 @@ App::App(JSON_Object *app_object, std::shared_ptr<App> fb):
     if (this->icon.empty())
         this->icon = get_json_val<std::string>(app_object, "icon_url");
 
-    // FIXME: move this to qDebug()
-    std::cout << "kano_qt_apps parsed app icon: " << this->icon << " title: '" << this->title << "'" << std::endl;
+#ifdef DEBUG
+    qDebug() << "kano_qt_apps parsed app icon: " << this->icon << " title: '" << this->title << "'";
     if (this->hidden) {
-        std::cout << "kano_qt_apps WARNING icon '" << this->icon << "' is set hidden" << std::endl;
+        std::cout << "kano_qt_apps WARNING icon '" << this->icon << "' is set hidden";
     }
+#endif
 
     this->color = get_json_val<std::string>(app_object, "colour");
     this->categories = get_json_array<std::string>(app_object, "categories");
