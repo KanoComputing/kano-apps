@@ -54,6 +54,7 @@ class App
         std::vector<std::string> get_dependencies();
         std::string get_launch_command();
         std::vector<std::string> get_overrides();
+        bool get_hidden();
         bool get_desktop();
         int get_priority();
 
@@ -65,6 +66,7 @@ class App
         std::string slug;
         std::string icon;
         std::string color;
+        bool hidden;
         std::vector<std::string> categories;
         std::vector<std::string> packages;
         std::vector<std::string> dependencies;

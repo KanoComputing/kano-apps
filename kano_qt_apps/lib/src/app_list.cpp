@@ -34,7 +34,6 @@ AppList::AppList():
 
 void AppList::add_app(App new_app, std::shared_ptr<App> fallback)
 {
-    std::cout << "Add_app: " << fallback.get() << "\n";
     if (fallback)
         new_app.set_fallback(std::move(fallback));
 
