@@ -58,7 +58,10 @@ void AppList::add_app(JSON_Object *new_app, std::shared_ptr<App> fallback)
 
 void AppList::add_app_from_file(std::string file_path, std::shared_ptr<App> fallback)
 {
-    this->add_app(App(file_path), std::move(fallback));
+    App app=App(file_path);
+    if (app.get_hidden() == false) {
+        this->add_app(app, std::move(fallback));
+    }
 }
 
 void AppList::add_app_from_file(std::string file_path, std::string fallback)
