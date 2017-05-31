@@ -40,6 +40,7 @@ class QAppList : public QObject, public QQmlParserStatus, public AppList
         QAppList(const AppList &other);
         ~QAppList();
         QList<QVariant> get_app_list();
+        QList<QVariant> get_app_list(bool filter);
         virtual void classBegin();
         virtual void componentComplete();
         virtual void initialise();
