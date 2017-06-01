@@ -33,6 +33,10 @@ App::App(std::string app_file_path, std::shared_ptr<App> fb):
         return;
     }
 
+#ifdef DEBUG
+    qDebug() << "kano_qt_apps parsing app file: " << app_file_path;
+#endif
+
     JSON_Object *node = json_value_get_object(root);
 
     this->operator=(
@@ -56,10 +60,17 @@ App::App(JSON_Object *app_object, std::shared_ptr<App> fb):
     this->description = get_json_val<std::string>(app_object, "description");
     this->slug = get_json_val<std::string>(app_object, "slug");
     this->icon = get_json_val<std::string>(app_object, "icon");
+    this->hidden = get_json_val<bool>(app_object, "hidden");
 
     if (this->icon.empty())
         this->icon = get_json_val<std::string>(app_object, "icon_url");
-    std::cout << "icon " << this->icon << "\n";
+
+#ifdef DEBUG
+    qDebug() << "kano_qt_apps parsed app icon: " << this->icon << " title: '" << this->title << "'";
+    if (this->hidden) {
+        std::cout << "kano_qt_apps WARNING icon '" << this->icon << "' is set hidden";
+    }
+#endif
 
     this->color = get_json_val<std::string>(app_object, "colour");
     this->categories = get_json_array<std::string>(app_object, "categories");
@@ -104,6 +115,7 @@ App& App::operator=(const App &other)
     this->overrides = other.overrides;
     this->desktop = other.desktop;
     this->priority = other.priority;
+    this->hidden = other.hidden;
 
     this->fallback = other.fallback;
 
@@ -260,4 +272,9 @@ bool App::get_desktop()
 int App::get_priority()
 {
     return this->load_with_fallback(&App::priority);
+}
+
+bool App::get_hidden()
+{
+    return this->load_with_fallback(&App::hidden);
 }

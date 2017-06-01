@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QString>
 #include <QThread>
+
 #include <pwd.h>
 #include <unistd.h>
 #include <parson/parson.h>

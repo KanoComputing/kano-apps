@@ -60,12 +60,18 @@ void QAppList::clean_q_app_list()
 
 
 // TODO: Update the array as it changes to avoid calculating this multiple times
-QList<QVariant> QAppList::get_app_list()
+QList<QVariant> QAppList::get_app_list(bool filter)
 {
     this->clean_q_app_list();
 
     for (auto app : this->app_list) {
         auto q_app = new QApp(app);
+
+        // If filter is requested and app is hidden, do not add the icon
+        if (filter && q_app->get_hidden()) {
+            continue;
+        }
+
         auto variant_q_app = QVariant::fromValue(q_app);
         this->q_app_list.push_back(variant_q_app);
     }
