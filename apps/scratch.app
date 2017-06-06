@@ -10,8 +10,8 @@
     "categories": ["code"],
 
     "packages": [],
-    "dependencies": ["scratch"],
-    "launch_command": "scratch",
+    "dependencies": ["scratch", "kano-profile"],
+    "launch_command": "kano-tracker-ctl session run 'scratch' 'scratch'",
     "overrides": ["scratch.desktop", "squeak.desktop"],
     "priority": 875
 }

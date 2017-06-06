@@ -10,8 +10,8 @@
     "categories": ["code"],
 
     "packages": [],
-    "dependencies": ["lxterminal"],
-    "launch_command": "lxterminal",
+    "dependencies": ["lxterminal", "kano-profile"],
+    "launch_command": "kano-tracker-ctl session run 'lxterminal' 'lxterminal'",
     "overrides": ["lxterminal.desktop", "lxde-x-terminal-emulator.desktop"],
     "priority": 0
 }
