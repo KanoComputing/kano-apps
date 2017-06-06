@@ -10,8 +10,8 @@
     "categories": ["tools"],
 
     "packages": [],
-    "dependencies": ["chromium-browser"],
-    "launch_command": "chromium-browser --start-maximized",
+    "dependencies": ["chromium-browser", "kano-profile"],
+    "launch_command": "kano-tracker-ctl session run 'chromium-browser' 'chromium-browser --start-maximized'",
     "overrides": ["chromium.desktop", "chromium-browser.desktop",
                   "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"],
 
