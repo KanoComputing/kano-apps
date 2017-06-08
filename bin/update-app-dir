@@ -137,7 +137,9 @@ def main(dry_run=False):
 
         if dry_run:
             print '>>> App found:', app
-            print '>>> Filename: {} will be applied these .desktop settings:\n'.format(file_name), de
+            print '>>> Filename:', file_name
+            print '>>> Settings .desktop\n'
+            print de.encode('utf8')
         else:
             try:
                 with codecs.open(os.path.join(_DENTRIES_LOC, file_name), 'w', 'utf-8') as f:
