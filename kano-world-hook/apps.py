@@ -23,7 +23,7 @@ def run(args):
     return app_id
 
 
-def launch(app_id):
+def launch(app_id, background=False):
     cmd = "kano-apps"
     args = ["install", app_id]
 
