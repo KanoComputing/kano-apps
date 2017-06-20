@@ -10,6 +10,8 @@
 
 #include <string>
 #include <vector>
+#include <regex>
+#include <sstream>
 #include <parson/json_helpers.h>
 
 #include "logger.h"
@@ -249,9 +251,54 @@ std::vector<std::string> App::get_dependencies()
 }
 
 
-std::string App::get_launch_command()
+/**
+ * The launch command can contain markers for several arguments. Arguments of
+ * paricular note are:
+ *     %f    A single file name (including the path)
+ *     %F    A list of files
+ *
+ * Other arguments exist but unless explicity implemented via an argument, they
+ * will be stripped out.
+ *
+ * The full specification can be found here:
+ *     https://standards.freedesktop.org/desktop-entry-spec/latest/ar01s06.html
+ */
+std::string App::get_launch_command(std::vector<std::string> paths)
 {
-    return this->load_with_fallback(&App::launch_command);
+    std::string cmd = this->load_with_fallback(&App::launch_command);
+
+    if (!paths.empty()) {
+        // Single file argument, %f
+        cmd = std::regex_replace(
+            cmd,
+            std::regex("%f"),
+            paths.front()
+        );
+
+        // Multi-file argument, %F
+        std::stringstream path_stream;
+        copy(
+            paths.begin(),
+            paths.end(),
+            std::ostream_iterator<std::string>(path_stream, " ")
+        );
+
+        cmd = std::regex_replace(
+            cmd,
+            std::regex("%F"),
+            path_stream.str()
+        );
+    }
+
+    // Strip all other arguments
+    std::regex arg_exp("%.");
+    cmd = std::regex_replace(
+        cmd,
+        std::regex("%."),
+        ""
+    );
+
+    return cmd;
 }
 
 

@@ -52,7 +52,7 @@ class App
         std::vector<std::string> get_categories();
         std::vector<std::string> get_packages();
         std::vector<std::string> get_dependencies();
-        std::string get_launch_command();
+        std::string get_launch_command(std::vector<std::string> paths = {});
         std::vector<std::string> get_overrides();
         bool get_hidden();
         bool get_desktop();
