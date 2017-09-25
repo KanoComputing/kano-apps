@@ -14,5 +14,5 @@
     "launch_command": "kano-tracker-ctl session run 'files' 'pcmanfm'",
     "overrides": [],
 
-    "priority": 400
+    "priority": 750
 }
