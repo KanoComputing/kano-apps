@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Icon=/usr/share/kano-desktop/icons/apps.png
+Exec=/bin/bash -c "kdesk-hourglass-app kano-apps && /usr/bin/kano-apps"
+StartupNotify=true
+Name=Apps
+Name[es_AR]=Aplicaciones

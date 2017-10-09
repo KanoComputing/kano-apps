@@ -4,6 +4,12 @@ kano-apps (3.12.1-0) unstable; urgency=low
 
  -- Team Kano <dev@kano.me>  Mon, 25 Sep 2017 15:27:00 +0000
 
+kano-apps (3.9.2-0) unstable; urgency=low
+
+  * Added Argentinian Spanish .desktop translations for Apps & Files (backport)
+
+ -- Team Kano <dev@kano.me>  Mon, 9 Oct 2017 13:58:00 +0000
+
 kano-apps (2.2.0-1) unstable; urgency=low
 
   * New versioning convention

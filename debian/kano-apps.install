@@ -1,15 +1,18 @@
 bin/* usr/bin/
+
 kano_apps usr/lib/python2.7/dist-packages/
+
 media usr/share/kano-apps/
+
 apps/*.app usr/share/applications/
 apps/icons/* usr/share/icons/Kano/66x66/apps/
 apps/locale/* usr/share/applications/locale/
 
-kdesk-icon/Apps.lnk usr/share/kano-desktop/kdesk/kdesktop/
+kdesk-icon/*.lnk usr/share/kano-desktop/kdesk/kdesktop/
+kdesk-icon/*.desktop usr/share/applications/
 kdesk-icon/*.png usr/share/kano-desktop/icons/
 kdesk-icon/i18n/es_AR/*.png usr/share/kano-desktop/icons/i18n/es_AR/
 
 kano-world-hook/* usr/lib/python2.7/dist-packages/kano_world/hooks/
 
 locale/* usr/share/locale/
-
