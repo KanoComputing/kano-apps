@@ -2,8 +2,9 @@ kano-apps (3.14.0-0) unstable; urgency=low
 
   * Applied changes from v3.9.2 es_AR backports to latest
   * Changed to use scratch2
+  * Moved Internet app icon over KW on first Dashboard page
 
- -- Team Kano <dev@kano.me>  Mon, 16 Oct 2017 15:12:00 +0100
+ -- Team Kano <dev@kano.me>  Mon, 27 Nov 2017 14:52:00 +0100
 
 kano-apps (3.12.1-0) unstable; urgency=low
 

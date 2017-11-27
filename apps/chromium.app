@@ -15,5 +15,5 @@
     "overrides": ["chromium.desktop", "chromium-browser.desktop",
                   "lxde-x-www-browser.desktop", "epiphany-newtab.desktop"],
 
-    "priority": 400
+    "priority": 650
 }
