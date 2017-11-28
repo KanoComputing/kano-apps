@@ -91,7 +91,7 @@ def main(dry_run=False):
     entries = get_applications(parse_cmds=False, all_locales=True)
     apps = []
     for e in entries.itervalues():
-        if e["type"] == "app":
+        if e.get("type") == "app":
             apps.append(e)
 
     # Remove unused ones
