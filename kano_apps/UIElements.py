@@ -6,12 +6,7 @@
 # Different parts of the app's UI
 
 
-# When this module was transitioned from pip (0.1.4) to deb (0.4.2-13.1),
-# the version in Raspbian contained an all caps name for the module.
-try:
-    import PAM as pam
-except ImportError:
-    import pam
+import pam
 import getpass
 
 from gi.repository import Gtk
