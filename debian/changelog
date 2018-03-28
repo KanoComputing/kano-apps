@@ -1,3 +1,9 @@
+kano-apps (3.15.0-0) unstable; urgency=low
+
+  * Fixed import of Python pam module when using the deb package
+
+ -- Team Kano <dev@kano.me>  Wed, 28 Mar 2018 11:55:00 +0100
+
 kano-apps (3.14.0-0) unstable; urgency=low
 
   * Applied changes from v3.9.2 es_AR backports to latest
