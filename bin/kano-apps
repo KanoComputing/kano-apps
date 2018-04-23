@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-
+#
 # kano-apps
 #
-# Copyright (C) 2014-2016 Kano Computing Ltd.
+# Copyright (C) 2014-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# App launcher and installer
 #
 
 import os
@@ -12,15 +14,15 @@ import json
 import argparse
 
 if __name__ == '__main__' and __package__ is None:
-    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if dir_path != '/usr':
-        sys.path = [dir_path] + sys.path
-        locale_path = os.path.join(dir_path, 'locale')
+    DIR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if DIR_PATH != '/usr':
+        sys.path = [DIR_PATH] + sys.path
+        LOCALE_PATH = os.path.join(DIR_PATH, 'locale')
     else:
-        locale_path = None
+        LOCALE_PATH = None
 
 import kano_i18n.init
-kano_i18n.init.install('kano-apps', locale_path)
+kano_i18n.init.install('kano-apps', LOCALE_PATH)
 
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.logging import logger
@@ -91,6 +93,9 @@ def main():
     args = args_parse()
     if args is not None and args.cmd == "install":
         if args.gui:
+            from gi import require_version
+            require_version('Gtk', '3.0')
+
             from gi.repository import Gtk
             from kano_apps.MainWindow import MainWindow
             from kano.gtk3.scrolled_window import ScrolledWindow
@@ -149,6 +154,9 @@ def main():
         logger.info('{} apps can be updated'.format(n))
     elif args is not None and args.cmd == "icon-tutorial":
         # GTK is imported only if we're running in GUI mode
+        from gi import require_version
+        require_version('Gtk', '3.0')
+
         from gi.repository import Gtk
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
@@ -159,6 +167,9 @@ def main():
         Gtk.main()
     else:
         # GTK is imported only if we're running in GUI mode
+        from gi import require_version
+        require_version('Gtk', '3.0')
+
         from gi.repository import Gtk
         from kano_apps.MainWindow import MainWindow
         from kano.gtk3.scrolled_window import ScrolledWindow
