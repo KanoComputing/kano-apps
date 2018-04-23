@@ -1,12 +1,12 @@
-/*
-# style.css
-#
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
-#
-# This controls the styles
+/**
+ * style.css
+ *
+ * Copyright (C) 2014 - 2018 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+ *
+ * This controls the styles
+ */
 
-*/
 
 /* All */
 
@@ -53,25 +53,29 @@ GtkScrolledWindow, GtkViewport {
 
 .add_button {
     background-color: #91D064;
-    font: Bariol Bold 16;
+    font-family: "Bariol Bold";
+    font-size: 16pt;
     border-radius: 3px;
 }
 
-.add_button:insensitive {
+.add_button:disabled {
     background-color: #cdcdcd;
-    font: Bariol Bold 16;
+    font-family: "Bariol Bold";
+    font-size: 16pt;
     border-radius: 3px;
 }
 
 .cancel_button {
     background-color: #F37677;
-    font: Bariol Bold 16;
+    font-family: "Bariol Bold";
+    font-size: 16pt;
     border-radius: 3px;
 }
 
 .desktop_toggle_button {
     background-color: #91D064;
-    font: Bariol Bold 16;
+    font-family: "Bariol Bold";
+    font-size: 16pt;
     border-radius: 3px;
 }
 
@@ -82,12 +86,14 @@ GtkScrolledWindow, GtkViewport {
 
 .app_name {
     color: #fff;
-    font: Bariol bold 18;
+    font-family: "Bariol Bold";
+    font-size: 18pt;
 }
 
 .app_desc {
     color: #fff;
-    font: Bariol 12;
+    font-family: Bariol;
+    font-size: 12pt;
 }
 
 .app_link_spacer {
@@ -120,16 +126,17 @@ GtkScrolledWindow, GtkViewport {
 
 .help-title {
     color: @title_color;
-    font: Bariol Bold 18;
+    font-family: "Bariol Bold";
+    font-size: 18pt;
 }
 
 .help-text {
     color: @subheading_color;
-    font: Bariol 12;
+    font-family: Bariol;
+    font-size: 12pt;
 }
 
-GtkNotebook {
-    background-color: #e3e3e3;
+notebook {
     -GtkNotebook-tab-overlap: -12px;
     -GtkWidget-focus-line-width: 0px;
     -GtkNotebook-initial-gap: 28px;
@@ -137,21 +144,28 @@ GtkNotebook {
     padding: 0px;
 }
 
-GtkNotebook tab:active {
+notebook tabs {
+    background-color: #e3e3e3;
+}
+
+
+notebook tab:checked {
     background-color: #fff;
     border: 0px;
 }
 
-GtkNotebook tab {
+notebook tab {
     border: none;
     background-color: #d1d1d1;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     padding: 12px 10px 12px 10px;
+    box-shadow: none;
 }
 
-GtkNotebook tab GtkLabel {
-    font: Bariol bold 13;
+notebook tab GtkLabel {
+    font-family: "Bariol Bold";
+    font-size: 13pt;
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/
