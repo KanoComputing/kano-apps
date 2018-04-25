@@ -11,6 +11,9 @@ export PATH := $(PATH):$(QT5PATH)
 	dh $@ --with python2
 
 override_dh_auto_build:
+	# FIXME: The chroot environment should handle these links
+	ln -sfv -r /opt/vc/lib/libbrcmEGL.so /opt/vc/lib/libEGL.so
+	ln -sfv -r /opt/vc/lib/libbrcmGLESv2.so /opt/vc/lib/libGLESv2.so
 	cd kano_qt_apps && qmake -r
 	cd kano_qt_apps && make
 	cd po && make messages.pot
