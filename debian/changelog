@@ -1,6 +1,7 @@
 kano-apps (4.0.0-0) unstable; urgency=low
 
   * Fix support for Gtk packages included with Stretch.
+  * Bump default browser scale factor to make touch easier
 
  -- Team Kano <dev@kano.me>  Mon, 23 Apr 2018 13:50:00 +0100
 
