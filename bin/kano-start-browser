@@ -1,2 +1,2 @@
 #!/bin/sh
-chromium-browser --start-maximized
+chromium-browser --start-maximized --force-device-scale-factor=1.2
