@@ -42,7 +42,7 @@ KanoLayouts.TileGridLayout {
     Binding {
         target: control
         property: 'tile_count'
-        value: scroll_grid.tile_count
+        value: scroll_grid.view_app_count
     }
     Binding {
         target: control
