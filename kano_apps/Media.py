@@ -1,11 +1,14 @@
 # Media.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 # Functions related to artwork and media resources
 
 import os
+
+from gi import require_version
+require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
 
 # TODO: It would be easier to keep this within kano_apps as package

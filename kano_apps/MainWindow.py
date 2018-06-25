@@ -1,10 +1,12 @@
 # MainWindow.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 # The MainWindow class
 
+from gi import require_version
+require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 from kano_apps import Media
