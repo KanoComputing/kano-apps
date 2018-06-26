@@ -12,7 +12,6 @@
 
 GtkScrolledWindow, GtkViewport {
     border-width: 0px;
-    -GtkWidget-focus-line-width: 0px;
 }
 
 .main_window {
@@ -32,7 +31,6 @@ GtkScrolledWindow, GtkViewport {
     border-color: transparent;
 
     -unico-focus-border-color: transparent;
-    -GtkWidget-focus-line-width: 0px;
 }
 
 .white-bg {
@@ -138,7 +136,6 @@ GtkScrolledWindow, GtkViewport {
 
 notebook {
     -GtkNotebook-tab-overlap: -12px;
-    -GtkWidget-focus-line-width: 0px;
     -GtkNotebook-initial-gap: 28px;
 
     padding: 0px;
