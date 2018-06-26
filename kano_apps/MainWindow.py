@@ -16,7 +16,6 @@ from kano.gtk3.top_bar import TopBar
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_dialog import KanoDialog
 
-from kano_profile.apps import save_app_state_variable, load_app_state_variable
 
 try:
     from kano_profile.tracker import Tracker
@@ -95,10 +94,17 @@ class MainWindow(ApplicationWindow):
             self._show_icon_tutorial()
 
     def _show_icon_tutorial(self):
-        if load_app_state_variable('kano-apps', 'icon-tutorial-shown'):
-            return
-        else:
-            save_app_state_variable('kano-apps', 'icon-tutorial-shown', True)
+        try:
+            from kano_profile.apps import save_app_state_variable, load_app_state_variable
+
+            if load_app_state_variable('kano-apps', 'icon-tutorial-shown'):
+                return
+            else:
+                save_app_state_variable('kano-apps', 'icon-tutorial-shown', True)
+        except ImportError:
+            # ignore problems importing kano_profile, as we don't want it to
+            # be a dependency
+            pass
 
         kdialog = KanoDialog(
             _("Add more apps to the desktop"),
