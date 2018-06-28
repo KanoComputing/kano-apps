@@ -14,7 +14,7 @@
         "chromium-browser",
         "kano-profile"
     ],
-    "launch_command": "kano-tracker-ctl session run 'secrets' 'chromium-browser --app=https://getkano.co/os-secrets --start-maximized'",
+    "launch_command": "kano-tracker-ctl session run 'secrets' 'chromium-browser --app=https://os-redirect.kano.me/os-secrets --start-maximized'",
     "overrides": [],
     "priority": 524
 }
