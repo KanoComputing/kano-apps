@@ -1,6 +1,5 @@
 # Project-specific
 
-*.app
 
 .DS_Store
 *.pyc
