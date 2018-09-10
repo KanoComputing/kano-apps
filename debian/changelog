@@ -1,3 +1,9 @@
+kano-apps (4.1.0-0) unstable; urgency=low
+
+  * Added Songmaker app.
+
+ -- Team Kano <dev@kano.me>  Mon, 10 Sep 2018 11:50:00 +0100
+
 kano-apps (4.0.0-0) unstable; urgency=low
 
   * Fix support for Gtk packages included with Stretch.
