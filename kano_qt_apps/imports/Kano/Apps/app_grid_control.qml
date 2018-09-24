@@ -1,7 +1,7 @@
 /**
  * app_grid_control.qml
  *
- * Copyright (C) 2016 Kano Computing Ltd.
+ * Copyright (C) 2016 - 2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Control for grid of app entries
@@ -36,7 +36,7 @@ Row {
             width: height + spacing * 2
 
             Rectangle {
-                property bool is_last_page: index + 1 < page_count
+                property bool is_last_page: index + 1 >= page_count
 
                 id: indicator
 
@@ -60,9 +60,10 @@ Row {
 
                     model: 9
                     delegate: Rectangle {
+                        property int apps_on_page:
+                            app_count % tile_count || tile_count
                         property bool space_filled:
-                            indicator.is_last_page ||
-                            index < (app_count % tile_count)
+                            !indicator.is_last_page || index < apps_on_page
                         color: space_filled ? indicator_color : 'transparent'
                         border.width: 1
                         border.color: indicator_color
