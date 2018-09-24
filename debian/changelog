@@ -2,6 +2,7 @@ kano-apps (4.1.0-0) unstable; urgency=low
 
   * Added Songmaker app.
   * Move Files app to page 2
+  * Fix app page indicator when showing full grid off apps
 
  -- Team Kano <dev@kano.me>  Mon, 10 Sep 2018 11:50:00 +0100
 
