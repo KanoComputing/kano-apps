@@ -1,7 +1,7 @@
 /**
  * app_list.cpp
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Data structure to contain a list of apps
@@ -15,6 +15,8 @@
 #include <parson/parson.h>
 #include <parson/json_helpers.h>
 
+#include <Kano/TouchDetect/touch_detect.h>
+
 #include "app_list.h"
 #include "app.h"
 #include "config.h"
@@ -27,7 +29,8 @@ AppList::AppList():
             {API_URL_KEY, "http://api.kano.me/apps"}
         },
         "kano_apps.conf"
-    )
+    ),
+    touch_supported(Kano::TouchDetect::isTouchSupported())
 {
 }
 

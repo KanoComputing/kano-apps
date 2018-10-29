@@ -1,7 +1,7 @@
 /**
  * app_list.h
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Data structure to contain a list of apps
@@ -37,6 +37,9 @@ class AppList : public Config
         void add_app_from_file(std::string file_path, std::string fallback);
 
         std::vector<App> app_list;
+
+    protected:
+        bool touch_supported;
 };
 
 

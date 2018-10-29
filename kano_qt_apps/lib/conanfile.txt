@@ -1,0 +1,5 @@
+[requires]
+touch-detect/4.2.0@KanoComputing/stable
+
+[generators]
+qmake
