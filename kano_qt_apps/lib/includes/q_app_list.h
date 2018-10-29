@@ -1,7 +1,7 @@
 /**
  * q_app_list.h
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Qt wrapper for the AppList class to expose the methods to Qt
@@ -35,7 +35,7 @@ class QAppList : public QObject, public QQmlParserStatus, public AppList
                NOTIFY apps_changed)
 
     public:
-        QAppList(QObject *parent = NULL);
+        QAppList(QObject *parent = nullptr);
         QAppList(const QAppList &other);
         QAppList(const AppList &other);
         ~QAppList();

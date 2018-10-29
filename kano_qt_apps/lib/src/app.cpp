@@ -1,7 +1,7 @@
 /**
  * app.cpp
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Parses a ".app" file and represents the app described by the file
@@ -61,6 +61,7 @@ App::App(JSON_Object *app_object, std::shared_ptr<App> fb):
     this->slug = get_json_val<std::string>(app_object, "slug");
     this->icon = get_json_val<std::string>(app_object, "icon");
     this->hidden = get_json_val<bool>(app_object, "hidden");
+    this->touch_only = get_json_val<bool>(app_object, "touch_only");
 
     if (this->icon.empty())
         this->icon = get_json_val<std::string>(app_object, "icon_url");
@@ -116,6 +117,7 @@ App& App::operator=(const App &other)
     this->desktop = other.desktop;
     this->priority = other.priority;
     this->hidden = other.hidden;
+    this->touch_only = other.touch_only;
 
     this->fallback = other.fallback;
 
@@ -277,4 +279,9 @@ int App::get_priority()
 bool App::get_hidden()
 {
     return this->load_with_fallback(&App::hidden);
+}
+
+bool App::get_touch_only()
+{
+    return this->load_with_fallback(&App::touch_only);
 }

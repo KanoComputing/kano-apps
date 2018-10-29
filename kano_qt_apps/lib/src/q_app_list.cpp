@@ -1,7 +1,7 @@
 /**
  * q_app_list.cpp
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Qt wrapper for the AppList class to expose the methods to Qt
@@ -66,6 +66,10 @@ QList<QVariant> QAppList::get_app_list(bool filter)
 
     for (auto app : this->app_list) {
         auto q_app = new QApp(app);
+
+        if (!this->touch_supported && q_app->get_touch_only()) {
+            continue;
+        }
 
         // If filter is requested and app is hidden, do not add the icon
         if (filter && q_app->get_hidden()) {

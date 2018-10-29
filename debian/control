@@ -11,6 +11,7 @@ Build-Depends:
     libqt5all-dev,
     libparson-dev,
     kano-qt-sdk-dev,
+    kano-touch-support-dev
 
 
 Package: kano-apps
@@ -26,7 +27,9 @@ Description: A simple app to launch various program
 
 Package: libkano-apps
 Architecture: any
-Depends: ${misc:Depends}, libparson
+Depends: ${misc:Depends},
+ libparson,
+ kano-touch-support
 Description: Library to manage apps installed on Kano OS
 
 Package: libkano-apps-dev

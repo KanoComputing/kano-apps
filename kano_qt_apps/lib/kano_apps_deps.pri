@@ -1,3 +1,14 @@
+exists(conanbuildinfo.pri) {
+    CONFIG += conan_basic_setup
+    include(conanbuildinfo.pri)
+} else {
+    warning("Conan not being used, either run")
+    warning("    conan install .")
+    warning("or add libtouch_detect.so to your path")
+    QMAKE_LFLAGS += -ltouch_detect
+}
+
+
 QMAKE_LFLAGS *= -lparson
 INCLUDEPATH *= $$PWD/includes
 

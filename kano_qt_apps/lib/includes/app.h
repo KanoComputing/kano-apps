@@ -1,7 +1,7 @@
 /**
  * app.h
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Parses a ".app" file and represents the app described by the file
@@ -55,6 +55,7 @@ class App
         std::string get_launch_command();
         std::vector<std::string> get_overrides();
         bool get_hidden();
+        bool get_touch_only();
         bool get_desktop();
         int get_priority();
 
@@ -67,6 +68,7 @@ class App
         std::string icon;
         std::string color;
         bool hidden;
+        bool touch_only;
         std::vector<std::string> categories;
         std::vector<std::string> packages;
         std::vector<std::string> dependencies;
