@@ -1,3 +1,9 @@
+kano-apps (4.2.1-0) unstable; urgency=low
+
+  * Add support for Dashboard-less mode flag in app files
+
+ -- Team Kano <dev@kano.me>  Wed, 30 Jan 2019 14:30:00 +0100
+
 kano-apps (4.2.0-0) unstable; urgency=low
 
   * Add "touch_only" flag to `.app` files

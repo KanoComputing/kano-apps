@@ -1,7 +1,7 @@
 /**
  * app_grid_layout.qml
  *
- * Copyright (C) 2016 Kano Computing Ltd.
+ * Copyright (C) 2016-2018 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Grid for app entries
@@ -15,8 +15,9 @@ import Kano.Apps 1.0 as KanoApps
 
 
 KanoLayouts.TileGridLayout {
-    signal app_launched(string launch_command)
+    signal app_launched(string launch_command, var data)
     signal app_hovered(string app)
+
 
     property int page_index: 0
     property int page: page_index + 1
@@ -120,12 +121,23 @@ KanoLayouts.TileGridLayout {
         delegate: KanoApps.AppTile {
             app: modelData.title
             launch_command: modelData.launch_command
+            dashboard_less_mode: modelData.dashboard_less_mode
             image_source: modelData.icon
             height: app_grid.content_height
             width: app_grid.content_width
-            onApp_launched: scroll_grid.app_launched(launch_command)
-            onApp_hovered: scroll_grid.app_hovered(app)
+	    property var data: modelData
+	    property bool mode: modelData.dashboard_less_mode
+
+            onApp_launched: {
+                console.log("Launch command: " + launch_command);
+                console.log("Launch Dashboard Less Mode: " + dashboard_less_mode);
+                scroll_grid.app_launched(launch_command, {
+                    dashboard_less_mode: dashboard_less_mode
+                })
+	    }
+            onApp_hovered: {
+                scroll_grid.app_hovered(app)
+            }
         }
     }
-
 }
