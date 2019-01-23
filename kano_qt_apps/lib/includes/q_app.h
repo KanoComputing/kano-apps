@@ -81,6 +81,9 @@ class QApp : public QObject, public App
     Q_PROPERTY(QStringList overrides
                READ get_q_overrides
                CONSTANT)
+    Q_PROPERTY(bool dashboard_less_mode
+               READ get_dashboard_less_mode
+               CONSTANT)
     Q_PROPERTY(bool desktop
                READ get_desktop
                CONSTANT)

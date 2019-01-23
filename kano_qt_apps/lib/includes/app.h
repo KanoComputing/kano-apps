@@ -56,6 +56,7 @@ class App
         std::vector<std::string> get_overrides();
         bool get_hidden();
         bool get_touch_only();
+        bool get_dashboard_less_mode();
         bool get_desktop();
         int get_priority();
 
@@ -69,6 +70,7 @@ class App
         std::string color;
         bool hidden;
         bool touch_only;
+        bool dashboard_less_mode;
         std::vector<std::string> categories;
         std::vector<std::string> packages;
         std::vector<std::string> dependencies;
