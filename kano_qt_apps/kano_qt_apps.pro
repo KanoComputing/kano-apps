@@ -1,7 +1,5 @@
 TEMPLATE = subdirs
 
-QT += qml
-
 SUBDIRS = \
     kano_apps \
     imports

@@ -17,7 +17,7 @@
 #include <QList>
 #include <QVariant>
 #include <QMetaType>
-#include <QtQml/QQmlParserStatus>
+#include <QQmlParserStatus>
 
 #include "app.h"
 #include "app_list.h"

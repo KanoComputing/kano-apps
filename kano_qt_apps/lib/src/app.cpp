@@ -1,7 +1,7 @@
 /**
  * app.cpp
  *
- * Copyright (C) 2016-2018 Kano Computing Ltd.
+ * Copyright (C) 2016-2019 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Parses a ".app" file and represents the app described by the file
@@ -62,7 +62,7 @@ App::App(JSON_Object *app_object, std::shared_ptr<App> fb):
     this->icon = get_json_val<std::string>(app_object, "icon");
     this->hidden = get_json_val<bool>(app_object, "hidden");
     this->touch_only = get_json_val<bool>(app_object, "touch_only");
-    this->dashboard_less_mode = get_json_val<bool>(app_object, "dashboard_less_mode");
+    this->single_app_mode = get_json_val<bool>(app_object, "single_app_mode");
 
     if (this->icon.empty())
         this->icon = get_json_val<std::string>(app_object, "icon_url");
@@ -119,7 +119,7 @@ App& App::operator=(const App &other)
     this->priority = other.priority;
     this->hidden = other.hidden;
     this->touch_only = other.touch_only;
-    this->dashboard_less_mode = other.dashboard_less_mode;
+    this->single_app_mode = other.single_app_mode;
 
     this->fallback = other.fallback;
 
@@ -288,7 +288,7 @@ bool App::get_touch_only()
     return this->load_with_fallback(&App::touch_only);
 }
 
-bool App::get_dashboard_less_mode()
+bool App::get_single_app_mode()
 {
-    return this->load_with_fallback(&App::dashboard_less_mode);
+    return this->load_with_fallback(&App::single_app_mode);
 }

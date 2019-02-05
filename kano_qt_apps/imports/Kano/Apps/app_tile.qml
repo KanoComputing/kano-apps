@@ -1,7 +1,7 @@
 /**
  * app_tile.qml
  *
- * Copyright (C) 2016-2018 Kano Computing Ltd.
+ * Copyright (C) 2016-2019 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * An app entry for the creative apps list
@@ -19,7 +19,7 @@ Item {
     property string app: ''
     property alias image_source: icon.image_source
     property string launch_command: ''
-    property bool dashboard_less_mode: false
+    property bool single_app_mode: false
     property string color
     property string hover_colour
     property int cell_spacing: 10
