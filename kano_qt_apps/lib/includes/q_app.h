@@ -1,7 +1,7 @@
 /**
  * q_app.h
  *
- * Copyright (C) 2016-2017 Kano Computing Ltd.
+ * Copyright (C) 2016-2019 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Qt wrapper for the App class to expose the methods to Qt
@@ -81,8 +81,8 @@ class QApp : public QObject, public App
     Q_PROPERTY(QStringList overrides
                READ get_q_overrides
                CONSTANT)
-    Q_PROPERTY(bool dashboard_less_mode
-               READ get_dashboard_less_mode
+    Q_PROPERTY(bool single_app_mode
+               READ get_single_app_mode
                CONSTANT)
     Q_PROPERTY(bool desktop
                READ get_desktop

@@ -1,7 +1,7 @@
 /**
  * app.h
  *
- * Copyright (C) 2016-2018 Kano Computing Ltd.
+ * Copyright (C) 2016-2019 Kano Computing Ltd.
  * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
  *
  * Parses a ".app" file and represents the app described by the file
@@ -56,7 +56,7 @@ class App
         std::vector<std::string> get_overrides();
         bool get_hidden();
         bool get_touch_only();
-        bool get_dashboard_less_mode();
+        bool get_single_app_mode();
         bool get_desktop();
         int get_priority();
 
@@ -70,7 +70,7 @@ class App
         std::string color;
         bool hidden;
         bool touch_only;
-        bool dashboard_less_mode;
+        bool single_app_mode;
         std::vector<std::string> categories;
         std::vector<std::string> packages;
         std::vector<std::string> dependencies;
