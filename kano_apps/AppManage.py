@@ -9,6 +9,7 @@
 import os
 import json
 import time
+import requests
 
 from kano_apps.utils import get_dpkg_dict
 from kano.utils import run_cmd, download_url, has_min_performance
@@ -91,25 +92,23 @@ class AppDownloadError(Exception):
 
 
 def query_for_app(app_id_or_slug):
-    endpoint = '/apps/{}'.format(app_id_or_slug)
-    success, text, data = request_wrapper(
-        'get',
-        endpoint,
-        headers=content_type_json
-    )
+    endpoint = '/api/apps/{}'.format(app_id_or_slug)
+    url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
+    headers = { 'Content-Type': 'application/json' }
 
-    if not success:
-        endpoint = '/apps/slug/{}'.format(app_id_or_slug)
-        success, text, data = request_wrapper(
-            'get',
-            endpoint,
-            headers=content_type_json
-        )
+    print 'REQUEST 1', url
+    r = requests.get(url, headers=headers)
+    if not r.ok:
+        endpoint = '/api/apps/slug/{}'.format(app_id_or_slug)
+        url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
+        headers = { 'Content-Type': 'application/json' }
 
-        if not success:
-            raise AppDownloadError(text)
+        print 'REQUEST 2', url
+        r = requests.get(url, headers=headers)
+        if not r.ok:
+            raise AppDownloadError(r.content)
 
-    return data['app']
+    return r.response.data['app']
 
 
 def download_app(app_id_or_slug):
