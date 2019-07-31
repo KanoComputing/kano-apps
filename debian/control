@@ -13,12 +13,11 @@ Build-Depends:
     kano-qt-sdk-dev,
     kano-touch-support-dev
 
-
 Package: kano-apps
 Architecture: all
 # NB kano-apps must not depend on things which will cause its postinstall to trigger
 Depends: ${misc:Depends}, python, python-gi, kano-toolset (>= 1.2-5),
- kano-themes, kano-i18n
+ kano-themes, kano-i18n, python-requests
 Replaces: kano-desktop (<< 1.0-60)
 Breaks: kano-desktop (<< 1.0-60)
 Conflicts: kano-extras

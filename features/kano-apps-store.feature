@@ -19,6 +19,11 @@
 
 Feature: Kano Apps Integrates corectly with the new App Store
 
+        Scenario: Kano Apps GUI opens correctly
+        Given that I am in Classic Mode
+        When I start kano-apps to install 560e7c8c34cbe7080011c9fd
+        Then I see the main dialog requesting password
+
         Scenario: Kano Apps console mode works well
         Given that I am in Classic Mode
         When I call kano-apps install whatsapp non-gui
@@ -28,8 +33,3 @@ Feature: Kano Apps Integrates corectly with the new App Store
         Given that I am in Classic Mode
         When I start kano-apps
         Then I see the main dialog with no authentication
-
-        Scenario: Kano Apps GUI opens correctly
-        Given that I am in Classic Mode
-        When I start kano-apps to install njam
-        Then I see the main dialog requesting password

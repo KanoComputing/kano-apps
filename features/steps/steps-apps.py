@@ -17,7 +17,7 @@ from qa_tools import hid, findimage
 @given(u'that I am in Classic Mode')
 def step_classic_mode(context):
     os.system('kano-dashboard-uimode desktop --force 2>/dev/null')
-    os.system('pkill -9 kano-apps')
+    os.system('pkill -f -9 kano-apps')
     time.sleep(3)
 
 @when(u'I call kano-apps install {} non-gui')

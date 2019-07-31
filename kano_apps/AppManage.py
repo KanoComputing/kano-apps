@@ -91,24 +91,24 @@ class AppDownloadError(Exception):
     pass
 
 
-def query_for_app(app_id_or_slug):
+def query_for_app(app_id_or_slug, verbose=True):
     endpoint = '/api/apps/{}'.format(app_id_or_slug)
     url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
     headers = { 'Content-Type': 'application/json' }
 
-    print 'REQUEST 1', url
     r = requests.get(url, headers=headers)
     if not r.ok:
         endpoint = '/api/apps/slug/{}'.format(app_id_or_slug)
         url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
         headers = { 'Content-Type': 'application/json' }
-
-        print 'REQUEST 2', url
         r = requests.get(url, headers=headers)
         if not r.ok:
             raise AppDownloadError(r.content)
 
-    return r.response.data['app']
+    if verbose:
+        print 'URL: {}\nRESPONSE: {}'.format(url, r.content)
+
+    return json.loads(r.content)
 
 
 def download_app(app_id_or_slug):
@@ -135,8 +135,6 @@ def download_app(app_id_or_slug):
     # Cleanup the JSON file
     data['icon'] = data['slug']
     del data['icon_url']
-    del data['likes']
-    del data['comments_count']
     data['time_installed'] = int(time.time())
     data['categories'] = map(lambda c: c.lower(), data['categories'])
     data['removable'] = True
