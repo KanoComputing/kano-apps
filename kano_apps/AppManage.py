@@ -93,7 +93,7 @@ class AppDownloadError(Exception):
 
 def query_for_app(app_id_or_slug, verbose=True):
     endpoint = '/api/apps/{}'.format(app_id_or_slug)
-    base_url = load_conf()['api_url']
+    base_url = load_conf()['store_url']
     url = '{}{}'.format(base_url, endpoint)
     headers = { 'Content-Type': 'application/json' }
 
