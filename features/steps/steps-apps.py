@@ -22,7 +22,7 @@ def step_classic_mode(context):
 
 @when(u'I call kano-apps install {} non-gui')
 def call_kano_apps_nongui(context, app_name):
-    rc = os.system('kano-apps install --no-gui {}'.format(app_name))
+    rc = os.system('bin/kano-apps install --no-gui {}'.format(app_name))
     assert rc is 0
 
 @then(u'I see {} installed')
@@ -32,7 +32,7 @@ def step_impl(context, app_name):
 
 @when(u'I start kano-apps')
 def step_impl(context):
-    rc = os.system('kano-apps > /dev/null 2>&1 &')
+    rc = os.system('bin/kano-apps > /dev/null 2>&1 &')
     assert rc is 0
 
 @then(u'I see the main dialog with no authentication')
@@ -45,7 +45,7 @@ def step_impl(context):
 
 @when(u'I start kano-apps to install {}')
 def step_impl(context, app_name):
-    rc = os.system('kano-apps install {} > /dev/null 2>&1 &'.format(app_name))
+    rc = os.system('bin/kano-apps install {} > /dev/null 2>&1 &'.format(app_name))
     assert rc is 0
 
 
