@@ -13,7 +13,7 @@ import requests
 
 from kano_apps.utils import get_dpkg_dict
 from kano.utils import run_cmd, download_url, has_min_performance
-from kano_world.connection import request_wrapper, content_type_json
+from kano_world.config import load_conf
 
 KDESK_DIR = '~/.kdesktop/'
 KDESK_EXEC = '/usr/bin/kdesk'
@@ -93,14 +93,22 @@ class AppDownloadError(Exception):
 
 def query_for_app(app_id_or_slug, verbose=True):
     endpoint = '/api/apps/{}'.format(app_id_or_slug)
-    url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
+    base_url = load_conf()['api_url']
+    url = '{}{}'.format(base_url, endpoint)
     headers = { 'Content-Type': 'application/json' }
+
+    if verbose:
+        print 'URL: {}'.format(url)
 
     r = requests.get(url, headers=headers)
     if not r.ok:
         endpoint = '/api/apps/slug/{}'.format(app_id_or_slug)
-        url = 'https://apps-directory.os.kano.me{}'.format(endpoint)
+        url = '{}/{}'.format(base_url, endpoint)
         headers = { 'Content-Type': 'application/json' }
+
+        if verbose:
+            print 'URL: {}'.format(url)
+
         r = requests.get(url, headers=headers)
         if not r.ok:
             raise AppDownloadError(r.content)
