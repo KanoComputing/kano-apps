@@ -21,6 +21,7 @@ from kano_apps.AppInstaller import AppInstaller
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.cursor import attach_cursor_events
 from kano.gtk3.kano_dialog import KanoDialog
+from kano_world.config import load_conf
 
 
 class Apps(Gtk.Notebook):
@@ -46,8 +47,14 @@ class Apps(Gtk.Notebook):
 
             "packages": [],
             "dependencies": ["chromium"],
-            "launch_command": {"cmd": "kdesk-blur",
-                               "args": ["kano-world-launcher /apps/"]},
+            "launch_command": {
+                "cmd": "chromium-browser",
+                "args": [
+                    "--start-maximized",
+                    "--force-device-scale-factor=1.2",
+                    load_conf()['store_url']
+                ]
+            },
             "overrides": [],
             "desktop": False
         }
