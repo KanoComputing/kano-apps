@@ -23,7 +23,7 @@
 #include "logger.h"
 
 
-// TODO: Decide if this should be just another `.app` file
+// FIXME: Move this hardcoded app definition into a real .app file
 const char *APP_STORE_APP = "{ \
     \"type\": \"app\", \
     \"title\": \"App Store\", \
@@ -46,7 +46,7 @@ const char *APP_STORE_APP = "{ \
     \
     \"packages\": [], \
     \"dependencies\": [\"chromium\"], \
-    \"launch_command\": \"kano-world-launcher /apps/\", \
+    \"launch_command\": \"kano-apps-store-web\", \
     \"overrides\": [], \
     \"desktop\": false, \
     \"priority\": -10000 \

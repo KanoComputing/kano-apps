@@ -48,12 +48,8 @@ class Apps(Gtk.Notebook):
             "packages": [],
             "dependencies": ["chromium"],
             "launch_command": {
-                "cmd": "chromium-browser",
-                "args": [
-                    "--start-maximized",
-                    "--force-device-scale-factor=1.2",
-                    load_conf()['store_url']
-                ]
+                "cmd": "kano-apps-store-web",
+                "args": []
             },
             "overrides": [],
             "desktop": False
