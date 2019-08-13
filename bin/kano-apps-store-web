@@ -1,0 +1,26 @@
+#!/usr/bin/python
+#
+# kano-apps-store-web
+#
+# Copyright (C) 2019 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Opens the Web browser pointing to the new Kano Application Store
+#
+
+import os
+import sys
+
+from kano_world.config import load_conf
+
+if __name__ == '__main__':
+
+    browser = 'chromium-browser'
+    kano_store_url = load_conf()['store_url']
+    command_line = '{} ' \
+                   '--start-maximized ' \
+                   '--force-device-scale-factor=1.2 {}'.format(browser, kano_store_url)
+
+    os.system('kdesk-hourglass-app {}'.format(browser))
+    rc = os.WEXITSTATUS(os.system(command_line))
+    sys.exit(rc)
