@@ -14,6 +14,7 @@
         "chromium-browser",
         "kano-profile"
     ],
+    "hidden": true,
     "launch_command": "kano-tracker-ctl session run 'projects' 'chromium-browser --app=http://os-redirect.kano.me/os-projects --start-maximized'",
     "overrides": [],
     "priority": 950
