@@ -10,10 +10,22 @@
 
 import os
 import sys
+import signal
 
 from kano_world.config import load_conf
 
+
+def receiveSignal(sigNumber, frame):
+    return
+
+
 if __name__ == '__main__':
+
+    # When chromium follows a non-web link through xdg-open,
+    # it misteriously terminates the current browser process,
+    # making this script think that the overall work is complete.
+    # catching the signal solves the synchronization problem.
+    signal.signal(signal.SIGTERM, receiveSignal)
 
     browser = 'chromium-browser'
     kano_store_url = load_conf()['store_url']
