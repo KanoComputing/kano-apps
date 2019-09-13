@@ -1,3 +1,12 @@
+kano-apps (4.3.3-0) unstable; urgency=low
+
+  * Fixed issue with apps not installing when launching Store
+    from Dashboard
+  * Fixed issue with Dashboard maximising over Store when
+    attempting to install a new app
+
+ -- Team Kano <dev@kano.me>  Fri, 13 Sep 2019 11:33:00 +0100
+
 kano-apps (4.3.2-0) unstable; urgency=low
 
   * Hide the Projects from Dashboard
